@@ -18,6 +18,7 @@ class WeekContrib : public QWidget {
         // Create a layout to arrange the days of the week vertically
         QGridLayout* layout = new QGridLayout(this);
         layout->setSpacing(2);  // Set spacing between widgets
+        layout->setContentsMargins(2, 4, 2, 4);
 
         // Initialize DayContrib widgets for each day of the week
         for (int i = 0; i < 7; ++i) {

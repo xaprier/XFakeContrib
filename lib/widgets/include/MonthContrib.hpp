@@ -2,6 +2,7 @@
 #define MONTHCONTRIB_HPP
 
 #include <qlabel.h>
+#include <qlayout.h>
 #include <qnamespace.h>
 
 #include <QDate>
@@ -12,6 +13,7 @@
 #include <QVBoxLayout>
 #include <QWidget>
 #include <cmath>
+#include <iostream>
 #include <memory>
 #include <vector>
 
@@ -22,35 +24,52 @@ class MonthContrib : public QWidget {
 
   public:
     // Constructor to initialize with a start date and contributions for the month
-    MonthContrib(const QDate& startDate, const std::vector<std::vector<int>>& contribCounts, int totalContrib, QWidget* parent = nullptr)
+    MonthContrib(const QDate& startDate, const std::vector<int>& contribCounts, int maxContrib, QWidget* parent = nullptr)
         : QWidget(parent), m_StartDate(startDate) {
         QGridLayout* mainLayout = new QGridLayout(this);
+
+        // Set spacing to reduce gaps between weeks
+        mainLayout->setSpacing(0);
+        mainLayout->setContentsMargins(5, 5, 5, 5);
 
         // Add the month label at the top
         QLabel* monthLabel = new QLabel(m_StartDate.toString("MMMM"), this);  // E.g., "August 2024"
         monthLabel->setAlignment(Qt::AlignCenter);                            // Center align the month name
-        mainLayout->addWidget(monthLabel, 0, 0, 1, 1);
+        // monthLabel->setFixedHeight(20);
 
         // get first monday in month
         auto firstMonday = this->getFirstMondayOfMonth(startDate);
         // get week count until end of the month
         auto lastSunday = this->getLastSundayAfterMonth(startDate);
         int weekCount = std::ceil(firstMonday.daysTo(lastSunday) / 7.0);
+        mainLayout->addWidget(monthLabel, 0, 0, 1, weekCount);
+
+        // Calculate the number of days from today to the first Monday of the month
+        auto today = QDate::currentDate();
+        int daysFromTodayToFirstMonday = firstMonday.daysTo(today);
+
+        // Calculate the total number of days for the current month
+        int dayCount = weekCount * 7;
+
+        // Initialize a vector of contributions for the current month
+        std::vector<int> contribs(dayCount, 0);
+
+        // Check bounds before performing the copy operation
+        if (daysFromTodayToFirstMonday >= 0 && daysFromTodayToFirstMonday + dayCount <= contribCounts.size()) {
+            std::copy(contribCounts.end() - daysFromTodayToFirstMonday - dayCount, contribCounts.end() - daysFromTodayToFirstMonday, contribs.begin());
+        }
 
         // Create and add WeekContrib widgets
         QDate currentMonday = firstMonday;
         for (int i = 0; i < weekCount; ++i) {
-            std::vector<int> weeklyContribCounts;
-            if (i < contribCounts.size()) {
-                weeklyContribCounts = contribCounts[i];
-            }
-            m_WeekContribs.push_back(std::make_shared<WeekContrib>(currentMonday, weeklyContribCounts, totalContrib, this));
-
+            std::vector<int> weeklyContribCounts(contribs.begin() + 7 * i, contribs.begin() + 7 * (i + 1));
+            auto weekContrib = std::make_shared<WeekContrib>(currentMonday, weeklyContribCounts, maxContrib, this);
             // Add the WeekContrib widget to the layout in the correct position
-            mainLayout->addWidget(m_WeekContribs.back().get(), 1, i, 7, 1);  // Adding to row (1 + i), spanning all columns (7)
+            mainLayout->addWidget(weekContrib.get(), 1, i);
 
             // Move to the next Monday
             currentMonday = currentMonday.addDays(7);
+            m_WeekContribs.push_back(weekContrib);
         }
 
         setLayout(mainLayout);  // Set the layout for the widget
