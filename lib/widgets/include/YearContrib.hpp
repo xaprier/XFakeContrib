@@ -1,0 +1,4 @@
+#ifndef YEARCONTRIB_HPP
+#define YEARCONTRIB_HPP
+
+#endif  // YEARCONTRIB_HPP
