@@ -1,9 +1,8 @@
 #ifndef DAYCONTRIB_HPP
 #define DAYCONTRIB_HPP
 
-#include <qevent.h>
-
 #include <QDate>
+#include <QEnterEvent>
 #include <QEvent>
 #include <QPainter>
 #include <QResizeEvent>

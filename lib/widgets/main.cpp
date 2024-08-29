@@ -4,7 +4,6 @@
 
 #include "DayContrib.hpp"
 #include "MonthContrib.hpp"
-#include "WeekContrib.hpp"
 #include "YearContrib.hpp"
 
 // Function to generate random contributions for a given number of weeks and days per week

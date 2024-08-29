@@ -16,22 +16,18 @@ class YearContrib : public QWidget {
 
   public:
     // Constructor to initialize the year with the contributions
-    YearContrib(const std::vector<int>& allContribs, int maxContrib, QWidget* parent = nullptr)
+    YearContrib(const std::vector<int>& allContribs, int maxContrib, const QDate& end_date = QDate::currentDate(), QWidget* parent = nullptr)
         : QWidget(parent) {
         QVBoxLayout* mainLayout = new QVBoxLayout(this);
 
         // Calculate the start date: 1 year ago from today
-        QDate today = QDate::currentDate();
-        QDate oneYearAgo = today.addYears(-1);
+        QDate oneYearAgo = end_date.addYears(-1);
 
-        // Adjust to the nearest previous Monday
+        // Adjust to the nearest Monday
         QDate startDate = oneYearAgo;
-        while (startDate.dayOfWeek() != Qt::Monday) {
-            startDate = startDate.addDays(-1);
-        }
 
         // Add the year label at the top
-        QLabel* yearLabel = new QLabel(startDate.toString("yyyy") + " - " + today.toString("yyyy"), this);  // E.g., "2023 - 2024"
+        QLabel* yearLabel = new QLabel(startDate.toString("yyyy") + " - " + end_date.toString("yyyy"), this);  // E.g., "2023 - 2024"
         yearLabel->setAlignment(Qt::AlignCenter);
         mainLayout->addWidget(yearLabel);
 
@@ -42,7 +38,7 @@ class YearContrib : public QWidget {
         QDate currentMonthStartDate = QDate(startDate.year(), startDate.month(), 1);
         int monthIndex = 0;
 
-        while (currentMonthStartDate <= today) {
+        while (currentMonthStartDate <= end_date) {
             // Create and add MonthContrib widgets for each month
             m_MonthContribs.push_back(std::make_shared<MonthContrib>(currentMonthStartDate, allContribs, maxContrib, this));
 
