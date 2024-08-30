@@ -7,7 +7,7 @@
  * @brief Enum representing different contribution levels.
  */
 enum ContribLevel {
-    NO_CONTRIB,     /**< No contribution */
+    NO_CONTRIB = 0, /**< No contribution */
     MIN_CONTRIB,    /**< Minimum contribution */
     MEDIUM_CONTRIB, /**< Medium contribution */
     HIGH_CONTRIB,   /**< High contribution */
@@ -22,29 +22,26 @@ class ContribColor : public QColor {
     /**
      * @brief Constructor for ContribColor.
      *
-     * @param contribCount Number of contributions (default is 0).
-     * @param maxContrib Maximum contributions possible (default is 0).
+     * @param level level of the contribution, it decides the color.
      */
-    ContribColor(int contribCount = 0, int maxContrib = 0);
+    ContribColor(int level = 0);
 
   private:
     /**
      * @brief Determines the color based on the contribution count.
      *
-     * @param contribCount Number of contributions.
-     * @param maxContrib Maximum contributions possible.
+     * @param level level of the contribution, it decides the color.
      * @return QColor corresponding to the contribution level.
      */
-    static QColor getColorForContrib(int contribCount, int maxContrib);
+    static QColor getColorForContrib(int level);
 
     /**
      * @brief Calculates the contribution level based on the contribution count and maximum contributions.
      *
-     * @param contribCount Number of contributions.
-     * @param maxContrib Maximum contributions possible.
+     * @param level level of the contribution, it decides the color.
      * @return ContribLevel corresponding to the contribution count.
      */
-    static ContribLevel calculateContribLevel(int contribCount, int maxContrib);
+    static ContribLevel calculateContribLevel(int level);
 };
 
 #endif  // CONTRIBCOLOR_HPP

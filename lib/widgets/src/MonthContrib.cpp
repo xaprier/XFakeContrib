@@ -1,6 +1,6 @@
 #include "MonthContrib.hpp"
 
-MonthContrib::MonthContrib(const QDate& monthDate, const std::vector<int>& contribCounts, int maxContrib, QWidget* parent)
+MonthContrib::MonthContrib(const QDate& monthDate, const std::vector<int>& contribCounts, const std::vector<int>& contribLevels, QWidget* parent)
     : QWidget(parent), m_MonthDate(monthDate) {
     QGridLayout* mainLayout = new QGridLayout(this);
 
@@ -19,17 +19,19 @@ MonthContrib::MonthContrib(const QDate& monthDate, const std::vector<int>& contr
 
     // Initialize a vector of contributions for the current month
     std::vector<int> contribs(startDate.daysInMonth(), 0);
+    std::vector<int> levels(startDate.daysInMonth(), 0);
     int dayDiff = startDate.daysTo(QDate::currentDate());
 
     // Check bounds before performing the copy operation
     if (dayDiff + startDate.daysInMonth() < contribCounts.size() && dayDiff >= 0) {
         std::copy(contribCounts.begin() + dayDiff, contribCounts.begin() + dayDiff + startDate.daysInMonth(), contribs.begin());
+        std::copy(contribLevels.begin() + dayDiff, contribLevels.begin() + dayDiff + startDate.daysInMonth(), levels.begin());
     }
 
     // Create and add DayContrib widgets
     auto day = startDate;
     for (int i = 0, week = 0; i < startDate.daysInMonth() && day <= QDate::currentDate(); ++i) {
-        auto dayContrib = std::make_shared<DayContrib>(contribs[i], maxContrib, day);
+        auto dayContrib = std::make_shared<DayContrib>(contribs[i], levels[i], day);
         int dayInWeek = day.dayOfWeek();
         mainLayout->addWidget(dayContrib.get(), dayInWeek, week, 1, 1);
         this->m_DayContribs.push_back(dayContrib);

@@ -1,6 +1,6 @@
 #include "YearContrib.hpp"
 
-YearContrib::YearContrib(const std::vector<int>& allContribs, int maxContrib, const QDate& end_date, QWidget* parent)
+YearContrib::YearContrib(const std::vector<int>& allContribs, const std::vector<int>& allContribLevels, const QDate& end_date, QWidget* parent)
     : QWidget(parent) {
     QVBoxLayout* mainLayout = new QVBoxLayout(this);
 
@@ -24,7 +24,7 @@ YearContrib::YearContrib(const std::vector<int>& allContribs, int maxContrib, co
 
     while (currentMonthStartDate <= end_date) {
         // Create and add MonthContrib widgets for each month
-        m_MonthContribs.push_back(std::make_shared<MonthContrib>(currentMonthStartDate, allContribs, maxContrib, this));
+        m_MonthContribs.push_back(std::make_shared<MonthContrib>(currentMonthStartDate, allContribs, allContribLevels, this));
 
         // Add the MonthContrib widget to the horizontal layout
         monthsLayout->addWidget(m_MonthContribs.back().get());

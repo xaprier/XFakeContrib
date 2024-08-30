@@ -1,12 +1,12 @@
 #include "ContribColor.hpp"
 
-ContribColor::ContribColor(int contribCount, int maxContrib)
-    : QColor(getColorForContrib(contribCount, maxContrib)) {}
+ContribColor::ContribColor(int level)
+    : QColor(getColorForContrib(level)) {}
 
-QColor ContribColor::getColorForContrib(int contribCount, int maxContrib) {
-    ContribLevel level = calculateContribLevel(contribCount, maxContrib);
+QColor ContribColor::getColorForContrib(int level) {
+    ContribLevel contribLevel = calculateContribLevel(level);
 
-    switch (level) {
+    switch (contribLevel) {
         case NO_CONTRIB:
             return QColor("#ebedf0");  // Light gray
         case MIN_CONTRIB:
@@ -22,13 +22,10 @@ QColor ContribColor::getColorForContrib(int contribCount, int maxContrib) {
     }
 }
 
-ContribLevel ContribColor::calculateContribLevel(int contribCount, int maxContrib) {
-    if (contribCount == 0) return NO_CONTRIB;
-
-    int contribLevel = (contribCount * 4) / maxContrib;
-
-    switch (contribLevel) {
+ContribLevel ContribColor::calculateContribLevel(int level) {
+    switch (level) {
         case 0:
+            return NO_CONTRIB;
         case 1:
             return MIN_CONTRIB;
         case 2:

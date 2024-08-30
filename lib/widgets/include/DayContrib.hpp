@@ -17,10 +17,10 @@ class DayContrib : public QWidget {
 
   public:
     // Constructor to initialize with a contribution count and total contributions
-    DayContrib(int contribCount = 0, int totalContrib = 0, const QDate& date = QDate::currentDate(), QWidget* parent = nullptr);
+    DayContrib(int contribCount = 0, int contribLevel = 0, const QDate& date = QDate::currentDate(), QWidget* parent = nullptr);
 
     // Function to set contribution count and update color
-    void setContribCount(int contribCount, int totalContrib);
+    void setContribCount(int contribCount, int contribLevel);
 
     // Function to set the date
     void setDate(const QDate& date) {

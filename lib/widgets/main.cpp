@@ -28,6 +28,7 @@ int main(int argc, char* argv[]) {
 
     // Generate random contributions
     std::vector<int> contributions = generateRandomContributions(weeks, maxContribution);
+    std::vector<int> levels = generateRandomContributions(weeks, 4);
 
     // DayContrib contrib(8, 24);
     // contrib.show();
@@ -39,7 +40,7 @@ int main(int argc, char* argv[]) {
     // auto* monthContrib = new MonthContrib(startDate, contributions, maxContribution);
     // monthContrib->show();
 
-    YearContrib yearContrib(contributions, maxContribution);
+    YearContrib yearContrib(contributions, levels);
     yearContrib.show();
 
     return app.exec();
