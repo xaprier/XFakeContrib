@@ -1,6 +1,7 @@
 # Specify the directory to check
 set(
   DIRECTORIES_TO_CHECK
+  "${CMAKE_CURRENT_SOURCE_DIR}/github" # get github
   "${CMAKE_CURRENT_SOURCE_DIR}/widgets" # get widgets
 )
 
