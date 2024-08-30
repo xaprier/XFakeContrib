@@ -3,62 +3,48 @@
 
 #include <QColor>
 
+/**
+ * @brief Enum representing different contribution levels.
+ */
+enum ContribLevel {
+    NO_CONTRIB,     /**< No contribution */
+    MIN_CONTRIB,    /**< Minimum contribution */
+    MEDIUM_CONTRIB, /**< Medium contribution */
+    HIGH_CONTRIB,   /**< High contribution */
+    MAX_CONTRIB,    /**< Maximum contribution */
+};
+
+/**
+ * @brief ContribColor class derived from QColor to represent colors based on contribution levels.
+ */
 class ContribColor : public QColor {
   public:
-    // Constructor: Takes contribution count and total contributions
-    ContribColor(int contribCount = 0, int maxContrib = 0)
-        : QColor(getColorForContrib(contribCount, maxContrib)) {}
+    /**
+     * @brief Constructor for ContribColor.
+     *
+     * @param contribCount Number of contributions (default is 0).
+     * @param maxContrib Maximum contributions possible (default is 0).
+     */
+    ContribColor(int contribCount = 0, int maxContrib = 0);
 
   private:
-    // Enum for contribution levels
-    enum ContribLevel {
-        NO_CONTRIB,
-        MIN_CONTRIB,
-        MEDIUM_CONTRIB,
-        HIGH_CONTRIB,
-        MAX_CONTRIB,
-    };
+    /**
+     * @brief Determines the color based on the contribution count.
+     *
+     * @param contribCount Number of contributions.
+     * @param maxContrib Maximum contributions possible.
+     * @return QColor corresponding to the contribution level.
+     */
+    static QColor getColorForContrib(int contribCount, int maxContrib);
 
-    // Function to determine the color based on contribution count
-    static QColor getColorForContrib(int contribCount, int maxContrib) {
-        ContribLevel level = calculateContribLevel(contribCount, maxContrib);
-
-        switch (level) {
-            case NO_CONTRIB:
-                return QColor("#ebedf0");  // Light gray
-            case MIN_CONTRIB:
-                return QColor("#c6e48b");  // Light green
-            case MEDIUM_CONTRIB:
-                return QColor("#7bc96f");  // Green
-            case HIGH_CONTRIB:
-                return QColor("#239a3b");  // Dark green
-            case MAX_CONTRIB:
-                return QColor("#196127");  // Darker green
-            default:
-                return QColor("#ebedf0");  // Default to light gray
-        }
-    }
-
-    // Function to calculate contribution level based on contribCount and maxContrib
-    static ContribLevel calculateContribLevel(int contribCount, int maxContrib) {
-        if (contribCount == 0) return NO_CONTRIB;
-
-        int contribLevel = (contribCount * 4) / maxContrib;
-
-        switch (contribLevel) {
-            case 0:
-            case 1:
-                return MIN_CONTRIB;
-            case 2:
-                return MEDIUM_CONTRIB;
-            case 3:
-                return HIGH_CONTRIB;
-            case 4:
-                return MAX_CONTRIB;
-            default:
-                return NO_CONTRIB;
-        }
-    }
+    /**
+     * @brief Calculates the contribution level based on the contribution count and maximum contributions.
+     *
+     * @param contribCount Number of contributions.
+     * @param maxContrib Maximum contributions possible.
+     * @return ContribLevel corresponding to the contribution count.
+     */
+    static ContribLevel calculateContribLevel(int contribCount, int maxContrib);
 };
 
 #endif  // CONTRIBCOLOR_HPP
