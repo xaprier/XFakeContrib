@@ -16,7 +16,7 @@ class YearContrib : public QWidget {
 
   public:
     // Constructor to initialize the year with the contributions
-    YearContrib(const std::vector<int>& allContribs, const std::vector<int>& allContribLevels, const QDate& end_date = QDate::currentDate(), QWidget* parent = nullptr);
+    YearContrib(const QString& title, const std::vector<int>& allContribs, const std::vector<int>& allContribLevels, const QDate& end_date = QDate::currentDate(), QWidget* parent = nullptr);
 
     // Function to get the start date of the year
     QDate getStartDate() const {
@@ -27,7 +27,8 @@ class YearContrib : public QWidget {
     std::vector<std::weak_ptr<MonthContrib>> getMonthContribs() const;
 
   private:
-    QDate m_StartDate;                                           // Start date of the year
+    QDate m_StartDate;  // Start date of the year
+    std::shared_ptr<QLabel> m_Label;
     std::vector<std::shared_ptr<MonthContrib>> m_MonthContribs;  // List of MonthContrib widgets for each month of the year
 };
 

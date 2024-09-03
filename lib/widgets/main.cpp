@@ -2,6 +2,8 @@
 
 #include <QApplication>
 
+#include "ContribCard.hpp"
+#include "ContributionPeriod.hpp"
 #include "DayContrib.hpp"
 #include "LevelColorIndicator.hpp"
 #include "MonthContrib.hpp"
@@ -37,14 +39,21 @@ int main(int argc, char* argv[]) {
     // WeekContrib contrib(QDate(2015, 9, 13), std::vector<int>{3, 0, 5, 2, 9, 7}, 9);
     // contrib.show();
 
-    // QDate startDate = QDate::currentDate().addDays(-QDate::currentDate().daysInMonth() + 1);  // Ayın başı
-    // auto* monthContrib = new MonthContrib(startDate, contributions, maxContribution);
+    // QDate startDate(2023, 8, 26);
+    // auto* monthContrib = new MonthContrib(startDate, contributions, levels);
     // monthContrib->show();
 
-    // YearContrib yearContrib(contributions, levels);
+    // YearContrib yearContrib("Last 12 Months", contributions, levels);
     // yearContrib.show();
-    LevelColorIndicator indic;
-    indic.show();
+
+    // LevelColorIndicator indic;
+    // indic.show();
+
+    // ContributionPeriod period(QDate(2021, 5, 13));
+    // period.show();
+
+    ContribCard card(contributions, levels, QDate(2021, 5, 23));
+    card.show();
 
     return app.exec();
 }

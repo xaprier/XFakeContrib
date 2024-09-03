@@ -49,7 +49,6 @@ class LevelColorIndicator : public QWidget {
     std::shared_ptr<std::array<_DayContribWithoutToolTip, 5>> m_DayContribs;
     std::shared_ptr<QLabel> m_LessLabel;
     std::shared_ptr<QLabel> m_MoreLabel;
-    std::shared_ptr<QHBoxLayout> m_Layout;
 };
 
 #endif  // LEVELCOLORINDICATOR_HPP
