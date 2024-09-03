@@ -5,6 +5,7 @@
 YearContrib::YearContrib(const QString& title, const std::vector<int>& allContribs, const std::vector<int>& allContribLevels, const QDate& end_date, QWidget* parent)
     : QWidget(parent) {
     QVBoxLayout* mainLayout = new QVBoxLayout(this);
+    mainLayout->setContentsMargins(5, 5, 5, 5);
 
     // Calculate the start date: 1 year ago from today
     QDate oneYearAgo = end_date.addYears(-1);
@@ -15,6 +16,7 @@ YearContrib::YearContrib(const QString& title, const std::vector<int>& allContri
     // Add the year label at the top
     m_Label = std::make_shared<QLabel>(title, this);  // E.g., "2023 - 2024"
     m_Label->setAlignment(Qt::AlignCenter);
+    m_Label->setFixedHeight(16);
     mainLayout->addWidget(m_Label.get());
 
     // Create a horizontal layout for the months
