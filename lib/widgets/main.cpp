@@ -3,6 +3,7 @@
 #include <QApplication>
 
 #include "DayContrib.hpp"
+#include "LevelColorIndicator.hpp"
 #include "MonthContrib.hpp"
 #include "YearContrib.hpp"
 
@@ -40,8 +41,10 @@ int main(int argc, char* argv[]) {
     // auto* monthContrib = new MonthContrib(startDate, contributions, maxContribution);
     // monthContrib->show();
 
-    YearContrib yearContrib(contributions, levels);
-    yearContrib.show();
+    // YearContrib yearContrib(contributions, levels);
+    // yearContrib.show();
+    LevelColorIndicator indic;
+    indic.show();
 
     return app.exec();
 }
