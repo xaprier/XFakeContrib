@@ -30,7 +30,7 @@ class MonthContrib : public QWidget {
 
     // Function to get the start date of the month
     QDate getStartDate() const {
-        return QDate(m_MonthDate.year(), m_MonthDate.month(), 1);
+        return QDate(m_EndDate.year(), m_EndDate.month(), 1);
     }
 
     // Function to get the list of WeekContrib widgets as weak pointers
@@ -40,7 +40,7 @@ class MonthContrib : public QWidget {
     int getWeekCountInMonth(const QDate& date) const;
 
   private:
-    QDate m_MonthDate;                                       // Month date of the month
+    QDate m_EndDate;                                         // end date of month
     std::vector<std::shared_ptr<DayContrib>> m_DayContribs;  // List of DayContrib widgets for each week of the month
     std::shared_ptr<QLabel> m_Label;
 };
