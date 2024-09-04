@@ -1,8 +1,11 @@
 #include "YearContrib.hpp"
 
+#include <qdebug.h>
+
+#include <algorithm>
 #include <memory>
 
-YearContrib::YearContrib(const QString& title, const std::vector<int>& allContribs, const std::vector<int>& allContribLevels, const QDate& end_date, QWidget* parent)
+YearContrib::YearContrib(const QString& title, const std::vector<Contrib>& allContribs, const QDate& end_date, QWidget* parent)
     : QWidget(parent) {
     QVBoxLayout* mainLayout = new QVBoxLayout(this);
     mainLayout->setContentsMargins(5, 5, 5, 5);
@@ -14,10 +17,10 @@ YearContrib::YearContrib(const QString& title, const std::vector<int>& allContri
     QDate startDate = oneYearAgo;
 
     // Add the year label at the top
-    m_Label = std::make_shared<QLabel>(title, this);  // E.g., "2023 - 2024"
+    m_Label = new QLabel(title, this);  // E.g., "2023 - 2024"
     m_Label->setAlignment(Qt::AlignCenter);
     m_Label->setFixedHeight(16);
-    mainLayout->addWidget(m_Label.get());
+    mainLayout->addWidget(m_Label);
 
     // Create a horizontal layout for the months
     QHBoxLayout* monthsLayout = new QHBoxLayout();
@@ -35,11 +38,15 @@ YearContrib::YearContrib(const QString& title, const std::vector<int>& allContri
             monthEndDate = end_date;
         }
 
-        // Create and add MonthContrib widgets for each month
-        m_MonthContribs.push_back(std::make_shared<MonthContrib>(monthEndDate, allContribs, allContribLevels, this));
+        int days = monthEndDate.day();
+
+        auto monthContrib = new MonthContrib(monthEndDate, allContribs, this);
 
         // Add the MonthContrib widget to the horizontal layout
-        monthsLayout->addWidget(m_MonthContribs.back().get());
+        monthsLayout->addWidget(monthContrib);
+
+        // Create and add MonthContrib widgets for each month
+        m_MonthContribs.push_back(monthContrib);
 
         // Move to the next month
         currentMonthStartDate = currentMonthStartDate.addMonths(1);
@@ -51,14 +58,6 @@ YearContrib::YearContrib(const QString& title, const std::vector<int>& allContri
     setLayout(mainLayout);  // Set the layout for the widget
 }
 
-std::vector<std::weak_ptr<MonthContrib>> YearContrib::getMonthContribs() const {
-    std::vector<std::weak_ptr<MonthContrib>> weakPtrs;
-    weakPtrs.reserve(m_MonthContribs.size());
-
-    // Convert each shared_ptr to a weak_ptr and add it to the result vector
-    for (const auto& sharedPtr : m_MonthContribs) {
-        weakPtrs.push_back(sharedPtr);
-    }
-
-    return weakPtrs;
+const std::vector<MonthContrib*> YearContrib::getMonthContribs() const {
+    return this->m_MonthContribs;
 }

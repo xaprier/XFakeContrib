@@ -5,7 +5,7 @@
 
 class Contrib {
   public:
-    Contrib(int level, int count, QDate date = QDate::currentDate()) : m_Level(level), m_Count(count), m_Date(date) {}
+    Contrib(int level = 0, int count = 0, QDate date = QDate::currentDate()) : m_Level(level), m_Count(count), m_Date(date) {}
     int getLevel() const { return m_Level; }
     int getCount() const { return m_Count; }
     QDate getDate() const { return m_Date; }

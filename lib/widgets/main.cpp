@@ -52,8 +52,8 @@ int main(int argc, char* argv[]) {
     // ContributionPeriod period(QDate(2021, 5, 13));
     // period.show();
 
-    ContribCard card(contributions, levels, QDate(2021, 5, 23));
-    card.show();
+    // ContribCard card(contributions, levels, QDate(2021, 5, 23));
+    // card.show();
 
     return app.exec();
 }

@@ -4,7 +4,7 @@
 
 #include <memory>
 
-MonthContrib::MonthContrib(const QDate& endDate, const std::vector<int>& contribCounts, const std::vector<int>& contribLevels, QWidget* parent)
+MonthContrib::MonthContrib(const QDate& endDate, const std::vector<Contrib>& allContribs, QWidget* parent)
     : QWidget(parent), m_EndDate(endDate) {
     QGridLayout* mainLayout = new QGridLayout(this);
 
@@ -21,26 +21,35 @@ MonthContrib::MonthContrib(const QDate& endDate, const std::vector<int>& contrib
     auto weekCount = this->getWeekCountInMonth(endDate);
     mainLayout->addWidget(m_Label.get(), 0, 0, 1, weekCount);
 
-    // Initialize a vector of contributions for the current month
-    int dayDiff = startDate.daysTo(QDate::currentDate());
-    int daysInMonth = endDate.day();
-    std::vector<int> contribs(daysInMonth, 0);
-    std::vector<int> levels(daysInMonth, 0);
-
-    // Check bounds before performing the copy operation
-    if (dayDiff + daysInMonth < contribCounts.size() && dayDiff >= 0) {
-        std::copy(contribCounts.begin() + dayDiff, contribCounts.begin() + dayDiff + daysInMonth, contribs.begin());
-        std::copy(contribLevels.begin() + dayDiff, contribLevels.begin() + dayDiff + daysInMonth, levels.begin());
-    }
+    int daysInMonth = endDate.day() + 1;
 
     // Create and add DayContrib widgets
     auto day = startDate;
     int week = 0;
+
+    // Initialize iterator for allContribs
+    auto it = std::find_if(allContribs.begin(), allContribs.end(), [day](const Contrib& contrib) {
+        return contrib.getDate() == day;
+    });
+
     for (int i = 0; i < daysInMonth; ++i) {
-        auto dayContrib = std::make_shared<DayContrib>(contribs[i], levels[i], day);
-        int dayInWeek = day.dayOfWeek();
-        mainLayout->addWidget(dayContrib.get(), dayInWeek, week, 1, 1);
-        this->m_DayContribs.push_back(dayContrib);
+        // Find contribution for the current day
+        if (it != allContribs.end() && it != allContribs.begin() && it->getDate() == day) {
+            int count = it->getCount();
+            int level = it->getLevel();
+            --it;  // Move to the next entry
+            auto dayContrib = std::make_shared<DayContrib>(count, level, day, this);
+            int dayInWeek = day.dayOfWeek();
+            mainLayout->addWidget(dayContrib.get(), dayInWeek, week, 1, 1);
+            this->m_DayContribs.push_back(dayContrib);
+        } else {
+            // If there's no contribution for this day, you may set default values
+            auto dayContrib = std::make_shared<DayContrib>(0, 0, day, this);
+            int dayInWeek = day.dayOfWeek();
+            mainLayout->addWidget(dayContrib.get(), dayInWeek, week, 1, 1);
+            this->m_DayContribs.push_back(dayContrib);
+        }
+
         if (day.dayOfWeek() == Qt::Sunday) week++;
         day = day.addDays(1);
     }

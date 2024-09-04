@@ -9,6 +9,7 @@
 #include <memory>
 #include <vector>
 
+#include "Contrib.hpp"
 #include "MonthContrib.hpp"
 
 class YearContrib : public QWidget {
@@ -16,7 +17,7 @@ class YearContrib : public QWidget {
 
   public:
     // Constructor to initialize the year with the contributions
-    YearContrib(const QString& title, const std::vector<int>& allContribs, const std::vector<int>& allContribLevels, const QDate& end_date = QDate::currentDate(), QWidget* parent = nullptr);
+    YearContrib(const QString& title, const std::vector<Contrib>& allContribs, const QDate& end_date = QDate::currentDate(), QWidget* parent = nullptr);
 
     // Function to get the start date of the year
     QDate getStartDate() const {
@@ -24,12 +25,12 @@ class YearContrib : public QWidget {
     }
 
     // Function to get the list of MonthContrib widgets as weak pointers
-    std::vector<std::weak_ptr<MonthContrib>> getMonthContribs() const;
+    const std::vector<MonthContrib*> getMonthContribs() const;
 
   private:
     QDate m_StartDate;  // Start date of the year
-    std::shared_ptr<QLabel> m_Label;
-    std::vector<std::shared_ptr<MonthContrib>> m_MonthContribs;  // List of MonthContrib widgets for each month of the year
+    QLabel* m_Label;
+    std::vector<MonthContrib*> m_MonthContribs;  // List of MonthContrib widgets for each month of the year
 };
 
 #endif  // YEARCONTRIB_HPP

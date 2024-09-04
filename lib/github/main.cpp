@@ -1,6 +1,7 @@
 #include <QCoreApplication>
 #include <QDebug>
 
+#include "ContribTotal.hpp"
 #include "GitHubContribFetcher.hpp"
 
 int main(int argc, char* argv[]) {
@@ -11,6 +12,9 @@ int main(int argc, char* argv[]) {
 
     // create fetcher
     GitHubContribFetcher fetcher(username);
+
+    std::vector<Contrib> contribs;
+    std::vector<ContribTotal> totals;
 
     // fetch contributions
     fetcher.fetchUserContributions();

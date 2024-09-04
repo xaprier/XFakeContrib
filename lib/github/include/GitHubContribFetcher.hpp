@@ -28,6 +28,14 @@ class GitHubContribFetcher : public QObject {
         manager = std::make_shared<QNetworkAccessManager>(this);
     }
 
+    const std::vector<ContribTotal>& GetTotalContribs() const {
+        return m_TotalContributions;
+    }
+
+    const std::vector<Contrib>& GetContribs() const {
+        return m_Contributions;
+    }
+
     void fetchUserContributions() {
         QUrl url(QString("https://github-contributions-api.jogruber.de/v4/%1?y=all").arg(m_Username));
         QNetworkRequest request(url);
@@ -108,13 +116,26 @@ class GitHubContribFetcher : public QObject {
 
         // Parse daily contributions
         QJsonArray contributionsArray = jsonObj["contributions"].toArray();
+        QDate oneYearAgo = QDate::currentDate().addYears(-1);
+        QDate currentDate = QDate::currentDate();
+        int totalLast12Months = 0;
         for (const QJsonValue& value : contributionsArray) {
             QJsonObject obj = value.toObject();
             int count = obj["count"].toInt();
             int level = obj["level"].toInt();
             QDate date = QDate::fromString(obj["date"].toString(), "yyyy-MM-dd");
+            if (date <= currentDate && date >= oneYearAgo) {
+                totalLast12Months += count;
+            }
             m_Contributions.push_back(Contrib(level, count, date));
         }
+
+        // Sort contributions by date
+        std::sort(m_Contributions.begin(), m_Contributions.end(), [](const Contrib& a, const Contrib& b) {
+            return a.getDate() > b.getDate();
+        });
+
+        m_TotalContributions.push_back(ContribTotal(totalLast12Months, 0));  // year 0 is the last 12 months
     }
 
   private:
