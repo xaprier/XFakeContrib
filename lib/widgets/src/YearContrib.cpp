@@ -1,6 +1,7 @@
 #include "YearContrib.hpp"
 
 #include <qdebug.h>
+#include <qvariant.h>
 
 #include <algorithm>
 #include <memory>
@@ -40,10 +41,10 @@ YearContrib::YearContrib(const QString& title, const std::vector<Contrib>& allCo
 
         int days = monthEndDate.day();
 
-        auto monthContrib = new MonthContrib(monthEndDate, allContribs, this);
+        auto monthContrib = QSharedPointer<MonthContrib>::create(monthEndDate, allContribs, this);
 
         // Add the MonthContrib widget to the horizontal layout
-        monthsLayout->addWidget(monthContrib);
+        monthsLayout->addWidget(monthContrib.get());
 
         // Create and add MonthContrib widgets for each month
         m_MonthContribs.push_back(monthContrib);
@@ -58,6 +59,14 @@ YearContrib::YearContrib(const QString& title, const std::vector<Contrib>& allCo
     setLayout(mainLayout);  // Set the layout for the widget
 }
 
-const std::vector<MonthContrib*> YearContrib::getMonthContribs() const {
-    return this->m_MonthContribs;
+const std::vector<QWeakPointer<MonthContrib>> YearContrib::getMonthContribs() const {
+    std::vector<QWeakPointer<MonthContrib>> weakPtrs;
+    weakPtrs.reserve(m_MonthContribs.size());  // Optimize allocation
+
+    // Iterate over the QSharedPointer vector
+    for (const auto& sharedPtr : m_MonthContribs) {
+        weakPtrs.push_back(sharedPtr);
+    }
+
+    return weakPtrs;
 }

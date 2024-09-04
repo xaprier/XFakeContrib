@@ -2,15 +2,14 @@
 #define IADAPTER_HPP
 
 #include <QDate>
-#include <memory>
-#include <vector>
+#include <QSharedPointer>
 
 template <typename Type>
 class IAdapter {
   public:
     virtual ~IAdapter() = default;
 
-    virtual Type* adapt() const = 0;
+    virtual QSharedPointer<Type> adapt() const = 0;
 };
 
 #endif  // IADAPTER_HPP

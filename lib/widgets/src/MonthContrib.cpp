@@ -1,8 +1,13 @@
 #include "MonthContrib.hpp"
 
+#include <qvariant.h>
 #include <qwidget.h>
 
+#include <algorithm>
+#include <iterator>
 #include <memory>
+
+#include "DayContrib.hpp"
 
 MonthContrib::MonthContrib(const QDate& endDate, const std::vector<Contrib>& allContribs, QWidget* parent)
     : QWidget(parent), m_EndDate(endDate) {
@@ -13,15 +18,15 @@ MonthContrib::MonthContrib(const QDate& endDate, const std::vector<Contrib>& all
     mainLayout->setContentsMargins(5, 5, 5, 5);
 
     // Add the month label at the top
-    m_Label = std::make_shared<QLabel>(endDate.toString("MMMM"), this);  // E.g., "August"
-    m_Label->setAlignment(Qt::AlignCenter);                              // Center align the month name
+    m_Label = QSharedPointer<QLabel>::create(endDate.toString("MMMM"), this);  // E.g., "August"
+    m_Label->setAlignment(Qt::AlignCenter);                                    // Center align the month name
 
     QDate startDate(endDate.year(), endDate.month(), 1);
 
     auto weekCount = this->getWeekCountInMonth(endDate);
     mainLayout->addWidget(m_Label.get(), 0, 0, 1, weekCount);
 
-    int daysInMonth = endDate.day() + 1;
+    int daysInMonth = endDate.day();
 
     // Create and add DayContrib widgets
     auto day = startDate;
@@ -38,13 +43,13 @@ MonthContrib::MonthContrib(const QDate& endDate, const std::vector<Contrib>& all
             int count = it->getCount();
             int level = it->getLevel();
             --it;  // Move to the next entry
-            auto dayContrib = std::make_shared<DayContrib>(count, level, day, this);
+            auto dayContrib = QSharedPointer<DayContrib>::create(count, level, day, this);
             int dayInWeek = day.dayOfWeek();
             mainLayout->addWidget(dayContrib.get(), dayInWeek, week, 1, 1);
             this->m_DayContribs.push_back(dayContrib);
         } else {
             // If there's no contribution for this day, you may set default values
-            auto dayContrib = std::make_shared<DayContrib>(0, 0, day, this);
+            auto dayContrib = QSharedPointer<DayContrib>::create(0, 0, day, this);
             int dayInWeek = day.dayOfWeek();
             mainLayout->addWidget(dayContrib.get(), dayInWeek, week, 1, 1);
             this->m_DayContribs.push_back(dayContrib);
@@ -67,11 +72,11 @@ MonthContrib::MonthContrib(const QDate& endDate, const std::vector<Contrib>& all
     setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
 }
 
-std::vector<std::weak_ptr<DayContrib>> MonthContrib::getDayContribs() const {
-    std::vector<std::weak_ptr<DayContrib>> weakPtrs;
-    weakPtrs.reserve(m_DayContribs.size());
+std::vector<QWeakPointer<DayContrib>> MonthContrib::getDayContribs() const {
+    std::vector<QWeakPointer<DayContrib>> weakPtrs;
+    weakPtrs.reserve(m_DayContribs.size());  // Optimize allocation
 
-    // Convert each shared_ptr to a weak_ptr and add it to the result vector
+    // Iterate over the QSharedPointer vector
     for (const auto& sharedPtr : m_DayContribs) {
         weakPtrs.push_back(sharedPtr);
     }

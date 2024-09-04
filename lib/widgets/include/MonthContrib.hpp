@@ -7,6 +7,7 @@
 #include <qlayout.h>
 #include <qnamespace.h>
 #include <qsizepolicy.h>
+#include <qvariant.h>
 
 #include <QDate>
 #include <QDebug>
@@ -35,15 +36,15 @@ class MonthContrib : public QWidget {
     }
 
     // Function to get the list of WeekContrib widgets as weak pointers
-    std::vector<std::weak_ptr<DayContrib>> getDayContribs() const;
+    std::vector<QWeakPointer<DayContrib>> getDayContribs() const;
 
   private:
     int getWeekCountInMonth(const QDate& date) const;
 
   private:
-    QDate m_EndDate;                                         // end date of month
-    std::vector<std::shared_ptr<DayContrib>> m_DayContribs;  // List of DayContrib widgets for each week of the month
-    std::shared_ptr<QLabel> m_Label;
+    QDate m_EndDate;                                        // end date of month
+    std::vector<QSharedPointer<DayContrib>> m_DayContribs;  // List of DayContrib widgets for each week of the month
+    QSharedPointer<QLabel> m_Label;
 };
 
 #endif  // MONTHCONTRIB_HPP

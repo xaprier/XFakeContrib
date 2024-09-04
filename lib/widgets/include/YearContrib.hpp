@@ -1,6 +1,8 @@
 #ifndef YEARCONTRIB_HPP
 #define YEARCONTRIB_HPP
 
+#include <qvariant.h>
+
 #include <QDate>
 #include <QHBoxLayout>
 #include <QLabel>
@@ -25,12 +27,12 @@ class YearContrib : public QWidget {
     }
 
     // Function to get the list of MonthContrib widgets as weak pointers
-    const std::vector<MonthContrib*> getMonthContribs() const;
+    const std::vector<QWeakPointer<MonthContrib>> getMonthContribs() const;
 
   private:
     QDate m_StartDate;  // Start date of the year
     QLabel* m_Label;
-    std::vector<MonthContrib*> m_MonthContribs;  // List of MonthContrib widgets for each month of the year
+    std::vector<QSharedPointer<MonthContrib>> m_MonthContribs;  // List of MonthContrib widgets for each month of the year
 };
 
 #endif  // YEARCONTRIB_HPP

@@ -13,7 +13,7 @@ class GitHubContribAdapter : public IAdapter<ContribCard> {
     GitHubContribAdapter(const GitHubContribFetcher& fetcher)
         : m_Fetcher(fetcher) {}
 
-    virtual ContribCard* adapt() const override {
+    virtual QSharedPointer<ContribCard> adapt() const override {
         // create inputs for adaptee
         QDate firstContribDate;
 
@@ -25,7 +25,8 @@ class GitHubContribAdapter : public IAdapter<ContribCard> {
             firstContribDate = contributions.back().getDate();
         }
 
-        return new ContribCard(contributions, firstContribDate);
+        // todo: totalContributions'ı ContribCard ile kullanılabilir hale getirip parametre olarak ver.
+        return QSharedPointer<ContribCard>::create(contributions, firstContribDate);
     }
 
   private:
