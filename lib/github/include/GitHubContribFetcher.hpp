@@ -1,9 +1,6 @@
 #ifndef GITHUBCONTRIBFETCHER_HPP
 #define GITHUBCONTRIBFETCHER_HPP
 
-#include <qdatetime.h>
-#include <qvariant.h>
-
 #include <QDate>
 #include <QEventLoop>
 #include <QFile>

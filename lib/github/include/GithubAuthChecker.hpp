@@ -1,9 +1,6 @@
 #ifndef GITHUBAUTHCHECKER_HPP
 #define GITHUBAUTHCHECKER_HPP
 
-#include <qnetworkaccessmanager.h>
-#include <qvariant.h>
-
 #include <QDebug>
 #include <QJsonDocument>
 #include <QJsonObject>
@@ -27,7 +24,7 @@ class GitHubAuthChecker : public QObject {
         request.setRawHeader("Authorization", "Bearer " + authToken.toUtf8());
         request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
 
-        // Basit bir sorgu (örneğin, kendi kullanıcı adını sorgulama)
+        // simple query for testing
         QString query = "{\"query\": \"{ viewer { login } }\"}";
         QByteArray data = query.toUtf8();
 

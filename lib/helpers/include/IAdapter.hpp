@@ -4,12 +4,16 @@
 #include <QDate>
 #include <QSharedPointer>
 
-template <typename Type>
+template <typename AdapteeType, typename TargetType>
 class IAdapter {
   public:
+    IAdapter(const AdapteeType &adaptee) : m_Adaptee(adaptee) {}
     virtual ~IAdapter() = default;
 
-    virtual QSharedPointer<Type> adapt() const = 0;
+    virtual QSharedPointer<TargetType> adapt() const = 0;
+
+  protected:
+    const AdapteeType &m_Adaptee;
 };
 
 #endif  // IADAPTER_HPP
