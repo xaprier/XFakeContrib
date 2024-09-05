@@ -1,13 +1,16 @@
 #include "GitHubContribFetcher.hpp"
 
-void GitHubContribFetcher::fetchUserContributions() {
-    QUrl url(QString("https://github-contributions-api.jogruber.de/v4/%1?y=all").arg(m_Username));
-    QNetworkRequest request(url);
-    QNetworkReply* reply = m_Manager->get(request);
+#include <stdexcept>
 
-    QEventLoop loop;
-    connect(reply, &QNetworkReply::finished, &loop, &QEventLoop::quit);
-    loop.exec();
+#include "ContribTotal.hpp"
+#include "GithubAuthChecker.hpp"
+#include "GithubContribLevels.hpp"
+
+void GitHubContribFetcher::onNetworkReplyFinished(QNetworkReply* reply) {
+    if (!reply) {
+        qDebug() << "Failed to cast sender to QNetworkReply.";
+        return;
+    }
 
     if (reply->error() == QNetworkReply::NoError) {
         QByteArray response = reply->readAll();
@@ -16,25 +19,201 @@ void GitHubContribFetcher::fetchUserContributions() {
         qDebug() << "Error fetching data:" << reply->errorString();
     }
 
+    if (m_ActiveReplies.contains(reply)) {
+        m_ActiveReplies.removeOne(reply);
+    } else {
+        qDebug() << "Reply not found in the active list.";
+    }
+
+    if (m_ActiveReplies.empty()) {
+        emit this->allRepliesFinished();
+    }
+
     reply->deleteLater();
 }
 
+void GitHubContribFetcher::onAuthCheckResult(bool isValid, const QString& message) {
+    if (isValid) {
+        qDebug() << "Token validation successful";
+    } else {
+        qDebug() << "Invalid token:" << message;
+    }
+    this->m_LastTokenValidation = isValid;
+}
+
+QDate GitHubContribFetcher::fetchFirstContributionDate() {
+    // GitHub GraphQL API URL
+    QUrl url("https://api.github.com/graphql");
+    QNetworkRequest request(url);
+
+    // Authorization header
+    request.setRawHeader("Authorization", "Bearer " + m_Token.toUtf8());
+    request.setRawHeader("Content-Type", "application/json");
+
+    // Create GraphQL query
+    QJsonObject queryObj;
+    queryObj["query"] = R"(
+        query($userName: String!) {
+            user(login: $userName) {
+                contributionsCollection {
+                    contributionYears
+                }
+            }
+        })";
+    queryObj["variables"] = QJsonObject{
+        {"userName", m_Username}};
+
+    // Convert query to JSON
+    QJsonDocument jsonDoc(queryObj);
+    QByteArray postData = jsonDoc.toJson();
+
+    // Send POST request
+    QNetworkReply* reply = m_Manager->post(request, postData);
+
+    // Wait for reply to finish
+    QEventLoop loop;
+    connect(reply, &QNetworkReply::finished, &loop, &QEventLoop::quit);
+    loop.exec();
+
+    if (reply->error() == QNetworkReply::NoError) {
+        QByteArray response = reply->readAll();
+        QJsonParseError parseError;
+        QJsonDocument jsonDoc = QJsonDocument::fromJson(response, &parseError);
+
+        if (parseError.error == QJsonParseError::NoError) {
+            QJsonObject jsonObj = jsonDoc.object();
+            QJsonArray yearsArray = jsonObj["data"].toObject()["user"].toObject()["contributionsCollection"].toObject()["contributionYears"].toArray();
+            if (yearsArray.isEmpty()) {
+                qDebug() << "No years found in the JSON data.";
+                return QDate();  // Return an invalid date
+            }
+
+            // Initialize minimum year with a large value
+            int minYear = INT_MAX;
+
+            // Find the minimum year
+            for (const QJsonValue& value : yearsArray) {
+                int year = value.toInt();
+                if (year < minYear) {
+                    minYear = year;
+                }
+            }
+
+            if (minYear == INT_MAX) {
+                qDebug() << "No valid years found.";
+                return QDate();  // Return an invalid date
+            }
+
+            // Create a QDate object from the minimum year
+            return QDate(minYear, 1, 1);  // Default to January 1st of the minimum year
+        } else {
+            qDebug() << "JSON Parse Error:" << parseError.errorString();
+        }
+    } else {
+        qDebug() << "Error fetching data:" << reply->errorString();
+    }
+
+    reply->deleteLater();
+    return QDate();  // return invalid date
+}
+
+void GitHubContribFetcher::fetchUserContributions() {
+    // first check auth key
+    if (!m_LastTokenValidation && !m_AuthChecker->isChecking()) {
+        m_AuthChecker->checkAuthKey(m_Token);
+        QEventLoop loop;
+        connect(m_AuthChecker.get(), &GitHubAuthChecker::authCheckResult, &loop, [&](bool isValid, const QString& message) {
+            if (!isValid) {
+                throw std::runtime_error("Invalid token. Please re-check the token is valid.");
+            } else
+                loop.quit();
+        });
+        loop.exec();
+    }
+
+    // Fetch the earliest contribution date
+    QDate firstContributionDate = fetchFirstContributionDate();
+    if (!firstContributionDate.isValid()) {
+        qDebug() << "Invalid first contribution date.";
+        return;
+    }
+
+    QDate currentDate = QDate::currentDate();
+    QDate startDate = firstContributionDate;
+
+    while (startDate.year() <= currentDate.year()) {
+        // Convert QDate to ISO 8601 string format
+        QString fromDateStr = startDate.toString(Qt::ISODate) + "T00:00:00Z";
+        QString toDateStr = startDate.addYears(1).toString(Qt::ISODate) + "T00:00:00Z";
+        qDebug() << "Fetching data from:" << fromDateStr << "to" << toDateStr;
+
+        QUrl url(QString("https://api.github.com/graphql"));
+        QNetworkRequest request(url);
+
+        // Set the authorization header
+        request.setRawHeader("Authorization", "Bearer " + m_Token.toUtf8());
+        request.setRawHeader("Content-Type", "application/json");
+
+        // Prepare the GraphQL query with dynamic from date
+        QJsonObject queryObj;
+        queryObj["query"] = QString(R"(
+            query($userName: String!, $fromDate: DateTime!) {
+                user(login: $userName) {
+                    contributionsCollection(from: $fromDate) {
+                        contributionCalendar {
+                            totalContributions
+                            weeks {
+                                contributionDays {
+                                    contributionCount
+                                    contributionLevel
+                                    date
+                                }
+                            }
+                        }
+                    }
+                }
+            })");
+        queryObj["variables"] = QJsonObject{
+            {"userName", m_Username},
+            {"fromDate", fromDateStr}};
+
+        QJsonDocument jsonDoc(queryObj);
+        QByteArray postData = jsonDoc.toJson();
+
+        QNetworkReply* reply = m_Manager->post(request, postData);
+        m_ActiveReplies.append(reply);
+
+        connect(reply, &QNetworkReply::finished, this, [this, reply]() {
+            onNetworkReplyFinished(reply);
+        });
+
+        // Move to the next year
+        startDate = startDate.addYears(1);
+    }
+}
+
 void GitHubContribFetcher::saveFormattedJsonToFile(const QString& filename) {
+    if (!m_ActiveReplies.isEmpty()) {
+        QEventLoop loop;
+        connect(this, &GitHubContribFetcher::allRepliesFinished, &loop, &QEventLoop::quit);
+        loop.exec();
+    }
+
     if (this->m_Contributions.empty() || this->m_TotalContributions.empty()) {
         qDebug() << "No fetched data found!";
         return;
     }
 
-    // get data from Contrib and ContribTotal objects and convert to QJson
+    // Prepare JSON data for output
     QJsonObject totalContributionsJson;
-    for (const ContribTotal& total : this->m_TotalContributions) {
-        totalContributionsJson[QString::number(total.getYear())] = total.getCount();
+    for (const auto& [date, total] : this->m_TotalContributions) {
+        totalContributionsJson[QString::number(date)] = total.getCount();
     }
 
     QJsonArray contributionsJsonArray;
-    for (const Contrib& contrib : this->m_Contributions) {
+    for (const auto& [date, contrib] : this->m_Contributions) {
         QJsonObject contribJson;
-        contribJson["date"] = contrib.getDate().toString(Qt::ISODate);
+        contribJson["date"] = date.toString(Qt::ISODate);
         contribJson["count"] = contrib.getCount();
         contribJson["level"] = contrib.getLevel();
         contributionsJsonArray.append(contribJson);
@@ -47,7 +226,7 @@ void GitHubContribFetcher::saveFormattedJsonToFile(const QString& filename) {
     QJsonDocument jsonDoc(jsonObj);
     QByteArray formattedJson = jsonDoc.toJson(QJsonDocument::Indented);
 
-    // write formattedJson
+    // Write formatted JSON to file
     QFile file(filename);
     if (file.open(QIODevice::WriteOnly)) {
         file.write(formattedJson);
@@ -61,42 +240,34 @@ void GitHubContribFetcher::saveFormattedJsonToFile(const QString& filename) {
 void GitHubContribFetcher::processResponse(const QByteArray& response) {
     QJsonParseError parseError;
     QJsonDocument jsonDoc = QJsonDocument::fromJson(response, &parseError);
-
     if (parseError.error != QJsonParseError::NoError) {
         qDebug() << "JSON Parse Error:" << parseError.errorString();
         return;
     }
 
-    QJsonObject jsonObj = jsonDoc.object();
-
-    // Parse total contributions per year
-    QJsonObject totalObj = jsonObj["total"].toObject();
-    for (auto it = totalObj.begin(); it != totalObj.end(); ++it) {
-        int year = it.key().toInt();
-        int count = it.value().toInt();
-        m_TotalContributions.push_back(ContribTotal(count, year));
-    }
-
+    QJsonObject contribCalendarObj = jsonDoc.object()["data"].toObject()["user"].toObject()["contributionsCollection"].toObject()["contributionCalendar"].toObject();
+    int totalContributions = contribCalendarObj["totalContributions"].toInt(0);
     // Parse daily contributions
-    QJsonArray contributionsArray = jsonObj["contributions"].toArray();
-    QDate oneYearAgo = QDate::currentDate().addYears(-1);
-    QDate currentDate = QDate::currentDate();
-    int totalLast12Months = 0;
-    for (const QJsonValue& value : contributionsArray) {
-        QJsonObject obj = value.toObject();
-        int count = obj["count"].toInt();
-        int level = obj["level"].toInt();
-        QDate date = QDate::fromString(obj["date"].toString(), "yyyy-MM-dd");
-        if (date <= currentDate && date >= oneYearAgo) {
-            totalLast12Months += count;
+    QJsonArray weeksArray = contribCalendarObj["weeks"].toArray();
+    int year = QDate::fromString(weeksArray.first().toObject()["contributionDays"].toArray().first().toObject()["date"].toString(), Qt::ISODate).year();
+    m_TotalContributions.emplace(year, ContribTotal(totalContributions, year));
+    for (const QJsonValue& weekValue : weeksArray) {
+        QJsonObject weekObj = weekValue.toObject();
+        QJsonArray contributionDaysArray = weekObj["contributionDays"].toArray();
+        for (const QJsonValue& dayValue : contributionDaysArray) {
+            QJsonObject dayObj = dayValue.toObject();
+            int count = dayObj["contributionCount"].toInt();
+
+            // get level value from keys
+            std::string levelKey = dayObj["contributionLevel"].toString().toStdString();
+            int level = 0;
+            auto it = GitHubContribLevels.find(levelKey);
+            if (it != GitHubContribLevels.end()) {
+                level = it->second;
+            }
+
+            QDate date = QDate::fromString(dayObj["date"].toString(), Qt::ISODate);
+            m_Contributions[date] = Contrib(level, count, date);
         }
-        m_Contributions.push_back(Contrib(level, count, date));
     }
-
-    // Sort contributions by date
-    std::sort(m_Contributions.begin(), m_Contributions.end(), [](const Contrib& a, const Contrib& b) {
-        return a.getDate() > b.getDate();
-    });
-
-    m_TotalContributions.push_back(ContribTotal(totalLast12Months, 0));  // year 0 is the last 12 months
 }

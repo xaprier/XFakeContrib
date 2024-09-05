@@ -22,8 +22,10 @@ class GitHubContribAdapter : public IAdapter<ContribCard> {
         auto totalContributions = m_Fetcher.GetTotalContribs();
 
         if (!contributions.empty()) {
-            firstContribDate = contributions.back().getDate();
+            firstContribDate = contributions.begin()->first;
         }
+
+        qDebug() << "firstContribDate" << firstContribDate;
 
         // todo: totalContributions'ı ContribCard ile kullanılabilir hale getirip parametre olarak ver.
         return QSharedPointer<ContribCard>::create(contributions, firstContribDate);

@@ -1,10 +1,11 @@
 #ifndef CONTRIBCARD_HPP
 #define CONTRIBCARD_HPP
 
+#include <QDate>
 #include <QGridLayout>
 #include <QVBoxLayout>
 #include <QWidget>
-#include <memory>
+#include <map>
 
 #include "Contrib.hpp"
 #include "ContributionPeriod.hpp"
@@ -15,7 +16,7 @@ class ContribCard : public QWidget {
     Q_OBJECT
 
   public:
-    ContribCard(const std::vector<Contrib>& allContribs, QDate firstContrib = QDate::currentDate(), QWidget* parent = nullptr) : QWidget(parent), m_Contribs(allContribs) {
+    ContribCard(const std::map<QDate, Contrib>& allContribs, QDate firstContrib = QDate::currentDate(), QWidget* parent = nullptr) : QWidget(parent), m_Contribs(allContribs) {
         // Layout for the main widget
         QGridLayout* layout = new QGridLayout(this);
 
@@ -34,7 +35,7 @@ class ContribCard : public QWidget {
         setLayout(layout);
     }
 
-    void updateContribs(const std::vector<Contrib>& allContribs) {
+    void updateContribs(const std::map<QDate, Contrib>& allContribs) {
         this->m_Contribs = allContribs;
 
         // update the yearContrib with signal
@@ -68,10 +69,11 @@ class ContribCard : public QWidget {
     }
 
   private:
+    // todo: make them QSharedPointer
     ContributionPeriod* m_ContributionPeriod;
     YearContrib* m_YearContribWidget;
     LevelColorIndicator* m_Indicator;
-    std::vector<Contrib> m_Contribs;
+    std::map<QDate, Contrib> m_Contribs;
 };
 
 #endif  // CONTRIBCARD_HPP

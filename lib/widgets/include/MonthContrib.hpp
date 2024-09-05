@@ -28,7 +28,7 @@ class MonthContrib : public QWidget {
 
   public:
     // Constructor to initialize with a start date and contributions for the month
-    MonthContrib(const QDate& monthDate, const std::vector<Contrib>& allContribs, QWidget* parent = nullptr);
+    MonthContrib(const QDate& monthDate, const std::map<QDate, Contrib>& allContribs, QWidget* parent = nullptr);
 
     // Function to get the start date of the month
     QDate getStartDate() const {

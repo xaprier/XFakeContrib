@@ -7,6 +7,9 @@ class ContribTotal {
     int getCount() const { return m_Count; }
     int getYear() const { return m_Year; }
 
+    void setCount(int count) { m_Count = count; }
+    void setYear(int year) { m_Year = year; }
+
   private:
     int m_Count;
     int m_Year;

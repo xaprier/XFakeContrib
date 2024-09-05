@@ -1,5 +1,4 @@
 #include <QApplication>
-#include <iostream>
 
 #include "ContribCard.hpp"
 #include "GitHubContribAdapter.hpp"
@@ -8,7 +7,7 @@ int main(int argc, char *argv[]) {
     QApplication app(argc, argv);
     QDate firstContribDate;
 
-    GitHubContribFetcher fetcher("xaprier");
+    GitHubContribFetcher fetcher("xaprier", "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");
     fetcher.fetchUserContributions();
     fetcher.saveFormattedJsonToFile("data.json");
     GitHubContribAdapter adapter(fetcher);

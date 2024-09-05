@@ -19,7 +19,7 @@ class YearContrib : public QWidget {
 
   public:
     // Constructor to initialize the year with the contributions
-    YearContrib(const QString& title, const std::vector<Contrib>& allContribs, const QDate& end_date = QDate::currentDate(), QWidget* parent = nullptr);
+    YearContrib(const QString& title, const std::map<QDate, Contrib>& allContribs, const QDate& end_date = QDate::currentDate(), QWidget* parent = nullptr);
 
     // Function to get the start date of the year
     QDate getStartDate() const {

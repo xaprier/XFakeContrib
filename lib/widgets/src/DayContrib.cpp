@@ -24,7 +24,8 @@ void DayContrib::paintEvent(QPaintEvent* event) {
 
 void DayContrib::enterEvent(QEnterEvent* event) {
     QWidget::enterEvent(event);  // Call base class implementation
-    QToolTip::showText(mapToGlobal(QPoint(width() / 2, height() / 2)), m_Date.toString("dd MMM yyyy"));
+    QString text = "Count " + QString::number(m_ContribCount) + "\nDate " + m_Date.toString("ddd, dd MMM yyyy");
+    QToolTip::showText(mapToGlobal(QPoint(width() / 2, height() / 2)), text);
 }
 
 void DayContrib::leaveEvent(QEvent* event) {

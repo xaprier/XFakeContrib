@@ -10,6 +10,10 @@ class Contrib {
     int getCount() const { return m_Count; }
     QDate getDate() const { return m_Date; }
 
+    void setLevel(int level) { m_Level = level; }
+    void setCount(int count) { m_Count = count; }
+    void setDate(QDate date) { m_Date = date; }
+
   private:
     int m_Level;
     int m_Count;

@@ -9,7 +9,7 @@
 
 #include "DayContrib.hpp"
 
-MonthContrib::MonthContrib(const QDate& endDate, const std::vector<Contrib>& allContribs, QWidget* parent)
+MonthContrib::MonthContrib(const QDate& endDate, const std::map<QDate, Contrib>& allContribs, QWidget* parent)
     : QWidget(parent), m_EndDate(endDate) {
     QGridLayout* mainLayout = new QGridLayout(this);
 
@@ -32,17 +32,12 @@ MonthContrib::MonthContrib(const QDate& endDate, const std::vector<Contrib>& all
     auto day = startDate;
     int week = 0;
 
-    // Initialize iterator for allContribs
-    auto it = std::find_if(allContribs.begin(), allContribs.end(), [day](const Contrib& contrib) {
-        return contrib.getDate() == day;
-    });
-
     for (int i = 0; i < daysInMonth; ++i) {
         // Find contribution for the current day
-        if (it != allContribs.end() && it != allContribs.begin() && it->getDate() == day) {
-            int count = it->getCount();
-            int level = it->getLevel();
-            --it;  // Move to the next entry
+        auto it = allContribs.find(day);
+        if (it != allContribs.end()) {
+            int count = it->second.getCount();
+            int level = it->second.getLevel();
             auto dayContrib = QSharedPointer<DayContrib>::create(count, level, day, this);
             int dayInWeek = day.dayOfWeek();
             mainLayout->addWidget(dayContrib.get(), dayInWeek, week, 1, 1);

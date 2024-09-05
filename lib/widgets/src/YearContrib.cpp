@@ -6,7 +6,7 @@
 #include <algorithm>
 #include <memory>
 
-YearContrib::YearContrib(const QString& title, const std::vector<Contrib>& allContribs, const QDate& end_date, QWidget* parent)
+YearContrib::YearContrib(const QString& title, const std::map<QDate, Contrib>& allContribs, const QDate& end_date, QWidget* parent)
     : QWidget(parent) {
     QVBoxLayout* mainLayout = new QVBoxLayout(this);
     mainLayout->setContentsMargins(5, 5, 5, 5);
@@ -18,7 +18,7 @@ YearContrib::YearContrib(const QString& title, const std::vector<Contrib>& allCo
     QDate startDate = oneYearAgo;
 
     // Add the year label at the top
-    m_Label = new QLabel(title, this);  // E.g., "2023 - 2024"
+    m_Label = new QLabel(title, this);  // E.g., "2023 - 2024" // todo qsharedpointer
     m_Label->setAlignment(Qt::AlignCenter);
     m_Label->setFixedHeight(16);
     mainLayout->addWidget(m_Label);
