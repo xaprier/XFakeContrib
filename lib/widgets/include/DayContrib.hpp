@@ -1,6 +1,8 @@
 #ifndef DAYCONTRIB_HPP
 #define DAYCONTRIB_HPP
 
+#include <qevent.h>
+
 #include <QDate>
 #include <QEnterEvent>
 #include <QEvent>
@@ -36,8 +38,12 @@ class DayContrib : public QWidget {
     // Override the paintEvent to draw the widget with the corresponding color
     void paintEvent(QPaintEvent* event) override;
 
-    // Override the enterEvent to show the date as a tooltip
+// Override the enterEvent to show the date as a tooltip
+#if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
     void enterEvent(QEnterEvent* event) override;
+#else
+    void enterEvent(QEvent* event) override;
+#endif
 
     // Override the leaveEvent to hide the tooltip when the cursor leaves the widget
     void leaveEvent(QEvent* event) override;

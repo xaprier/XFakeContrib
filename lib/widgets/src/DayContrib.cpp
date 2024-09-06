@@ -21,8 +21,11 @@ void DayContrib::paintEvent(QPaintEvent* event) {
     painter.setPen(Qt::NoPen);
     painter.drawRect(rect());  // Fill the widget with the color
 }
-
+#if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
 void DayContrib::enterEvent(QEnterEvent* event) {
+#else
+void DayContrib::enterEvent(QEvent* event) {
+#endif
     QWidget::enterEvent(event);  // Call base class implementation
     QString text = "Count " + QString::number(m_ContribCount) + "\nDate " + m_Date.toString("ddd, dd MMM yyyy");
     QToolTip::showText(mapToGlobal(QPoint(width() / 2, height() / 2)), text);

@@ -1,8 +1,6 @@
 #ifndef CONTRIBUTIONPERIOD_HPP
 #define CONTRIBUTIONPERIOD_HPP
 
-#include <qtmetamacros.h>
-
 #include <QComboBox>
 #include <QDate>
 #include <QString>
