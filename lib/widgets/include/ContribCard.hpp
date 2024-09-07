@@ -22,18 +22,18 @@ class ContribCard : public QWidget {
 
   public:
     ContribCard(const std::map<QDate, Contrib>& allContribs, const std::map<int, ContribTotal>& allTotalContribs, QDate firstContrib = QDate::currentDate(), QWidget* parent = nullptr) : QWidget(parent), m_Contribs(allContribs), m_TotalContribs(allTotalContribs) {
-        // Layout for the main widget
+        // Layout for the main widget, this should raw data and will be deleted by Qt parent
         QGridLayout* layout = new QGridLayout(this);
 
         // Create the ContributionPeriod combo box
-        m_ContributionPeriod = new ContributionPeriod(firstContrib, this);
-        layout->addWidget(m_ContributionPeriod, 0, 0, 1, 1);
+        m_ContributionPeriod = QSharedPointer<ContributionPeriod>::create(firstContrib, this);
+        layout->addWidget(m_ContributionPeriod.get(), 0, 0, 1, 1);
 
-        m_Indicator = new LevelColorIndicator(this);
-        layout->addWidget(m_Indicator, 0, 10, 1, 2);
+        m_Indicator = QSharedPointer<LevelColorIndicator>::create(this);
+        layout->addWidget(m_Indicator.get(), 0, 10, 1, 2);
 
-        m_YearContribWidget = new YearContrib(m_ContributionPeriod->currentText(), allContribs, QDate::currentDate(), this);
-        layout->addWidget(m_YearContribWidget, 1, 0, 1, 12);
+        m_YearContribWidget = QSharedPointer<YearContrib>::create(m_ContributionPeriod->currentText(), allContribs, QDate::currentDate(), this);
+        layout->addWidget(m_YearContribWidget.get(), 1, 0, 1, 12);
 
         int currentYear = m_ContributionPeriod->currentText().toInt();
         auto it = allTotalContribs.find(currentYear);
@@ -45,8 +45,8 @@ class ContribCard : public QWidget {
         layout->addWidget(m_TotalContribWidget.get(), 0, 1, 1, 1);
 
         // Connect the signal to the slot that will handle the selection change
-        connect(m_ContributionPeriod, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &ContribCard::onContributionPeriodChanged);
-        connect(m_ContributionPeriod, &QComboBox::currentTextChanged, m_TotalContribWidget.get(), [&](const QString& currentText) {
+        connect(m_ContributionPeriod.get(), QOverload<int>::of(&QComboBox::currentIndexChanged), this, &ContribCard::onContributionPeriodChanged);
+        connect(m_ContributionPeriod.get(), &QComboBox::currentTextChanged, m_TotalContribWidget.get(), [&](const QString& currentText) {
             /**
              * @brief if currentText is "Last 12 Months", toInt function will return 0
              * and also allTotalContribs holds last 12 months in key "0".
@@ -71,31 +71,29 @@ class ContribCard : public QWidget {
 
         // Delete the previous YearContrib widget if exists
         if (m_YearContribWidget) {
-            delete m_YearContribWidget;
-            m_YearContribWidget = nullptr;
+            m_YearContribWidget.reset();
         }
 
         // Create a new YearContrib based on the selected item
         if (selectedItem == "Last 12 Months") {
             QDate endDate = QDate::currentDate();
-            m_YearContribWidget = new YearContrib(selectedItem, m_Contribs, endDate, this);
+            m_YearContribWidget = QSharedPointer<YearContrib>::create(selectedItem, m_Contribs, endDate, this);
         } else {
             int selectedYear = selectedItem.toInt();
             QDate endDate = QDate(selectedYear, 12, 31);  // Set the date to 31/12/selectedYear
-            m_YearContribWidget = new YearContrib(selectedItem, m_Contribs, endDate, this);
+            m_YearContribWidget = QSharedPointer<YearContrib>::create(selectedItem, m_Contribs, endDate, this);
         }
 
         // Add the new YearContrib widget to the layout
         if (m_YearContribWidget) {
-            static_cast<QGridLayout*>(layout())->addWidget(m_YearContribWidget, 1, 0, 1, 12);
+            static_cast<QGridLayout*>(layout())->addWidget(m_YearContribWidget.get(), 1, 0, 1, 12);
         }
     }
 
   private:
-    // todo: make them QSharedPointer
-    ContributionPeriod* m_ContributionPeriod;
-    YearContrib* m_YearContribWidget;
-    LevelColorIndicator* m_Indicator;
+    QSharedPointer<ContributionPeriod> m_ContributionPeriod;
+    QSharedPointer<YearContrib> m_YearContribWidget;
+    QSharedPointer<LevelColorIndicator> m_Indicator;
     QSharedPointer<YearContribTotalIndicator> m_TotalContribWidget;
     std::map<QDate, Contrib> m_Contribs;
     std::map<int, ContribTotal> m_TotalContribs;

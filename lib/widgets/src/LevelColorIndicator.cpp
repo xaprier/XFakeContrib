@@ -1,8 +1,7 @@
 #include "LevelColorIndicator.hpp"
 
-#include <qboxlayout.h>
-
 LevelColorIndicator::LevelColorIndicator(QWidget* parent) : QWidget(parent) {
+    // Layout for the main widget, this should raw data and will be deleted by Qt parent
     QHBoxLayout* layout = new QHBoxLayout(this);
     m_LessLabel = std::make_shared<QLabel>(QObject::tr("Less"), this);
     m_MoreLabel = std::make_shared<QLabel>(QObject::tr("More"), this);

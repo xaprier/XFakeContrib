@@ -1,7 +1,5 @@
 #include "GitHubContribFetcher.hpp"
 
-#include <stdexcept>
-
 #include "ContribTotal.hpp"
 #include "GithubAuthChecker.hpp"
 #include "GithubContribLevels.hpp"

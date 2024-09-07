@@ -1,7 +1,6 @@
 #ifndef IADAPTER_HPP
 #define IADAPTER_HPP
 
-#include <QDate>
 #include <QSharedPointer>
 
 template <typename AdapteeType, typename TargetType>

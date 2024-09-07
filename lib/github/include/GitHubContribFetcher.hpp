@@ -14,6 +14,7 @@
 #include <QSharedPointer>
 #include <QUrl>
 #include <map>
+#include <stdexcept>
 
 #include "Contrib.hpp"
 #include "ContribTotal.hpp"
