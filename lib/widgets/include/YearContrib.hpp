@@ -31,7 +31,7 @@ class YearContrib : public QWidget {
 
   private:
     QDate m_StartDate;  // Start date of the year
-    QLabel* m_Label;
+    QSharedPointer<QLabel> m_Label;
     std::vector<QSharedPointer<MonthContrib>> m_MonthContribs;  // List of MonthContrib widgets for each month of the year
 };
 

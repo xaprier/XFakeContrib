@@ -1,16 +1,10 @@
 #include "MonthContrib.hpp"
 
-#include <qvariant.h>
-#include <qwidget.h>
-
-#include <algorithm>
-#include <iterator>
-#include <memory>
-
 #include "DayContrib.hpp"
 
 MonthContrib::MonthContrib(const QDate& endDate, const std::map<QDate, Contrib>& allContribs, QWidget* parent)
     : QWidget(parent), m_EndDate(endDate) {
+    // Layout for the main widget, this should raw data and will be deleted by Qt parent
     QGridLayout* mainLayout = new QGridLayout(this);
 
     // Set spacing to reduce gaps between weeks

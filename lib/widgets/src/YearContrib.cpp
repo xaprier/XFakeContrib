@@ -1,13 +1,8 @@
 #include "YearContrib.hpp"
 
-#include <qdebug.h>
-#include <qvariant.h>
-
-#include <algorithm>
-#include <memory>
-
 YearContrib::YearContrib(const QString& title, const std::map<QDate, Contrib>& allContribs, const QDate& end_date, QWidget* parent)
     : QWidget(parent) {
+    // Layout for the main widget, this should raw data and will be deleted by Qt parent
     QVBoxLayout* mainLayout = new QVBoxLayout(this);
     mainLayout->setContentsMargins(5, 5, 5, 5);
 
@@ -18,10 +13,10 @@ YearContrib::YearContrib(const QString& title, const std::map<QDate, Contrib>& a
     QDate startDate = oneYearAgo;
 
     // Add the year label at the top
-    m_Label = new QLabel(title, this);  // E.g., "2023 - 2024" // todo qsharedpointer
+    m_Label = QSharedPointer<QLabel>::create(title, this);  // E.g., "2023 - 2024"
     m_Label->setAlignment(Qt::AlignCenter);
     m_Label->setFixedHeight(16);
-    mainLayout->addWidget(m_Label);
+    mainLayout->addWidget(m_Label.get());
 
     // Create a horizontal layout for the months
     QHBoxLayout* monthsLayout = new QHBoxLayout();

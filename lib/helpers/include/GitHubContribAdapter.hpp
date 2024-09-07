@@ -1,10 +1,7 @@
 #ifndef GITHUBCONTRIBADAPTER_HPP
 #define GITHUBCONTRIBADAPTER_HPP
 
-#include <memory>
-
 #include "ContribCard.hpp"
-#include "ContribTotal.hpp"
 #include "GitHubContribFetcher.hpp"
 #include "IAdapter.hpp"
 
@@ -25,7 +22,6 @@ class GitHubContribAdapter : public IAdapter<GitHubContribFetcher, ContribCard> 
             firstContribDate = contributions.begin()->first;
         }
 
-        // todo: use totalContributions in ContribCard
         return QSharedPointer<ContribCard>::create(contributions, totalContributions, firstContribDate);
     }
 };
