@@ -2,4 +2,4 @@ build/
 .clang*
 .vscode/
 .cache/
-.todo
+.todo*

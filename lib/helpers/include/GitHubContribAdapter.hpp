@@ -26,7 +26,7 @@ class GitHubContribAdapter : public IAdapter<GitHubContribFetcher, ContribCard> 
         }
 
         // todo: use totalContributions in ContribCard
-        return QSharedPointer<ContribCard>::create(contributions, firstContribDate);
+        return QSharedPointer<ContribCard>::create(contributions, totalContributions, firstContribDate);
     }
 };
 

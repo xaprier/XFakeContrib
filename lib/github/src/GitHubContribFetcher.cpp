@@ -26,6 +26,17 @@ void GitHubContribFetcher::onNetworkReplyFinished(QNetworkReply* reply) {
     }
 
     if (m_ActiveReplies.empty()) {
+        QDate oneYearAgo = QDate::currentDate().addYears(-1);
+        QDate currentDate = QDate::currentDate();
+        int totalContributions = 0;
+        for (const auto& [date, contrib] : m_Contributions) {
+            int count = contrib.getCount();
+            if (date >= oneYearAgo && date <= currentDate) {
+                totalContributions += count;
+            }
+        }
+        m_TotalContributions.emplace(0, ContribTotal(totalContributions, 0));
+
         emit this->allRepliesFinished();
     }
 
@@ -257,7 +268,6 @@ void GitHubContribFetcher::processResponse(const QByteArray& response) {
         for (const QJsonValue& dayValue : contributionDaysArray) {
             QJsonObject dayObj = dayValue.toObject();
             int count = dayObj["contributionCount"].toInt();
-
             // get level value from keys
             std::string levelKey = dayObj["contributionLevel"].toString().toStdString();
             int level = 0;
