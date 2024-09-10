@@ -19,10 +19,12 @@ find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets Core)
 
 file (GLOB_RECURSE CPP_FILES src/*.cpp)
 file (GLOB_RECURSE HPP_FILES include/*.hpp)
+file (GLOB_RECURSE UI_FILES  design/*.ui)
 
 set(PROJECT_SOURCES
     ${CPP_FILES}
     ${HPP_FILES}
+    ${UI_FILES}
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
@@ -51,6 +53,8 @@ else()
 endif()
 
 target_link_libraries(${PROJECT_NAME} PRIVATE Qt${QT_VERSION_MAJOR}::Widgets Qt${QT_VERSION_MAJOR}::Core)
+include_directories("include")
+target_include_directories(${PROJECT_NAME} PRIVATE "include")
 
 set_target_properties(${PROJECT_NAME} PROPERTIES
     MACOSX_BUNDLE_GUI_IDENTIFIER https://xaprier.dev
