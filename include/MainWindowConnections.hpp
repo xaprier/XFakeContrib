@@ -2,17 +2,16 @@
 #define MAINWINDOWCONNECTIONS_HPP
 
 #include <QObject>
-class MainWindow;
-class MainWindowConnections : public QObject {
+
+#include "MainWindowUI.hpp"
+
+class MainWindowConnections : public Ui::MainWindow {
     Q_OBJECT
   public:
-    explicit MainWindowConnections(MainWindow *mainWindow, QObject *parent = nullptr);
+    explicit MainWindowConnections(Ui::MainWindow *parent = nullptr);
 
   private:
     void CreateConnections();
-
-  private:
-    MainWindow *m_MainWindow;
 };
 
 #endif  // MAINWINDOWCONNECTIONS_HPP

@@ -3,16 +3,9 @@
 
 #include <QMainWindow>
 
-#include "../design/ui_MainWindow.h"
+#include "MainWindowConnections.hpp"
 
-namespace Ui {
-class MainWindow;
-};
-
-class MainWindowConnections;
-class MainWindowWidgetHandler;
-
-class MainWindow : public QMainWindow {
+class MainWindow : public MainWindowConnections {
     Q_OBJECT
     Q_DISABLE_COPY_MOVE(MainWindow)
   public:
@@ -20,14 +13,8 @@ class MainWindow : public QMainWindow {
 
   private:
     static MainWindow *m_Instance;
-    explicit MainWindow(QMainWindow *parent = nullptr);
+    explicit MainWindow(MainWindowConnections *parent = nullptr);
     ~MainWindow();
-    friend class MainWindowConnections;
-
-  private:
-    Ui::MainWindow *m_Ui;
-    std::unique_ptr<MainWindowConnections> m_ConnectionHandler;
-    std::unique_ptr<MainWindowWidgetHandler> m_WidgetHandler;
 };
 
 #endif  // MAINWINDOW_HPP
