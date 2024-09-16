@@ -16,14 +16,23 @@ file(GLOB HPP_FILES "include/*.hpp")
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
 add_library(${PROJECT_NAME} SHARED ${CPP_FILES} ${HPP_FILES})
 
-target_link_libraries(${PROJECT_NAME} PRIVATE Qt${QT_VERSION_MAJOR}::Core Qt${QT_VERSION_MAJOR}::Widgets Qt${QT_VERSION_MAJOR}::Network XFakeContribGithub XFakeContribWidgets XFakeContribData)
+set(LIBRARIES
+  Qt${QT_VERSION_MAJOR}::Core
+  Qt${QT_VERSION_MAJOR}::Widgets
+  Qt${QT_VERSION_MAJOR}::Network
+  XFakeContribGithub
+  XFakeContribCard
+  XFakeContribData
+)
+
+target_link_libraries(${PROJECT_NAME} PRIVATE ${LIBRARIES})
 target_include_directories(${PROJECT_NAME} PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include/${PROJECT_NAME}>
 )
 
 add_executable(${PROJECT_NAME}_TEST main.cpp)
-target_link_libraries(${PROJECT_NAME}_TEST ${PROJECT_NAME} Qt${QT_VERSION_MAJOR}::Core Qt${QT_VERSION_MAJOR}::Widgets Qt${QT_VERSION_MAJOR}::Network XFakeContribGithub XFakeContribWidgets XFakeContribData)
+target_link_libraries(${PROJECT_NAME}_TEST ${PROJECT_NAME} ${LIBRARIES})
 
 # Installation rules
 install(TARGETS ${PROJECT_NAME}

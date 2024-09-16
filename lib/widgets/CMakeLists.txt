@@ -1,43 +1,14 @@
-cmake_minimum_required(VERSION 3.0...3.20)
-
-project(XFakeContribWidgets)
-
-set(CMAKE_AUTOUIC ON)
-set(CMAKE_AUTOMOC ON)
-set(CMAKE_AUTORCC ON)
-set(CMAKE_EXPORT_COMPILE_COMMANDS 1)
-
-find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Core Widgets)
-find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Core Widgets)
-
-file(GLOB CPP_FILES "src/*.cpp")
-file(GLOB HPP_FILES "include/*.hpp")
-
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
-add_library(${PROJECT_NAME} SHARED ${CPP_FILES} ${HPP_FILES})
-
-target_link_libraries(${PROJECT_NAME} PRIVATE Qt${QT_VERSION_MAJOR}::Core Qt${QT_VERSION_MAJOR}::Widgets XFakeContribData)
-target_include_directories(${PROJECT_NAME} PUBLIC
-  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-  $<INSTALL_INTERFACE:include/${PROJECT_NAME}>
+# Specify the directory to check
+set(
+  DIRECTORIES_TO_CHECK
+  "${CMAKE_CURRENT_SOURCE_DIR}/ContribCard" # get ContribCard
 )
 
-add_executable(${PROJECT_NAME}_TEST main.cpp)
-target_link_libraries(${PROJECT_NAME}_TEST ${PROJECT_NAME} Qt${QT_VERSION_MAJOR}::Core Qt${QT_VERSION_MAJOR}::Widgets XFakeContribData)
-
-# Installation rules
-install(TARGETS ${PROJECT_NAME}
-  EXPORT ${PROJECT_NAME}Targets
-  LIBRARY DESTINATION lib
-  ARCHIVE DESTINATION lib
-  RUNTIME DESTINATION .
-)
-
-if (NOT WIN32)
-    install(FILES ${HPP_FILES} DESTINATION include/${PROJECT_NAME})
-    install(EXPORT ${PROJECT_NAME}Targets
-      FILE ${PROJECT_NAME}Config.cmake
-      NAMESPACE ${PROJECT_NAME}::
-      DESTINATION lib/cmake/${PROJECT_NAME}
-    )
-endif()
+foreach(DIRECTORY ${DIRECTORIES_TO_CHECK})
+  # Check if the directory exists
+  if(NOT EXISTS ${DIRECTORY} OR NOT EXISTS ${DIRECTORY}/CMakeLists.txt)
+    message(FATAL_ERROR "Directory ${DIRECTORY} does not exist.\nYou should get submodules while cloning(git clone --recurse-submodules ...).\nOr you can just get modules(git submodule update --init --recursive)")
+  else()
+    add_subdirectory(${DIRECTORY})
+  endif()
+endforeach()

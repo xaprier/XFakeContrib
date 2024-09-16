@@ -52,7 +52,17 @@ else()
     endif()
 endif()
 
-target_link_libraries(${PROJECT_NAME} PRIVATE Qt${QT_VERSION_MAJOR}::Widgets Qt${QT_VERSION_MAJOR}::Core XFakeContribWidgets XFakeContribAdapter XFakeContribGithub XFakeContribData XFakeContribConfig)
+set(LIBRARIES
+  Qt${QT_VERSION_MAJOR}::Core 
+  Qt${QT_VERSION_MAJOR}::Widgets 
+  XFakeContribCard
+  XFakeContribAdapter
+  XFakeContribGithub
+  XFakeContribData 
+  XFakeContribConfig
+)
+
+target_link_libraries(${PROJECT_NAME} PRIVATE ${LIBRARIES})
 include_directories("include")
 target_include_directories(${PROJECT_NAME} PRIVATE "include")
 
