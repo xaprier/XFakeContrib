@@ -3,12 +3,18 @@
 
 class ContribTotal {
   public:
-    ContribTotal(int count, int year) : m_Count(count), m_Year(year) {}
-    int getCount() const { return m_Count; }
-    int getYear() const { return m_Year; }
+    ContribTotal(int count = 0, int year = 0) : m_Count(count), m_Year(year) {}
+    /**
+     * @brief GETTERS
+     */
+    int GetCount() const { return m_Count; }
+    int GetYear() const { return m_Year; }
 
-    void setCount(int count) { m_Count = count; }
-    void setYear(int year) { m_Year = year; }
+    /**
+     * @brief SETTERS
+     */
+    void SetCount(int count) { m_Count = count; }
+    void SetYear(int year) { m_Year = year; }
 
   private:
     int m_Count;

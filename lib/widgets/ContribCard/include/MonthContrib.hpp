@@ -1,14 +1,6 @@
 #ifndef MONTHCONTRIB_HPP
 #define MONTHCONTRIB_HPP
 
-#include <qdatetime.h>
-#include <qevent.h>
-#include <qlabel.h>
-#include <qlayout.h>
-#include <qnamespace.h>
-#include <qsizepolicy.h>
-#include <qvariant.h>
-
 #include <QDate>
 #include <QDebug>
 #include <QGridLayout>
@@ -17,7 +9,7 @@
 #include <QVBoxLayout>
 #include <QWidget>
 #include <cmath>
-#include <memory>
+#include <set>
 #include <vector>
 
 #include "Contrib.hpp"
@@ -30,18 +22,29 @@ class MonthContrib : public QWidget {
     // Constructor to initialize with a start date and contributions for the month
     MonthContrib(const QDate& monthDate, const std::map<QDate, Contrib>& allContribs, QWidget* parent = nullptr);
 
+    void SetMonth(const QDate& monthDate = QDate::currentDate());
+    void SetContribs(const std::map<QDate, Contrib>& allContribs = {});
+
     // Function to get the start date of the month
-    QDate getStartDate() const {
+    QDate GetStartDate() const {
         return QDate(m_EndDate.year(), m_EndDate.month(), 1);
+    }
+
+    QDate GetEndDate() const {
+        return m_EndDate;
     }
 
     // Function to get the list of WeekContrib widgets as weak pointers
     std::vector<QWeakPointer<DayContrib>> getDayContribs() const;
 
   private:
-    int getWeekCountInMonth(const QDate& date) const;
+    int _GetWeekCountInMonth(const QDate& date) const;
+    void _SetupUI();
+    void _Update();
 
   private:
+    QGridLayout* m_MainLayout;
+    std::map<QDate, Contrib> m_AllContribs;
     QDate m_EndDate;                                        // end date of month
     std::vector<QSharedPointer<DayContrib>> m_DayContribs;  // List of DayContrib widgets for each week of the month
     QSharedPointer<QLabel> m_Label;

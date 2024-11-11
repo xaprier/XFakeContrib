@@ -1,14 +1,14 @@
 cmake_minimum_required(VERSION 3.0...3.20)
 
-project(XFakeContribHelper)
+project(XFakeContribAdapter)
 
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 set(CMAKE_EXPORT_COMPILE_COMMANDS 1)
 
-find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Core)
-find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Core)
+find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Core Widgets Network)
+find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Core Widgets Network)
 
 file(GLOB CPP_FILES "src/*.cpp")
 file(GLOB HPP_FILES "include/*.hpp")
@@ -18,6 +18,10 @@ add_library(${PROJECT_NAME} SHARED ${CPP_FILES} ${HPP_FILES})
 
 set(LIBRARIES
   Qt${QT_VERSION_MAJOR}::Core
+  Qt${QT_VERSION_MAJOR}::Widgets
+  Qt${QT_VERSION_MAJOR}::Network
+  XFakeContribGithub
+  XFakeContribCard
   XFakeContribData
 )
 

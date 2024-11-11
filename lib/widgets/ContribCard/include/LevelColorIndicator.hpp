@@ -1,10 +1,6 @@
 #ifndef LEVELCOLORINDICATOR_HPP
 #define LEVELCOLORINDICATOR_HPP
 
-#include <qboxlayout.h>
-#include <qlabel.h>
-#include <qnamespace.h>
-
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QWidget>

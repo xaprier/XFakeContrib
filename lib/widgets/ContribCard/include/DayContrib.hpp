@@ -1,8 +1,6 @@
 #ifndef DAYCONTRIB_HPP
 #define DAYCONTRIB_HPP
 
-#include <qevent.h>
-
 #include <QDate>
 #include <QEnterEvent>
 #include <QEvent>
@@ -22,15 +20,15 @@ class DayContrib : public QWidget {
     DayContrib(int contribCount = 0, int contribLevel = 0, const QDate& date = QDate::currentDate(), QWidget* parent = nullptr);
 
     // Function to set contribution count and update color
-    void setContribCount(int contribCount, int contribLevel);
+    void SetContribCount(int contribCount, int contribLevel);
 
     // Function to set the date
-    void setDate(const QDate& date) {
+    void SetDate(const QDate& date) {
         m_Date = date;
     }
 
     // Function to get the date
-    QDate getDate() const {
+    QDate GetDate() const {
         return m_Date;
     }
 

@@ -1,8 +1,11 @@
 #include <qapplication.h>
+#include <qdatetime.h>
 
 #include <QApplication>
 
+#include "Contrib.hpp"
 #include "ContribCard.hpp"
+#include "ContribTotal.hpp"
 #include "ContributionPeriod.hpp"
 #include "DayContrib.hpp"
 #include "LevelColorIndicator.hpp"
@@ -10,17 +13,33 @@
 #include "YearContrib.hpp"
 
 // Function to generate random contributions for a given number of weeks and days per week
-std::vector<int> generateRandomContributions(int weeks, int maxContribution) {
-    std::vector<int> contributions(7 * weeks);
+std::map<QDate, Contrib> generateRandomContributions(QDate startDate = QDate::currentDate().addYears(-1)) {
+    QDate current = startDate;
+    std::map<QDate, Contrib> contributions;
 
-    // Seed the random number generator
-    std::srand(static_cast<unsigned>(std::time(nullptr)));
-
-    for (int i = 0; i < weeks * 7; ++i) {
-        contributions[i] = std::rand() % (maxContribution + 1);  // Random contribution between 0 and maxContribution
+    while (current != QDate::currentDate()) {
+        int contrib = std::rand() % 20;
+        int level = contrib / 4;
+        contributions[current] = Contrib(level, contrib);
+        current = current.addDays(1);
     }
 
     return contributions;
+}
+
+std::map<int, ContribTotal> generateRandomTotalContributions(std::map<QDate, Contrib> contribs) {
+    std::map<int, ContribTotal> total;
+    ContribTotal lastYear(0, 0);
+    for (const auto& [date, contrib] : contribs) {
+        int currentCount = contrib.getCount();
+        int currentLevel = contrib.getLevel();
+        QDate currentDAte = contrib.getDate();
+        total[date.year()] = ContribTotal(total[date.year()].getCount() + contrib.getCount(), date.year());
+        if (QDate::currentDate().addYears(-1) < date && QDate::currentDate() >= date)
+            lastYear.setCount(lastYear.getCount() + currentCount);
+    }
+    total[0] = lastYear;
+    return total;
 }
 
 int main(int argc, char* argv[]) {
@@ -30,8 +49,8 @@ int main(int argc, char* argv[]) {
     int maxContribution = 20;  // Maximum value for random contribution
 
     // Generate random contributions
-    std::vector<int> contributions = generateRandomContributions(weeks, maxContribution);
-    std::vector<int> levels = generateRandomContributions(weeks, 4);
+    auto contributions = generateRandomContributions(QDate(2021, 10, 12));
+    auto totalContributions = generateRandomTotalContributions(contributions);
 
     // DayContrib contrib(8, 24);
     // contrib.show();
@@ -52,8 +71,8 @@ int main(int argc, char* argv[]) {
     // ContributionPeriod period(QDate(2021, 5, 13));
     // period.show();
 
-    // ContribCard card(contributions, levels, QDate(2021, 5, 23));
-    // card.show();
-
+    ContribCard card;
+    card.Update(contributions);
+    card.show();
     return app.exec();
 }

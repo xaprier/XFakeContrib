@@ -17,8 +17,15 @@ class ContributionPeriod : public QComboBox {
      * @param firstContrib The date of the first contribution.
      * @param parent The parent widget (optional).
      */
-    ContributionPeriod(const QDate& firstContrib = QDate::currentDate(), QWidget* parent = nullptr)
+    ContributionPeriod(QWidget* parent = nullptr, const QDate& firstContrib = QDate::currentDate())
         : QComboBox(parent) {
+        this->UpdatePeriod(firstContrib);
+    }
+
+    void UpdatePeriod(const QDate& firstContrib = QDate::currentDate()) {
+        // Clear combobox
+        this->clear();
+
         // Get the year of the first contribution
         int startYear = firstContrib.year();
 

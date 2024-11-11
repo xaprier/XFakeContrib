@@ -3,62 +3,19 @@
 #include "DayContrib.hpp"
 
 MonthContrib::MonthContrib(const QDate& endDate, const std::map<QDate, Contrib>& allContribs, QWidget* parent)
-    : QWidget(parent), m_EndDate(endDate) {
-    // Layout for the main widget, this should raw data and will be deleted by Qt parent
-    QGridLayout* mainLayout = new QGridLayout(this);
+    : QWidget(parent), m_EndDate(endDate), m_Label(QSharedPointer<QLabel>::create("", this)), m_AllContribs(allContribs) {
+    this->_SetupUI();
+    this->_Update();
+}
 
-    // Set spacing to reduce gaps between weeks
-    mainLayout->setSpacing(2);
-    mainLayout->setContentsMargins(5, 5, 5, 5);
+void MonthContrib::SetMonth(const QDate& monthDate) {
+    m_EndDate = monthDate;
+    this->_Update();
+}
 
-    // Add the month label at the top
-    m_Label = QSharedPointer<QLabel>::create(endDate.toString("MMMM"), this);  // E.g., "August"
-    m_Label->setAlignment(Qt::AlignCenter);                                    // Center align the month name
-
-    QDate startDate(endDate.year(), endDate.month(), 1);
-
-    auto weekCount = this->getWeekCountInMonth(endDate);
-    mainLayout->addWidget(m_Label.get(), 0, 0, 1, weekCount);
-
-    int daysInMonth = endDate.day();
-
-    // Create and add DayContrib widgets
-    auto day = startDate;
-    int week = 0;
-
-    for (int i = 0; i < daysInMonth; ++i) {
-        // Find contribution for the current day
-        auto it = allContribs.find(day);
-        if (it != allContribs.end()) {
-            int count = it->second.getCount();
-            int level = it->second.getLevel();
-            auto dayContrib = QSharedPointer<DayContrib>::create(count, level, day, this);
-            int dayInWeek = day.dayOfWeek();
-            mainLayout->addWidget(dayContrib.get(), dayInWeek, week, 1, 1);
-            this->m_DayContribs.push_back(dayContrib);
-        } else {
-            // If there's no contribution for this day, you may set default values
-            auto dayContrib = QSharedPointer<DayContrib>::create(0, 0, day, this);
-            int dayInWeek = day.dayOfWeek();
-            mainLayout->addWidget(dayContrib.get(), dayInWeek, week, 1, 1);
-            this->m_DayContribs.push_back(dayContrib);
-        }
-
-        if (day.dayOfWeek() == Qt::Sunday) week++;
-        day = day.addDays(1);
-    }
-
-    for (int col = 0; col < week + 1; ++col) {
-        mainLayout->setColumnStretch(col, 1);  // Ensure the column stretches
-    }
-
-    for (int row = 0; row < 8; ++row) {
-        mainLayout->setRowStretch(row, 1);  // Ensure the row stretches
-    }
-
-    setLayout(mainLayout);  // Set the layout for the widget
-    setMinimumSize(115, 150);
-    setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+void MonthContrib::SetContribs(const std::map<QDate, Contrib>& allContribs) {
+    m_AllContribs = allContribs;
+    this->_Update();
 }
 
 std::vector<QWeakPointer<DayContrib>> MonthContrib::getDayContribs() const {
@@ -73,7 +30,7 @@ std::vector<QWeakPointer<DayContrib>> MonthContrib::getDayContribs() const {
     return weakPtrs;
 }
 
-int MonthContrib::getWeekCountInMonth(const QDate& date) const {
+int MonthContrib::_GetWeekCountInMonth(const QDate& date) const {
     // first day of month
     QDate firstDayOfMonth(date.year(), date.month(), 1);
     // last day of month
@@ -99,4 +56,85 @@ int MonthContrib::getWeekCountInMonth(const QDate& date) const {
     }
 
     return weekCount;
+}
+
+void MonthContrib::_SetupUI() {
+    // Layout for the main widget, this should raw data and will be deleted by Qt parent
+    m_MainLayout = new QGridLayout(this);
+
+    m_Label->setAlignment(Qt::AlignCenter);  // Center align the month name
+
+    // Set spacing to reduce gaps between weeks
+    m_MainLayout->setSpacing(2);
+    m_MainLayout->setContentsMargins(5, 5, 5, 5);
+
+    setLayout(m_MainLayout);  // Set the layout for the widget
+    setMinimumSize(115, 150);
+    setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+}
+
+void MonthContrib::_Update() {
+    // Add the month label at the top
+    m_Label->setText(m_EndDate.toString("MMMM"));  // E.g., "August"
+    QDate startDate(m_EndDate.year(), m_EndDate.month(), 1);
+    auto weekCount = this->_GetWeekCountInMonth(m_EndDate);
+    m_MainLayout->removeWidget(m_Label.get());
+    m_MainLayout->addWidget(m_Label.get(), 0, 0, 1, weekCount);
+
+    int daysInMonth = m_EndDate.day();
+    auto day = startDate;
+    int week = 0;
+
+    // Set of active days in the current month
+    std::set<QDate> activeDays;
+
+    for (int i = 0; i < daysInMonth; ++i) {
+        activeDays.insert(day);
+        // Find the existing DayContrib widget for this day if it exists
+        auto it = std::find_if(m_DayContribs.begin(), m_DayContribs.end(), [&](const QSharedPointer<DayContrib>& dc) {
+            return dc->GetDate() == day;
+        });
+
+        int count = 0;
+        int level = 0;
+        auto contribIt = m_AllContribs.find(day);
+        if (contribIt != m_AllContribs.end()) {
+            count = contribIt->second.getCount();
+            level = contribIt->second.getLevel();
+        }
+
+        if (it != m_DayContribs.end()) {
+            // Update existing widget
+            (*it)->SetContribCount(count, level);
+            (*it)->SetDate(day);
+        } else {
+            // Create a new DayContrib widget if it doesn't exist
+            auto dayContrib = QSharedPointer<DayContrib>::create(count, level, day, this);
+            m_DayContribs.push_back(dayContrib);
+            int dayInWeek = day.dayOfWeek();
+            m_MainLayout->addWidget(m_DayContribs.back().get(), dayInWeek, week, 1, 1);
+        }
+
+        if (day.dayOfWeek() == Qt::Sunday) week++;
+        day = day.addDays(1);
+    }
+
+    // Remove unused DayContribs that are not part of the current month
+    m_DayContribs.erase(std::remove_if(m_DayContribs.begin(), m_DayContribs.end(), [&](const QSharedPointer<DayContrib>& dc) {
+                            if (activeDays.find(dc->GetDate()) == activeDays.end()) {
+                                m_MainLayout->removeWidget(dc.get());
+                                dc->deleteLater();
+                                return true;  // Mark for removal
+                            }
+                            return false;
+                        }),
+                        m_DayContribs.end());
+
+    for (int col = 0; col < week + 1; ++col) {
+        m_MainLayout->setColumnStretch(col, 1);
+    }
+
+    for (int row = 0; row < 8; ++row) {
+        m_MainLayout->setRowStretch(row, 1);
+    }
 }

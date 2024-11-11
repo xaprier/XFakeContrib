@@ -33,7 +33,7 @@ class ContribColor : public QColor {
      * @param level level of the contribution, it decides the color.
      * @return QColor corresponding to the contribution level.
      */
-    static QColor getColorForContrib(int level);
+    static QColor _GetColorForContrib(int level);
 
     /**
      * @brief Calculates the contribution level based on the contribution count and maximum contributions.
@@ -41,7 +41,7 @@ class ContribColor : public QColor {
      * @param level level of the contribution, it decides the color.
      * @return ContribLevel corresponding to the contribution count.
      */
-    static ContribLevel calculateContribLevel(int level);
+    static ContribLevel _CalculateContribLevel(int level);
 };
 
 #endif  // CONTRIBCOLOR_HPP

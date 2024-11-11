@@ -11,18 +11,10 @@ class GitHubContribAdapter : public IAdapter<GitHubContribFetcher, ContribCard> 
         : IAdapter<GitHubContribFetcher, ContribCard>(fetcher) {}
 
     virtual QSharedPointer<ContribCard> adapt() const override {
-        // create inputs for adaptee
-        QDate firstContribDate;
-
         // get requirements from fetcher
         auto contributions = m_Adaptee.GetContribs();
-        auto totalContributions = m_Adaptee.GetTotalContribs();
 
-        if (!contributions.empty()) {
-            firstContribDate = contributions.begin()->first;
-        }
-
-        return QSharedPointer<ContribCard>::create(contributions, totalContributions, firstContribDate);
+        return QSharedPointer<ContribCard>::create(contributions);
     }
 };
 

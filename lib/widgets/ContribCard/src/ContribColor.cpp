@@ -1,10 +1,10 @@
 #include "ContribColor.hpp"
 
 ContribColor::ContribColor(int level)
-    : QColor(getColorForContrib(level)) {}
+    : QColor(_GetColorForContrib(level)) {}
 
-QColor ContribColor::getColorForContrib(int level) {
-    ContribLevel contribLevel = calculateContribLevel(level);
+QColor ContribColor::_GetColorForContrib(int level) {
+    ContribLevel contribLevel = _CalculateContribLevel(level);
 
     switch (contribLevel) {
         case NO_CONTRIB:
@@ -22,7 +22,7 @@ QColor ContribColor::getColorForContrib(int level) {
     }
 }
 
-ContribLevel ContribColor::calculateContribLevel(int level) {
+ContribLevel ContribColor::_CalculateContribLevel(int level) {
     switch (level) {
         case 0:
             return NO_CONTRIB;
