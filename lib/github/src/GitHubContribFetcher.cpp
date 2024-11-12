@@ -1,10 +1,18 @@
 #include "GitHubContribFetcher.hpp"
 
 #include "ContribTotal.hpp"
-#include "GithubAuthChecker.hpp"
-#include "GithubContribLevels.hpp"
+#include "GitHubAuthChecker.hpp"
+#include "GitHubContribLevels.hpp"
 
-void GitHubContribFetcher::onNetworkReplyFinished(QNetworkReply* reply) {
+GitHubContribFetcher::GitHubContribFetcher(const QString& username, const QString& token, QObject* parent)
+    : QObject(parent), m_Username(username), m_Token(token), m_AuthChecker(QSharedPointer<GitHubAuthChecker>::create()), m_LastTokenValidation(false) {
+    m_Manager = QSharedPointer<QNetworkAccessManager>::create(this);
+    connect(m_AuthChecker.get(), &GitHubAuthChecker::si_AuthCheckResult, this, &GitHubContribFetcher::sl_AuthCheckResult);
+    // start processing of validation token
+    m_AuthChecker->CheckAuthKey(token);
+}
+
+void GitHubContribFetcher::sl_NetworkReplyFinished(QNetworkReply* reply) {
     if (!reply) {
         qDebug() << "Failed to cast sender to QNetworkReply.";
         return;
@@ -12,7 +20,7 @@ void GitHubContribFetcher::onNetworkReplyFinished(QNetworkReply* reply) {
 
     if (reply->error() == QNetworkReply::NoError) {
         QByteArray response = reply->readAll();
-        processResponse(response);
+        ProcessResponse(response);
     } else {
         qDebug() << "Error fetching data:" << reply->errorString();
     }
@@ -35,13 +43,13 @@ void GitHubContribFetcher::onNetworkReplyFinished(QNetworkReply* reply) {
         }
         m_TotalContributions.emplace(0, ContribTotal(totalContributions, 0));
 
-        emit this->allRepliesFinished();
+        emit this->si_AllRepliesFinished();
     }
 
     reply->deleteLater();
 }
 
-void GitHubContribFetcher::onAuthCheckResult(bool isValid, const QString& message) {
+void GitHubContribFetcher::sl_AuthCheckResult(bool isValid, const QString& message) {
     if (isValid) {
         qDebug() << "Token validation successful";
     } else {
@@ -50,7 +58,7 @@ void GitHubContribFetcher::onAuthCheckResult(bool isValid, const QString& messag
     this->m_LastTokenValidation = isValid;
 }
 
-QDate GitHubContribFetcher::fetchFirstContributionDate() {
+QDate GitHubContribFetcher::FetchFirstContributionDate() {
     // GitHub GraphQL API URL
     QUrl url("https://api.github.com/graphql");
     QNetworkRequest request(url);
@@ -126,12 +134,12 @@ QDate GitHubContribFetcher::fetchFirstContributionDate() {
     return QDate();  // return invalid date
 }
 
-void GitHubContribFetcher::fetchUserContributions() {
+void GitHubContribFetcher::FetchUserContributions() {
     // first check auth key
-    if (!m_LastTokenValidation && !m_AuthChecker->isChecking()) {
-        m_AuthChecker->checkAuthKey(m_Token);
+    if (!m_LastTokenValidation && !m_AuthChecker->IsChecking()) {
+        m_AuthChecker->CheckAuthKey(m_Token);
         QEventLoop loop;
-        connect(m_AuthChecker.get(), &GitHubAuthChecker::authCheckResult, &loop, [&](bool isValid, const QString& message) {
+        connect(m_AuthChecker.get(), &GitHubAuthChecker::si_AuthCheckResult, &loop, [&](bool isValid, const QString& message) {
             if (!isValid) {
                 throw std::runtime_error("Invalid token. Please re-check the token is valid.");
             } else
@@ -141,7 +149,7 @@ void GitHubContribFetcher::fetchUserContributions() {
     }
 
     // Fetch the earliest contribution date
-    QDate firstContributionDate = fetchFirstContributionDate();
+    QDate firstContributionDate = FetchFirstContributionDate();
     if (!firstContributionDate.isValid()) {
         qDebug() << "Invalid first contribution date.";
         return;
@@ -193,7 +201,7 @@ void GitHubContribFetcher::fetchUserContributions() {
         m_ActiveReplies.append(reply);
 
         connect(reply, &QNetworkReply::finished, this, [this, reply]() {
-            onNetworkReplyFinished(reply);
+            sl_NetworkReplyFinished(reply);
         });
 
         // Move to the next year
@@ -201,10 +209,10 @@ void GitHubContribFetcher::fetchUserContributions() {
     }
 }
 
-void GitHubContribFetcher::saveFormattedJsonToFile(const QString& filename) {
+void GitHubContribFetcher::SaveFormattedJsonToFile(const QString& filename) {
     if (!m_ActiveReplies.isEmpty()) {
         QEventLoop loop;
-        connect(this, &GitHubContribFetcher::allRepliesFinished, &loop, &QEventLoop::quit);
+        connect(this, &GitHubContribFetcher::si_AllRepliesFinished, &loop, &QEventLoop::quit);
         loop.exec();
     }
 
@@ -246,7 +254,7 @@ void GitHubContribFetcher::saveFormattedJsonToFile(const QString& filename) {
     }
 }
 
-void GitHubContribFetcher::processResponse(const QByteArray& response) {
+void GitHubContribFetcher::ProcessResponse(const QByteArray& response) {
     QJsonParseError parseError;
     QJsonDocument jsonDoc = QJsonDocument::fromJson(response, &parseError);
     if (parseError.error != QJsonParseError::NoError) {

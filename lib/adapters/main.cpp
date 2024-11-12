@@ -8,8 +8,8 @@ int main(int argc, char *argv[]) {
     QDate firstContribDate;
 
     GitHubContribFetcher fetcher("xaprier", "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");
-    fetcher.fetchUserContributions();
-    fetcher.saveFormattedJsonToFile("data.json");
+    fetcher.FetchUserContributions();
+    fetcher.SaveFormattedJsonToFile("data.json");
     GitHubContribAdapter adapter(fetcher);
     auto card = adapter.adapt();
 

@@ -5,6 +5,7 @@ set(
   "${CMAKE_CURRENT_SOURCE_DIR}/data" # get data
   "${CMAKE_CURRENT_SOURCE_DIR}/helpers" # get helpers
   "${CMAKE_CURRENT_SOURCE_DIR}/github" # get github
+  "${CMAKE_CURRENT_SOURCE_DIR}/git" # get git
   "${CMAKE_CURRENT_SOURCE_DIR}/widgets" # get widgets
   "${CMAKE_CURRENT_SOURCE_DIR}/adapters" # get adapters
 )

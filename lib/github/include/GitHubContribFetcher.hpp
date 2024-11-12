@@ -18,20 +18,14 @@
 
 #include "Contrib.hpp"
 #include "ContribTotal.hpp"
-#include "GithubAuthChecker.hpp"
-#include "GithubContribLevels.hpp"
+#include "GitHubAuthChecker.hpp"
+#include "GitHubContribLevels.hpp"
 
 class GitHubContribFetcher : public QObject {
     Q_OBJECT
 
   public:
-    GitHubContribFetcher(const QString& username, const QString& token, QObject* parent = nullptr)
-        : QObject(parent), m_Username(username), m_Token(token), m_AuthChecker(QSharedPointer<GitHubAuthChecker>::create()), m_LastTokenValidation(false) {
-        m_Manager = QSharedPointer<QNetworkAccessManager>::create(this);
-        connect(m_AuthChecker.get(), &GitHubAuthChecker::authCheckResult, this, &GitHubContribFetcher::onAuthCheckResult);
-        // start processing of validation token
-        m_AuthChecker->checkAuthKey(token);
-    }
+    explicit GitHubContribFetcher(const QString& username, const QString& token, QObject* parent = nullptr);
 
     const std::map<int, ContribTotal>& GetTotalContribs() const {
         return m_TotalContributions;
@@ -41,19 +35,19 @@ class GitHubContribFetcher : public QObject {
         return m_Contributions;
     }
 
-    void fetchUserContributions();
-    void saveFormattedJsonToFile(const QString& filename);
+    void FetchUserContributions();
+    void SaveFormattedJsonToFile(const QString& filename);
 
   private slots:
-    void onNetworkReplyFinished(QNetworkReply* reply);
-    void onAuthCheckResult(bool isValid, const QString& message);
+    void sl_NetworkReplyFinished(QNetworkReply* reply);
+    void sl_AuthCheckResult(bool isValid, const QString& message);
 
   signals:
-    void allRepliesFinished();
+    void si_AllRepliesFinished();
 
   private:
-    void processResponse(const QByteArray& response);
-    QDate fetchFirstContributionDate();
+    void ProcessResponse(const QByteArray& response);
+    QDate FetchFirstContributionDate();
 
   private:
     QString m_Username;
