@@ -31,12 +31,12 @@ std::map<int, ContribTotal> generateRandomTotalContributions(std::map<QDate, Con
     std::map<int, ContribTotal> total;
     ContribTotal lastYear(0, 0);
     for (const auto& [date, contrib] : contribs) {
-        int currentCount = contrib.getCount();
-        int currentLevel = contrib.getLevel();
-        QDate currentDAte = contrib.getDate();
-        total[date.year()] = ContribTotal(total[date.year()].getCount() + contrib.getCount(), date.year());
+        int currentCount = contrib.GetCount();
+        int currentLevel = contrib.GetLevel();
+        QDate currentDAte = contrib.GetDate();
+        total[date.year()] = ContribTotal(total[date.year()].GetCount() + contrib.GetCount(), date.year());
         if (QDate::currentDate().addYears(-1) < date && QDate::currentDate() >= date)
-            lastYear.setCount(lastYear.getCount() + currentCount);
+            lastYear.SetCount(lastYear.GetCount() + currentCount);
     }
     total[0] = lastYear;
     return total;

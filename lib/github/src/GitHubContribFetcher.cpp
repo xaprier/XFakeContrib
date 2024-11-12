@@ -28,7 +28,7 @@ void GitHubContribFetcher::onNetworkReplyFinished(QNetworkReply* reply) {
         QDate currentDate = QDate::currentDate();
         int totalContributions = 0;
         for (const auto& [date, contrib] : m_Contributions) {
-            int count = contrib.getCount();
+            int count = contrib.GetCount();
             if (date >= oneYearAgo && date <= currentDate) {
                 totalContributions += count;
             }
@@ -216,15 +216,15 @@ void GitHubContribFetcher::saveFormattedJsonToFile(const QString& filename) {
     // Prepare JSON data for output
     QJsonObject totalContributionsJson;
     for (const auto& [date, total] : this->m_TotalContributions) {
-        totalContributionsJson[QString::number(date)] = total.getCount();
+        totalContributionsJson[QString::number(date)] = total.GetCount();
     }
 
     QJsonArray contributionsJsonArray;
     for (const auto& [date, contrib] : this->m_Contributions) {
         QJsonObject contribJson;
         contribJson["date"] = date.toString(Qt::ISODate);
-        contribJson["count"] = contrib.getCount();
-        contribJson["level"] = contrib.getLevel();
+        contribJson["count"] = contrib.GetCount();
+        contribJson["level"] = contrib.GetLevel();
         contributionsJsonArray.append(contribJson);
     }
 

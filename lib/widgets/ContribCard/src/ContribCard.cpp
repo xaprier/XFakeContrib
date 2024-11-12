@@ -38,7 +38,7 @@ void ContribCard::_UpdateTotalContribs(const std::map<int, ContribTotal>& allTot
     auto it = allTotalContribs.find(currentYear);
     int currentTotal = 0;
     if (it != allTotalContribs.end()) {
-        currentTotal = it->second.getCount();
+        currentTotal = it->second.GetCount();
     }
     m_TotalContribWidget->SetText(currentTotal);
 }

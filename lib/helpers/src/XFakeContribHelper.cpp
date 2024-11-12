@@ -6,12 +6,12 @@ namespace XFakeContribHelper {
 void GetTotalContribs(std::map<int, ContribTotal>& getItem, const std::map<QDate, Contrib> allContribs) {
     ContribTotal lastYear(0, 0);
     for (const auto& [date, contrib] : allContribs) {
-        int currentCount = contrib.getCount();
-        int currentLevel = contrib.getLevel();
-        QDate currentDAte = contrib.getDate();
-        getItem[date.year()] = ContribTotal(getItem[date.year()].getCount() + contrib.getCount(), date.year());
+        int currentCount = contrib.GetCount();
+        int currentLevel = contrib.GetLevel();
+        QDate currentDAte = contrib.GetDate();
+        getItem[date.year()] = ContribTotal(getItem[date.year()].GetCount() + contrib.GetCount(), date.year());
         if (QDate::currentDate().addYears(-1) < date && QDate::currentDate() >= date)
-            lastYear.setCount(lastYear.getCount() + currentCount);
+            lastYear.SetCount(lastYear.GetCount() + currentCount);
     }
     getItem[0] = lastYear;
 }

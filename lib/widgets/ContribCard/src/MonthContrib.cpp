@@ -99,8 +99,8 @@ void MonthContrib::_Update() {
         int level = 0;
         auto contribIt = m_AllContribs.find(day);
         if (contribIt != m_AllContribs.end()) {
-            count = contribIt->second.getCount();
-            level = contribIt->second.getLevel();
+            count = contribIt->second.GetCount();
+            level = contribIt->second.GetLevel();
         }
 
         if (it != m_DayContribs.end()) {
