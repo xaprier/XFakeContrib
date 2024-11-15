@@ -3,6 +3,7 @@ set(
   DIRECTORIES_TO_CHECK
   "${CMAKE_CURRENT_SOURCE_DIR}/config" # get config
   "${CMAKE_CURRENT_SOURCE_DIR}/data" # get data
+  "${CMAKE_CURRENT_SOURCE_DIR}/faker" # get faker
   "${CMAKE_CURRENT_SOURCE_DIR}/helpers" # get helpers
   "${CMAKE_CURRENT_SOURCE_DIR}/github" # get github
   "${CMAKE_CURRENT_SOURCE_DIR}/git" # get git
