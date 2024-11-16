@@ -4,7 +4,7 @@
 #include <QDir>
 
 GitRepository::GitRepository(const QString &localRepositoryPath, QObject *parent)
-    : QObject(parent), m_Executor(localRepositoryPath), m_CommitManager(m_Executor), m_BranchManager(m_Executor), m_PushManager(m_Executor), m_AddManager(m_Executor) {
+    : QObject(parent), m_Executor(localRepositoryPath), m_CommitManager(m_Executor), m_BranchManager(m_Executor), m_PushManager(m_Executor), m_AddManager(m_Executor), m_DiffManager(m_Executor), m_CheckoutManager(m_Executor) {
     this->SetRepositoryPath(localRepositoryPath);
 }
 
@@ -51,6 +51,32 @@ void GitRepository::Add(const QStringList &arguments) {
     QString output, error;
     m_AddManager.Execute(arguments, output, error);
     _HandleCommandResult(output, error, m_AddManager.GetCommandType());
+}
+
+QString GitRepository::Diff(const QStringList &arguments) {
+    if (!m_IsValidRepository) {
+        qDebug() << "Diff command aborted: Invalid Git repository path.";
+        return "";
+    }
+    qDebug() << "Executing diff command...";
+    QString output, error;
+    m_DiffManager.Execute(arguments, output, error);
+    _HandleCommandResult(output, error, "Git Diff Command");
+    if (!error.isEmpty()) return error;
+    return output;
+}
+
+QString GitRepository::Checkout(const QStringList &arguments) {
+    if (!m_IsValidRepository) {
+        qDebug() << "Checkout command aborted: Invalid Git repository path.";
+        return "";
+    }
+    qDebug() << "Executing checkout command...";
+    QString output, error;
+    m_CheckoutManager.Execute(arguments, output, error);
+    _HandleCommandResult(output, error, "Git Checkout Command");
+    if (!error.isEmpty()) return error;
+    return output;
 }
 
 void GitRepository::SetRepositoryPath(const QString &localRepositoryPath) {

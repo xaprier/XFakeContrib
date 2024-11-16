@@ -19,8 +19,6 @@ void GitCommandExecutor::Execute(const GitCommand::Command& command, const QStri
     QProcess process;
     QString program = "git";
     QStringList fullArguments;
-    // add spaces between command and arguments
-
     fullArguments << commandString << arguments;
 
     process.setWorkingDirectory(m_Path);

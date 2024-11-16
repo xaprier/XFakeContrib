@@ -20,6 +20,8 @@ int main(int argc, char* argv[]) {
     GitRepository repository(localRepoPath);
     handler.CreateChange("deneme.txt");
     handler.ApplyChanges();
+    QString diff = repository.Diff({"--name-only"});
+    QString checkout = repository.Checkout({branchName});
     repository.Add({
         ".",
     });

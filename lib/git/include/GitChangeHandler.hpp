@@ -7,36 +7,36 @@
 #include "GitChangeCreate.hpp"
 #include "GitChangeDelete.hpp"
 #include "GitChangeEdit.hpp"
-#include "GitChangeManager.hpp"
+#include "GitChangeQueue.hpp"
 
 class GitChangeHandler {
   public:
-    GitChangeHandler(const QString &repoPath) : repoPath(repoPath) {}
+    GitChangeHandler(const QString &repoPath) : m_RepositoryPath(repoPath) {}
 
     void CreateChange(const QString &fileName) {
         QString content = QString::fromStdString(Faker::GetLorem());
-        auto change = std::make_unique<GitChangeCreate>(repoPath, fileName, content);
-        changeManager.AddChange(std::move(change));
+        auto change = std::make_unique<GitChangeCreate>(m_RepositoryPath, fileName, content);
+        m_ChangeQueue.AddChange(std::move(change));
     }
 
     void EditChange(const QString &fileName) {
         QString content = QString::fromStdString(Faker::GetLorem());
-        auto change = std::make_unique<GitChangeEdit>(repoPath, fileName, content);
-        changeManager.AddChange(std::move(change));
+        auto change = std::make_unique<GitChangeEdit>(m_RepositoryPath, fileName, content);
+        m_ChangeQueue.AddChange(std::move(change));
     }
 
     void DeleteChange(const QString &fileName) {
-        auto change = std::make_unique<GitChangeDelete>(repoPath, fileName);
-        changeManager.AddChange(std::move(change));
+        auto change = std::make_unique<GitChangeDelete>(m_RepositoryPath, fileName);
+        m_ChangeQueue.AddChange(std::move(change));
     }
 
     void ApplyChanges() {
-        changeManager.ApplyChanges();
+        m_ChangeQueue.ApplyChanges();
     }
 
   private:
-    QString repoPath;
-    GitChangeManager changeManager;
+    QString m_RepositoryPath;
+    GitChangeQueue m_ChangeQueue;
 };
 
 #endif  // GITCHANGEHANDLER_HPP

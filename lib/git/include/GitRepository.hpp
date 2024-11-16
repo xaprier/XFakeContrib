@@ -7,8 +7,10 @@
 
 #include "GitAddManager.hpp"
 #include "GitBranchManager.hpp"
+#include "GitCheckoutManager.hpp"
 #include "GitCommandExecutor.hpp"
 #include "GitCommitManager.hpp"
+#include "GitDiffManager.hpp"
 #include "GitPushManager.hpp"
 
 class GitRepository : public QObject {
@@ -18,6 +20,8 @@ class GitRepository : public QObject {
     void Commit(const QStringList &arguments = {"-m", "Default Commit Message"});
     void Branch(const QStringList &arguments = {});
     void Add(const QStringList &arguments = {});
+    QString Diff(const QStringList &arguments = {"--name-only"});
+    QString Checkout(const QStringList &arguments = {});
 
     void SetRepositoryPath(const QString &localRepositoryPath = "");
     const QString &GetRepositoryPath() const { return m_RepositoryPath; }
@@ -36,6 +40,8 @@ class GitRepository : public QObject {
     GitBranchManager m_BranchManager;
     GitPushManager m_PushManager;
     GitAddManager m_AddManager;
+    GitDiffManager m_DiffManager;
+    GitCheckoutManager m_CheckoutManager;
 };
 
 #endif  // GITREPOSITORY_HPP

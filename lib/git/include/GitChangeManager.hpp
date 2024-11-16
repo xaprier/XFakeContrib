@@ -1,32 +1,24 @@
 #ifndef GITCHANGEMANAGER_HPP
 #define GITCHANGEMANAGER_HPP
 
-#include <queue>
+#include "GitCommandExecutor.hpp"
+#include "GitManager.hpp"
 
-#include "GitChange.hpp"
+// class GitChangeManager : public GitManager {
+//   public:
+//     GitChangeManager(GitCommandExecutor& executor) : m_Executor(executor) {}
+//     void Execute(const QStringList& arguments, QString& output, QString& error) override {
+//         return m_Executor.Execute(GitCommand::Change, arguments, output, error);
+//     }
 
-class GitChangeManager {
-  public:
-    GitChangeManager() = default;
-    ~GitChangeManager() = default;
+//     bool HasPushRights(const QString& remote = "origin");
 
-    void ApplyChanges() {
-        while (!changes.empty()) {
-            changes.front()->ApplyChange();
-            changes.pop();
-        }
-    }
+//     QString GetCommandType() const override {
+//         return "Git Push Command";
+//     }
 
-    void AddChange(std::unique_ptr<GitChange> change) {
-        changes.push(std::move(change));
-    }
-
-    const std::queue<std::unique_ptr<GitChange>>& GetCurrentChanges() const {
-        return changes;
-    }
-
-  private:
-    std::queue<std::unique_ptr<GitChange>> changes;
-};
+//   private:
+//     GitCommandExecutor& m_Executor;
+// };
 
 #endif  // GITCHANGEMANAGER_HPP
