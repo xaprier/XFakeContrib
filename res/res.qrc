@@ -1,0 +1,38 @@
+<RCC>
+    <qresource prefix="/icons">
+        <file>XFakeContrib.png</file>
+        <file>icons/add.png</file>
+        <file>icons/branch.png</file>
+        <file>icons/createcommit.png</file>
+        <file>icons/delete.png</file>
+        <file>icons/file.png</file>
+        <file>icons/info.png</file>
+        <file>icons/log.png</file>
+        <file>icons/push.png</file>
+        <file>icons/reload.png</file>
+        <file>icons/remote.png</file>
+        <file>icons/repository.png</file>
+        <file>icons/token.png</file>
+        <file>icons/user.png</file>
+    </qresource>
+    <qresource prefix="/qss">
+        <file>style.qss</file>
+    </qresource>
+    <qresource prefix="/qssicons">
+        <file>vs15/checkbox-check-disabled.png</file>
+        <file>vs15/checkbox-check.png</file>
+        <file>vs15/combobox-down.png</file>
+        <file>vs15/scrollbar-down-disabled.png</file>
+        <file>vs15/scrollbar-down-hover.png</file>
+        <file>vs15/scrollbar-down.png</file>
+        <file>vs15/scrollbar-left-disabled.png</file>
+        <file>vs15/scrollbar-left-hover.png</file>
+        <file>vs15/scrollbar-left.png</file>
+        <file>vs15/scrollbar-right-disabled.png</file>
+        <file>vs15/scrollbar-right-hover.png</file>
+        <file>vs15/scrollbar-right.png</file>
+        <file>vs15/scrollbar-up-disabled.png</file>
+        <file>vs15/scrollbar-up-hover.png</file>
+        <file>vs15/scrollbar-up.png</file>
+    </qresource>
+</RCC>
