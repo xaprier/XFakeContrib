@@ -3,6 +3,7 @@
 
 #include <QDate>
 #include <QGridLayout>
+#include <QToolButton>
 #include <QVBoxLayout>
 #include <QWidget>
 #include <map>
@@ -32,6 +33,7 @@ class ContribCard : public QWidget {
     void sl_OnContributionPeriodChanged(int index);
 
   private:
+    QSharedPointer<QToolButton> m_ReloadButton, m_InfoButton;
     QSharedPointer<ContributionPeriod> m_ContributionPeriod;
     QSharedPointer<YearContrib> m_YearContribWidget;
     QSharedPointer<LevelColorIndicator> m_Indicator;

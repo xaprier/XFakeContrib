@@ -51,9 +51,16 @@ void ContribCard::_SetupUI() {
     // Layout for the main widget, this should raw data and will be deleted by Qt parent
     QGridLayout* layout = new QGridLayout(this);
 
-    // Create the ContributionPeriod combo box
+    // todo: set icons for toolbutttons
+    m_InfoButton = QSharedPointer<QToolButton>::create(this);
+    layout->addWidget(m_InfoButton.get(), 0, 0, 1, 1);
+
+    // todo: set icons for toolbutttons
+    m_ReloadButton = QSharedPointer<QToolButton>::create(this);
+    layout->addWidget(m_ReloadButton.get(), 0, 1, 1, 1);
+
     m_ContributionPeriod = QSharedPointer<ContributionPeriod>::create(this);
-    layout->addWidget(m_ContributionPeriod.get(), 0, 0, 1, 1);
+    layout->addWidget(m_ContributionPeriod.get(), 0, 2, 1, 1);
 
     m_Indicator = QSharedPointer<LevelColorIndicator>::create(this);
     layout->addWidget(m_Indicator.get(), 0, 10, 1, 2);
@@ -62,7 +69,8 @@ void ContribCard::_SetupUI() {
     layout->addWidget(m_YearContribWidget.get(), 1, 0, 1, 12);
 
     m_TotalContribWidget = QSharedPointer<YearContribTotalIndicator>::create();
-    layout->addWidget(m_TotalContribWidget.get(), 0, 1, 1, 1);
+    layout->addWidget(m_TotalContribWidget.get(), 0, 3, 1, 1);
+
     setLayout(layout);
 }
 

@@ -2,6 +2,8 @@
 set(
   DIRECTORIES_TO_CHECK
   "${CMAKE_CURRENT_SOURCE_DIR}/config" # get config
+  "${CMAKE_CURRENT_SOURCE_DIR}/logger" # get logger
+  "${CMAKE_CURRENT_SOURCE_DIR}/settings" # get settings
   "${CMAKE_CURRENT_SOURCE_DIR}/data" # get data
   "${CMAKE_CURRENT_SOURCE_DIR}/faker" # get faker
   "${CMAKE_CURRENT_SOURCE_DIR}/helpers" # get helpers

@@ -19,6 +19,7 @@ class GitCommand {
         Add,
         Reset,
         Diff,
+        Remote
     };
 
     /**
@@ -54,6 +55,8 @@ class GitCommand {
                 return "reset";
             case Diff:
                 return "diff";
+            case Remote:
+                return "remote";
             default:
                 return QString();
         }

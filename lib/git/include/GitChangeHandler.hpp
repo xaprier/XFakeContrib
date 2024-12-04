@@ -11,7 +11,15 @@
 
 class GitChangeHandler {
   public:
-    GitChangeHandler(const QString &repoPath) : m_RepositoryPath(repoPath) {}
+    GitChangeHandler(const QString &repoPath = "") : m_RepositoryPath(repoPath) {}
+
+    void SetRepositoryPath(const QString &repoPath = "") {
+        m_RepositoryPath = repoPath;
+    }
+
+    QString GetRepositoryPath() const {
+        return m_RepositoryPath;
+    }
 
     void CreateChange(const QString &fileName) {
         QString content = QString::fromStdString(Faker::GetLorem());

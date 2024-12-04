@@ -30,6 +30,6 @@ int main(int argc, char* argv[]) {
                        "--date",
                        commitDate});
     repository.Push("origin", branchName);
-
+    auto log = repository.Log({"--oneline"});
     return app.exec();
 }

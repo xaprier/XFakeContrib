@@ -11,17 +11,21 @@
 #include "GitCommandExecutor.hpp"
 #include "GitCommitManager.hpp"
 #include "GitDiffManager.hpp"
+#include "GitLogManager.hpp"
 #include "GitPushManager.hpp"
+#include "GitRemoteManager.hpp"
 
 class GitRepository : public QObject {
   public:
     GitRepository(const QString &localRepositoryPath = "", QObject *parent = nullptr);
-    void Push(const QString &remote = "", const QString &branch = "");
-    void Commit(const QStringList &arguments = {"-m", "Default Commit Message"});
-    void Branch(const QStringList &arguments = {});
-    void Add(const QStringList &arguments = {});
+    QString Push(const QString &remote = "", const QString &branch = "");
+    QString Commit(const QStringList &arguments = {"-m", "Default Commit Message"});
+    QString Branch(const QStringList &arguments = {});
+    QString Add(const QStringList &arguments = {});
     QString Diff(const QStringList &arguments = {"--name-only"});
     QString Checkout(const QStringList &arguments = {});
+    QString Log(const QStringList &arguments = {});
+    QString Remote(const QStringList &arguments = {});
 
     void SetRepositoryPath(const QString &localRepositoryPath = "");
     const QString &GetRepositoryPath() const { return m_RepositoryPath; }
@@ -42,6 +46,8 @@ class GitRepository : public QObject {
     GitAddManager m_AddManager;
     GitDiffManager m_DiffManager;
     GitCheckoutManager m_CheckoutManager;
+    GitLogManager m_LogManager;
+    GitRemoteManager m_RemoteManager;
 };
 
 #endif  // GITREPOSITORY_HPP

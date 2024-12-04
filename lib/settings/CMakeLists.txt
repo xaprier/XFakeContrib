@@ -1,14 +1,14 @@
 cmake_minimum_required(VERSION 3.0...3.20)
 
-project(XFakeContribFaker)
+project(XFakeContribSettings)
+
+set(CMAKE_AUTOUIC ON)
+set(CMAKE_AUTOMOC ON)
+set(CMAKE_AUTORCC ON)
 set(CMAKE_EXPORT_COMPILE_COMMANDS 1)
 
-add_subdirectory(lib) # build external/internal libs
-
-option(USE_SYSTEM_DEPENDENCIES "Use fmt and GTest from system" OFF)
-option(BUILD_EXAMPLES "Build examples" OFF)
-option(BUILD_TESTING "Build tests" OFF)
-option(CODE_COVERAGE "Build faker-cxx with coverage support" OFF)
+find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Core)
+find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Core)
 
 file(GLOB CPP_FILES "src/*.cpp")
 file(GLOB HPP_FILES "include/*.hpp")
@@ -16,8 +16,17 @@ file(GLOB HPP_FILES "include/*.hpp")
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
 add_library(${PROJECT_NAME} SHARED ${CPP_FILES} ${HPP_FILES})
 
+set(INTERNAL_LIBS
+  XFakeContribConfig
+)
+
+set(EXTERNAL_LIBS
+  Qt${QT_VERSION_MAJOR}::Core
+)
+
 set(LIBRARIES
-  faker-cxx
+  ${INTERNAL_LIBS}
+  ${EXTERNAL_LIBS}
 )
 
 target_link_libraries(${PROJECT_NAME} PRIVATE ${LIBRARIES})

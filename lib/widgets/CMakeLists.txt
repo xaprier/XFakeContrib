@@ -2,6 +2,7 @@
 set(
   DIRECTORIES_TO_CHECK
   "${CMAKE_CURRENT_SOURCE_DIR}/ContribCard" # get ContribCard
+  "${CMAKE_CURRENT_SOURCE_DIR}/RepositoryCard" # get RepositoryCard
 )
 
 foreach(DIRECTORY ${DIRECTORIES_TO_CHECK})

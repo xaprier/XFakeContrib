@@ -4,53 +4,61 @@
 #include <QDir>
 
 GitRepository::GitRepository(const QString &localRepositoryPath, QObject *parent)
-    : QObject(parent), m_Executor(localRepositoryPath), m_CommitManager(m_Executor), m_BranchManager(m_Executor), m_PushManager(m_Executor), m_AddManager(m_Executor), m_DiffManager(m_Executor), m_CheckoutManager(m_Executor) {
+    : QObject(parent), m_Executor(localRepositoryPath), m_CommitManager(m_Executor), m_BranchManager(m_Executor), m_PushManager(m_Executor), m_AddManager(m_Executor), m_DiffManager(m_Executor), m_CheckoutManager(m_Executor), m_LogManager(m_Executor), m_RemoteManager(m_Executor) {
     this->SetRepositoryPath(localRepositoryPath);
 }
 
-void GitRepository::Push(const QString &remote, const QString &branch) {
+QString GitRepository::Push(const QString &remote, const QString &branch) {
     if (!m_IsValidRepository) {
         qDebug() << "Push command aborted: Invalid Git repository path.";
-        return;
+        return "";
     }
     qDebug() << "Executing push command...";
     QString output, error;
     QStringList arguments = {remote, branch};
     m_PushManager.Execute(arguments, output, error);
     _HandleCommandResult(output, error, m_PushManager.GetCommandType());
+    if (!error.isEmpty()) return error;
+    return output;
 }
 
-void GitRepository::Commit(const QStringList &arguments) {
+QString GitRepository::Commit(const QStringList &arguments) {
     if (!m_IsValidRepository) {
         qDebug() << "Commit command aborted: Invalid Git repository path.";
-        return;
+        return "";
     }
     qDebug() << "Executing commit command...";
     QString output, error;
     m_CommitManager.Execute(arguments, output, error);
     _HandleCommandResult(output, error, m_CommitManager.GetCommandType());
+    if (!error.isEmpty()) return error;
+    return output;
 }
 
-void GitRepository::Branch(const QStringList &arguments) {
+QString GitRepository::Branch(const QStringList &arguments) {
     if (!m_IsValidRepository) {
         qDebug() << "Branch command aborted: Invalid Git repository path.";
-        return;
+        return "";
     }
     qDebug() << "Executing branch command...";
     QString output, error;
     m_BranchManager.Execute(arguments, output, error);
     _HandleCommandResult(output, error, m_BranchManager.GetCommandType());
+    if (!error.isEmpty()) return error;
+    return output;
 }
 
-void GitRepository::Add(const QStringList &arguments) {
+QString GitRepository::Add(const QStringList &arguments) {
     if (!m_IsValidRepository) {
         qDebug() << "Add command aborted: Invalid Git repository path.";
-        return;
+        return "";
     }
     qDebug() << "Executing add command...";
     QString output, error;
     m_AddManager.Execute(arguments, output, error);
     _HandleCommandResult(output, error, m_AddManager.GetCommandType());
+    if (!error.isEmpty()) return error;
+    return output;
 }
 
 QString GitRepository::Diff(const QStringList &arguments) {
@@ -61,7 +69,7 @@ QString GitRepository::Diff(const QStringList &arguments) {
     qDebug() << "Executing diff command...";
     QString output, error;
     m_DiffManager.Execute(arguments, output, error);
-    _HandleCommandResult(output, error, "Git Diff Command");
+    _HandleCommandResult(output, error, m_DiffManager.GetCommandType());
     if (!error.isEmpty()) return error;
     return output;
 }
@@ -74,7 +82,33 @@ QString GitRepository::Checkout(const QStringList &arguments) {
     qDebug() << "Executing checkout command...";
     QString output, error;
     m_CheckoutManager.Execute(arguments, output, error);
-    _HandleCommandResult(output, error, "Git Checkout Command");
+    _HandleCommandResult(output, error, m_CheckoutManager.GetCommandType());
+    if (!error.isEmpty()) return error;
+    return output;
+}
+
+QString GitRepository::Log(const QStringList &arguments) {
+    if (!m_IsValidRepository) {
+        qDebug() << "Checkout command aborted: Invalid Git repository path.";
+        return "";
+    }
+    qDebug() << "Executing log command...";
+    QString output, error;
+    m_LogManager.Execute(arguments, output, error);
+    _HandleCommandResult(output, error, m_LogManager.GetCommandType());
+    if (!error.isEmpty()) return error;
+    return output;
+}
+
+QString GitRepository::Remote(const QStringList &arguments) {
+    if (!m_IsValidRepository) {
+        qDebug() << "Remote command aborted: Invalid Git repository path.";
+        return "";
+    }
+    qDebug() << "Executing remote command...";
+    QString output, error;
+    m_RemoteManager.Execute(arguments, output, error);
+    _HandleCommandResult(output, error, m_RemoteManager.GetCommandType());
     if (!error.isEmpty()) return error;
     return output;
 }
