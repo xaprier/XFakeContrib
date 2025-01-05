@@ -1,5 +1,7 @@
 #include "XFakeContribHelper.hpp"
 
+#include <QDebug>
+
 #include "ContribTotal.hpp"
 
 namespace XFakeContribHelper {
@@ -49,4 +51,12 @@ void GetFirstContrib(QDate& getItem, const std::map<QDate, Contrib>& allContribs
         getItem = QDate::currentDate();
 }
 
+template <typename Signal, typename Slot>
+void safeConnect(QObject* sender, Signal signal, QObject* receiver, Slot slot, const QString& name) {
+    if (sender && receiver) {
+        QObject::connect(sender, signal, receiver, slot);
+    } else {
+        qWarning() << "Failed to connect signal for" << name;
+    }
+}
 }  // namespace XFakeContribHelper

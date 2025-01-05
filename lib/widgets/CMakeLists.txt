@@ -1,6 +1,8 @@
 # Specify the directory to check
 set(
   DIRECTORIES_TO_CHECK
+  "${CMAKE_CURRENT_SOURCE_DIR}/XQCircularLoadingIndicator" # get external XQCircularLoadingIndicator
+  "${CMAKE_CURRENT_SOURCE_DIR}/XQWidgetComposer" # get external XQWidgetComposer
   "${CMAKE_CURRENT_SOURCE_DIR}/ContribCard" # get ContribCard
   "${CMAKE_CURRENT_SOURCE_DIR}/RepositoryCard" # get RepositoryCard
 )
