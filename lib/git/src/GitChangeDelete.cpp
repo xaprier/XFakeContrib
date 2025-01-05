@@ -8,13 +8,13 @@
 void GitChangeDelete::ApplyChange() {
     QDir dir(m_ReposPath);
     if (!dir.exists()) {
-        throw std::runtime_error("Repository path does not exist");
+        throw std::runtime_error("Repository path does not exist");  // todo: translation
     }
 
-    QString filePath = QDir::toNativeSeparators(m_ReposPath + "/" + m_FileName);
+    QString filePath = m_FileName;
     QFile file(filePath);
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
-        throw std::runtime_error("Failed to open file for writing");
+        throw std::runtime_error("Failed to open file for writing");  // todo: translation
     }
 
     // close file before deleting
@@ -22,6 +22,6 @@ void GitChangeDelete::ApplyChange() {
 
     // delete file if it exists and has permissions
     if (!file.remove()) {
-        throw std::runtime_error("Failed to delete file");
+        throw std::runtime_error("Failed to delete file");  // todo: translation
     }
 }

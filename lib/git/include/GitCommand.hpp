@@ -19,7 +19,8 @@ class GitCommand {
         Add,
         Reset,
         Diff,
-        Remote
+        Remote,
+        CheckIgnore
     };
 
     /**
@@ -57,6 +58,8 @@ class GitCommand {
                 return "diff";
             case Remote:
                 return "remote";
+            case CheckIgnore:
+                return "check-ignore";
             default:
                 return QString();
         }

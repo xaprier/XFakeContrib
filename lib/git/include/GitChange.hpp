@@ -1,6 +1,7 @@
 #ifndef GITCHANGE_HPP
 #define GITCHANGE_HPP
 
+#include <QMutex>
 #include <QObject>
 
 class GitChange : public QObject {
@@ -16,6 +17,8 @@ class GitChange : public QObject {
     QString m_Change;
     QString m_ReposPath;
     QString m_FileName;
+
+    mutable QMutex m_Mutex;  // Mutex for thread safety
 };
 
 #endif  // GITCHANGE_HPP

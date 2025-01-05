@@ -4,18 +4,16 @@
 #include <QDir>
 
 GitRepository::GitRepository(const QString &localRepositoryPath, QObject *parent)
-    : QObject(parent), m_Executor(localRepositoryPath), m_CommitManager(m_Executor), m_BranchManager(m_Executor), m_PushManager(m_Executor), m_AddManager(m_Executor), m_DiffManager(m_Executor), m_CheckoutManager(m_Executor), m_LogManager(m_Executor), m_RemoteManager(m_Executor) {
+    : QObject(parent), m_Executor(localRepositoryPath), m_CommitManager(m_Executor), m_BranchManager(m_Executor), m_PushManager(m_Executor), m_AddManager(m_Executor), m_DiffManager(m_Executor), m_CheckoutManager(m_Executor), m_LogManager(m_Executor), m_RemoteManager(m_Executor), m_CheckIgnoreManager(m_Executor) {
     this->SetRepositoryPath(localRepositoryPath);
 }
 
-QString GitRepository::Push(const QString &remote, const QString &branch) {
+QString GitRepository::Push(const QStringList &arguments) {
     if (!m_IsValidRepository) {
-        qDebug() << "Push command aborted: Invalid Git repository path.";
-        return "";
+        throw std::invalid_argument("Invalid Git repository path: " + m_RepositoryPath.toStdString());
     }
     qDebug() << "Executing push command...";
     QString output, error;
-    QStringList arguments = {remote, branch};
     m_PushManager.Execute(arguments, output, error);
     _HandleCommandResult(output, error, m_PushManager.GetCommandType());
     if (!error.isEmpty()) return error;
@@ -24,8 +22,7 @@ QString GitRepository::Push(const QString &remote, const QString &branch) {
 
 QString GitRepository::Commit(const QStringList &arguments) {
     if (!m_IsValidRepository) {
-        qDebug() << "Commit command aborted: Invalid Git repository path.";
-        return "";
+        throw std::invalid_argument("Invalid Git repository path: " + m_RepositoryPath.toStdString());
     }
     qDebug() << "Executing commit command...";
     QString output, error;
@@ -37,8 +34,7 @@ QString GitRepository::Commit(const QStringList &arguments) {
 
 QString GitRepository::Branch(const QStringList &arguments) {
     if (!m_IsValidRepository) {
-        qDebug() << "Branch command aborted: Invalid Git repository path.";
-        return "";
+        throw std::invalid_argument("Invalid Git repository path: " + m_RepositoryPath.toStdString());
     }
     qDebug() << "Executing branch command...";
     QString output, error;
@@ -50,8 +46,7 @@ QString GitRepository::Branch(const QStringList &arguments) {
 
 QString GitRepository::Add(const QStringList &arguments) {
     if (!m_IsValidRepository) {
-        qDebug() << "Add command aborted: Invalid Git repository path.";
-        return "";
+        throw std::invalid_argument("Invalid Git repository path: " + m_RepositoryPath.toStdString());
     }
     qDebug() << "Executing add command...";
     QString output, error;
@@ -63,8 +58,7 @@ QString GitRepository::Add(const QStringList &arguments) {
 
 QString GitRepository::Diff(const QStringList &arguments) {
     if (!m_IsValidRepository) {
-        qDebug() << "Diff command aborted: Invalid Git repository path.";
-        return "";
+        throw std::invalid_argument("Invalid Git repository path: " + m_RepositoryPath.toStdString());
     }
     qDebug() << "Executing diff command...";
     QString output, error;
@@ -76,8 +70,7 @@ QString GitRepository::Diff(const QStringList &arguments) {
 
 QString GitRepository::Checkout(const QStringList &arguments) {
     if (!m_IsValidRepository) {
-        qDebug() << "Checkout command aborted: Invalid Git repository path.";
-        return "";
+        throw std::invalid_argument("Invalid Git repository path: " + m_RepositoryPath.toStdString());
     }
     qDebug() << "Executing checkout command...";
     QString output, error;
@@ -89,8 +82,7 @@ QString GitRepository::Checkout(const QStringList &arguments) {
 
 QString GitRepository::Log(const QStringList &arguments) {
     if (!m_IsValidRepository) {
-        qDebug() << "Checkout command aborted: Invalid Git repository path.";
-        return "";
+        throw std::invalid_argument("Invalid Git repository path: " + m_RepositoryPath.toStdString());
     }
     qDebug() << "Executing log command...";
     QString output, error;
@@ -102,8 +94,7 @@ QString GitRepository::Log(const QStringList &arguments) {
 
 QString GitRepository::Remote(const QStringList &arguments) {
     if (!m_IsValidRepository) {
-        qDebug() << "Remote command aborted: Invalid Git repository path.";
-        return "";
+        throw std::invalid_argument("Invalid Git repository path: " + m_RepositoryPath.toStdString());
     }
     qDebug() << "Executing remote command...";
     QString output, error;
@@ -113,12 +104,24 @@ QString GitRepository::Remote(const QStringList &arguments) {
     return output;
 }
 
+QString GitRepository::CheckIgnore(const QStringList &arguments) {
+    if (!m_IsValidRepository) {
+        throw std::invalid_argument("Invalid Git repository path: " + m_RepositoryPath.toStdString());
+    }
+
+    qDebug() << "Executing check-ignore command...";
+    QString output, error;
+    m_CheckIgnoreManager.Execute(arguments, output, error);
+    _HandleCommandResult(output, error, m_RemoteManager.GetCommandType());
+    if (!error.isEmpty()) return error;
+    return output;
+}
+
 void GitRepository::SetRepositoryPath(const QString &localRepositoryPath) {
     this->m_RepositoryPath = localRepositoryPath;
     this->m_IsValidRepository = _IsValidGitRepository(localRepositoryPath);
     if (!m_IsValidRepository) {
-        qDebug() << "Invalid Git repository path:" << m_RepositoryPath;
-        return;
+        throw std::invalid_argument("Invalid Git repository path: " + localRepositoryPath.toStdString());
     }
     this->m_Executor.SetPath(localRepositoryPath);
 }

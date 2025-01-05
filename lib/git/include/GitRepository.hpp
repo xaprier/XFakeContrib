@@ -7,6 +7,7 @@
 
 #include "GitAddManager.hpp"
 #include "GitBranchManager.hpp"
+#include "GitCheckIgnoreManager.hpp"
 #include "GitCheckoutManager.hpp"
 #include "GitCommandExecutor.hpp"
 #include "GitCommitManager.hpp"
@@ -18,7 +19,7 @@
 class GitRepository : public QObject {
   public:
     GitRepository(const QString &localRepositoryPath = "", QObject *parent = nullptr);
-    QString Push(const QString &remote = "", const QString &branch = "");
+    QString Push(const QStringList &arguments);
     QString Commit(const QStringList &arguments = {"-m", "Default Commit Message"});
     QString Branch(const QStringList &arguments = {});
     QString Add(const QStringList &arguments = {});
@@ -26,6 +27,7 @@ class GitRepository : public QObject {
     QString Checkout(const QStringList &arguments = {});
     QString Log(const QStringList &arguments = {});
     QString Remote(const QStringList &arguments = {});
+    QString CheckIgnore(const QStringList &arguments = {});
 
     void SetRepositoryPath(const QString &localRepositoryPath = "");
     const QString &GetRepositoryPath() const { return m_RepositoryPath; }
@@ -48,6 +50,7 @@ class GitRepository : public QObject {
     GitCheckoutManager m_CheckoutManager;
     GitLogManager m_LogManager;
     GitRemoteManager m_RemoteManager;
+    GitCheckIgnoreManager m_CheckIgnoreManager;
 };
 
 #endif  // GITREPOSITORY_HPP

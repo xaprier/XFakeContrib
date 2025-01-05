@@ -12,6 +12,7 @@ find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Core Widgets)
 
 file(GLOB CPP_FILES "src/*.cpp")
 file(GLOB HPP_FILES "include/*.hpp")
+file(GLOB TEST_FILES "tests/*")
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
 add_library(${PROJECT_NAME} SHARED ${CPP_FILES} ${HPP_FILES})
@@ -24,14 +25,21 @@ set(LIBRARIES
   faker-cxx
 )
 
-target_link_libraries(${PROJECT_NAME} PRIVATE ${LIBRARIES})
+target_link_libraries(${PROJECT_NAME} PUBLIC ${LIBRARIES})
 target_include_directories(${PROJECT_NAME} PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/tests>
   $<INSTALL_INTERFACE:include/${PROJECT_NAME}>
 )
 
-add_executable(${PROJECT_NAME}_TEST main.cpp)
+enable_testing()
+add_executable(${PROJECT_NAME}_TEST 
+  main.cpp 
+  ${TEST_FILES}
+)
+
 target_link_libraries(${PROJECT_NAME}_TEST ${PROJECT_NAME} ${LIBRARIES})
+add_test(NAME ${PROJECT_NAME}_TEST COMMAND ${PROJECT_NAME}_TEST)
 
 # Installation rules
 install(TARGETS ${PROJECT_NAME}

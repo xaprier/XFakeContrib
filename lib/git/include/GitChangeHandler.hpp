@@ -1,34 +1,34 @@
 #ifndef GITCHANGEHANDLER_HPP
 #define GITCHANGEHANDLER_HPP
 
+#include <QObject>
 #include <memory>
 
-#include "Faker.hpp"
 #include "GitChangeCreate.hpp"
 #include "GitChangeDelete.hpp"
 #include "GitChangeEdit.hpp"
 #include "GitChangeQueue.hpp"
 
-class GitChangeHandler {
+// todo: make tests
+class GitChangeHandler : public QObject {
+    Q_OBJECT
   public:
-    GitChangeHandler(const QString &repoPath = "") : m_RepositoryPath(repoPath) {}
+    GitChangeHandler(QString repoPath = "", QObject *parent = nullptr) : QObject(parent), m_RepositoryPath(std::move(repoPath)) {}
 
     void SetRepositoryPath(const QString &repoPath = "") {
         m_RepositoryPath = repoPath;
     }
 
-    QString GetRepositoryPath() const {
+    [[nodiscard]] QString GetRepositoryPath() const {
         return m_RepositoryPath;
     }
 
-    void CreateChange(const QString &fileName) {
-        QString content = QString::fromStdString(Faker::GetLorem());
+    void CreateChange(const QString &fileName, const QString &content) {
         auto change = std::make_unique<GitChangeCreate>(m_RepositoryPath, fileName, content);
         m_ChangeQueue.AddChange(std::move(change));
     }
 
-    void EditChange(const QString &fileName) {
-        QString content = QString::fromStdString(Faker::GetLorem());
+    void EditChange(const QString &fileName, const QString &content) {
         auto change = std::make_unique<GitChangeEdit>(m_RepositoryPath, fileName, content);
         m_ChangeQueue.AddChange(std::move(change));
     }

@@ -4,3 +4,6 @@
 [submodule "lib/logger"]
 	path = lib/logger
 	url = https://github.com/xaprier/logger.git
+[submodule "lib/widgets/XQCircularLoadingIndicator"]
+	path = lib/widgets/XQCircularLoadingIndicator
+	url = git@github.com:xaprier/XQCircularLoadingIndicator.git
