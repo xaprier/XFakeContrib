@@ -1,0 +1,15 @@
+#ifndef REPOSITORYTABLETYPE_HPP
+#define REPOSITORYTABLETYPE_HPP
+
+enum RepositoryTableType {
+    REPO_PATH = -1,
+    REPO_STATUS = 0,
+    REPO_NAME,
+    REPO_BRANCH,
+    REPO_REMOTE,
+    REPO_COMMIT_FILE,
+    REPO_LOG,
+    REPO_PUSH,
+};
+
+#endif  // REPOSITORYTABLETYPE_HPP

@@ -1,30 +1,28 @@
 #ifndef REPOSITORYCARD_HPP
 #define REPOSITORYCARD_HPP
 
+#include <QPointer>
 #include <QWidget>
 
-#include "GitChangeHandler.hpp"
-#include "GitRepository.hpp"
 #include "RepositoryCardConnections.hpp"
+#include "RepositoryTableView.hpp"
 #include "Settings.hpp"
 
 namespace Ui {
 class RepositoryCardUI;
 }
 
-class RepositoryCard : public QWidget {
+class RepositoryCard final : public QWidget {
+    Q_OBJECT
+    Q_DISABLE_COPY_MOVE(RepositoryCard)
   public:
     RepositoryCard(QWidget *parent = nullptr);
-    ~RepositoryCard();
+    ~RepositoryCard() final;
 
   private:
-    void _LoadRepositories();
-
-  private:
-    RepositoryCardConnections *m_Connections;
-    GitRepository *m_Repository;
-    GitChangeHandler *m_Handler;
-    Settings *m_Settings;
+    QPointer<RepositoryCardConnections> m_Connections;
+    QPointer<RepositoryTableView> m_Repositories;
+    QPointer<Settings> m_Settings;
     Ui::RepositoryCardUI *m_Ui;
 };
 

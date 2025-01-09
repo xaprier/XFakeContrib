@@ -1,45 +1,60 @@
 #ifndef REPOSITORYCARDCONNECTIONS_HPP
 #define REPOSITORYCARDCONNECTIONS_HPP
 
+#include <QFuture>
+#include <QFutureWatcher>
+#include <QList>
 #include <QObject>
 
-#include "GitChangeHandler.hpp"
-#include "GitRepository.hpp"
 #include "Settings.hpp"
 
 namespace Ui {
 class RepositoryCardUI;
 }
 
-class RepositoryCardConnections : public QObject {
+// Forward declaration for item
+class RepositoryTableItem;
+
+class RepositoryCardConnections final : public QObject {
     Q_OBJECT
     Q_DISABLE_COPY_MOVE(RepositoryCardConnections)
   public:
-    explicit RepositoryCardConnections(Settings *settings, GitChangeHandler *changeHandler, GitRepository *repository, Ui::RepositoryCardUI *ui, QObject *base = nullptr);
-    ~RepositoryCardConnections() = default;
+    explicit RepositoryCardConnections(QList<RepositoryTableItem *> items, Settings *settings, Ui::RepositoryCardUI *ui, QObject *base = nullptr);
+    ~RepositoryCardConnections() final;
 
-  protected:
-    void sl_LogButtonClicked(bool checked);
+  protected slots:
     void sl_CreateCommitsButtonClicked(bool checked);
     void sl_PushButtonClicked(bool checked);
-    void sl_SelectCommitFileClicked(bool checked);
-    void sl_RepositoryIndexChanged(int index);
-    void sl_BranchIndexChanged(int index);
     void sl_CommitCountCBStateChanged(int state);
     void sl_DateCBStateChanged(int state);
     void sl_CommitMessageCBStateChanged(int state);
     void sl_CommitContentCBStateChanged(int state);
 
-  private:
-    void _SetupConnections();
-    void _LoadBranches();
+    void sl_StartDateChanged(const QDate &date);
+    void sl_EndDateChanged(const QDate &date);
+
+    void sl_CommitterFinished();
+    void sl_AllCommittersFinished();
+
+    void sl_ItemPushCompleted(QFutureWatcher<void> *watcher);
 
   private:
+    void _SetupConnections();
+    void _SetupDates();
+    void _WidgetsSetEnabled(bool enabled);
+    void _UpdateButtonsStatus();
+
+    [[nodiscard]] quint32 _GetCommitCount() const;
+    [[nodiscard]] QString _GetCommitMessage() const;
+    [[nodiscard]] QString _GetCommitContent() const;
+
+    void _CreateCommits(const QDate &startDate, const QDate &endDate);
+
+  private:
+    QList<QFutureWatcher<void> *> m_PushWatchers;
+    QList<RepositoryTableItem *> m_Items;
     Ui::RepositoryCardUI *m_Ui;
-    GitRepository *m_Repository;
-    GitChangeHandler *m_Handler;
     Settings *m_Settings;
-    QString m_CommitFile;
 };
 
 #endif  // REPOSITORYCARDCONNECTIONS_HPP

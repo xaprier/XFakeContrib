@@ -1,91 +1,149 @@
 #include "RepositoryCardConnections.hpp"
 
+#include <qfuturewatcher.h>
+#include <qglobal.h>
+#include <qmessagebox.h>
+#include <qpushbutton.h>
+#include <unistd.h>
+
 #include <QFileDialog>
+#include <QMessageBox>
+#include <QRandomGenerator>
+#include <QtConcurrent>
+#include <cmath>
 
 #include "../design/ui_RepositoryCardUI.h"
-#include "LogDialog.hpp"
+#include "RepositoryCardCreateCommits.hpp"
+#include "RepositoryCardPush.hpp"
+#include "RepositoryTableItem.hpp"
+#include "XQCircularLoadingIndicator.hpp"
 
-RepositoryCardConnections::RepositoryCardConnections(Settings *settings, GitChangeHandler *changeHandler, GitRepository *repository, Ui::RepositoryCardUI *ui, QObject *base) : QObject(base), m_Ui(ui), m_Handler(changeHandler), m_Repository(repository), m_Settings(settings) {
+RepositoryCardConnections::RepositoryCardConnections(QList<RepositoryTableItem *> items, Settings *settings, Ui::RepositoryCardUI *ui, QObject *base) : QObject(base), m_Ui(ui), m_Settings(settings), m_Items(std::move(items)) {
     this->_SetupConnections();
+    this->_SetupDates();
+    this->_UpdateButtonsStatus();  // updating widgets according to item count
+}
+
+RepositoryCardConnections::~RepositoryCardConnections() {
+    for (auto watcher : m_PushWatchers) {
+        watcher->future().cancel();
+        watcher->future().waitForFinished();
+        watcher->deleteLater();
+    }
 }
 
 void RepositoryCardConnections::_SetupConnections() {
-    connect(m_Ui->logPB, &QPushButton::clicked, this, &RepositoryCardConnections::sl_LogButtonClicked);
-    connect(m_Ui->createCommitsPB, &QPushButton::clicked, this, &RepositoryCardConnections::sl_CreateCommitsButtonClicked);
-    connect(m_Ui->pushPB, &QPushButton::clicked, this, &RepositoryCardConnections::sl_PushButtonClicked);
-    connect(m_Ui->commitFilePB, &QPushButton::clicked, this, &RepositoryCardConnections::sl_SelectCommitFileClicked);
-    connect(m_Ui->repositoriesCombo, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &RepositoryCardConnections::sl_RepositoryIndexChanged);
-    connect(m_Ui->branchCombo, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &RepositoryCardConnections::sl_BranchIndexChanged);
+    auto pushButton = qobject_cast<QPushButton *>(m_Ui->pushPB->Item(RepositoryCardPush::Status::BUTTON));
+    if (!pushButton) {
+        qWarning() << "Failed to cast from RepositoryCardPush to QPushButton.";
+    } else {
+        connect(pushButton, &QPushButton::clicked, this, &RepositoryCardConnections::sl_PushButtonClicked);
+    }
+
+    auto createCommitsButton = qobject_cast<QPushButton *>(m_Ui->createCommitsPB->Item(RepositoryCardCreateCommits::Status::BUTTON));
+    if (!createCommitsButton) {
+        qWarning() << "Failed to cast from RepositoryCardCreateCommits to QPushButton.";
+    } else {
+        connect(createCommitsButton, &QPushButton::clicked, this, &RepositoryCardConnections::sl_CreateCommitsButtonClicked);
+    }
+
     connect(m_Ui->commitCountCB, &QCheckBox::stateChanged, this, &RepositoryCardConnections::sl_CommitCountCBStateChanged);
     connect(m_Ui->dateCB, &QCheckBox::stateChanged, this, &RepositoryCardConnections::sl_DateCBStateChanged);
     connect(m_Ui->commitMessageCB, &QCheckBox::stateChanged, this, &RepositoryCardConnections::sl_CommitMessageCBStateChanged);
     connect(m_Ui->commitContentCB, &QCheckBox::stateChanged, this, &RepositoryCardConnections::sl_CommitContentCBStateChanged);
+    connect(m_Ui->commitMessageLE, &QLineEdit::textChanged, [this]() { this->_UpdateButtonsStatus(); });
+    connect(m_Ui->commitContentLE, &QLineEdit::textChanged, [this]() { this->_UpdateButtonsStatus(); });
+    connect(m_Ui->commitContentCB, &QCheckBox::stateChanged, [this]() { this->_UpdateButtonsStatus(); });
+    connect(m_Ui->commitMessageCB, &QCheckBox::stateChanged, [this]() { this->_UpdateButtonsStatus(); });
+
+    for (auto item : m_Items) {
+        connect(item, &RepositoryTableItem::si_StatusChanged, [this]() { this->_UpdateButtonsStatus(); });
+        connect(item, &RepositoryTableItem::si_CommitterFinished, this, &RepositoryCardConnections::sl_CommitterFinished);
+        connect(item, &RepositoryTableItem::si_AllCommittersFinished, this, &RepositoryCardConnections::sl_AllCommittersFinished);
+        connect(item, &RepositoryTableItem::si_FileSelected, [this]() { this->_UpdateButtonsStatus(); });
+    }
 }
 
-void RepositoryCardConnections::sl_LogButtonClicked(bool checked) {
-    auto log = m_Repository->Log();
-    auto directory = m_Ui->repositoriesCombo->currentText();
-    LogDialog dialog(directory + " Log", log, m_Ui->logPB);
-    dialog.exec();
+void RepositoryCardConnections::_SetupDates() {
+    QDateEdit *start = m_Ui->startDateDE;
+    QDateEdit *end = m_Ui->endDateDE;
+
+    // max date can be today
+    auto currentDate = QDate::currentDate();
+    end->setMaximumDate(currentDate);
+    start->setMaximumDate(currentDate);
+}
+
+void RepositoryCardConnections::_WidgetsSetEnabled(bool enabled) {
+    this->m_Ui->GL_Main->setEnabled(enabled);  // we can disable main layout directly
 }
 
 void RepositoryCardConnections::sl_CreateCommitsButtonClicked(bool checked) {
-}
+    auto selectedItems = QList<RepositoryTableItem *>();
+    for (auto item : m_Items) {
+        if (item->IsEnabled()) {
+            selectedItems << item;
+        }
+    }
 
-void RepositoryCardConnections::sl_PushButtonClicked(bool checked) {
-}
-
-void RepositoryCardConnections::sl_SelectCommitFileClicked(bool checked) {
-    auto dir = m_Ui->repositoriesCombo->currentData(Qt::ToolTipRole).toString();
-    auto file = QFileDialog::getOpenFileName(m_Ui->commitFilePB, QObject::tr("Select Commit File"), dir, QObject::tr("Text Files (*.txt);All Files (*)"));
-    if (file.isEmpty())
-        return;
-
-    // check file is writeable
-    if (!QFile::exists(file) || !QFile::permissions(file).testFlag(QFileDevice::WriteUser)) {
-        m_Ui->commitFilePB->setText(QObject::tr("Selected File: ") + QObject::tr("File is not writeable"));
+    // guarding no item selected
+    if (selectedItems.isEmpty()) {
+        QMessageBox::critical(m_Ui->createCommitsPB, QObject::tr("Error"), QObject::tr("There are no selected items to create commits. Please select items first"));
         return;
     }
 
-    // get file name only
-    auto fileName = file.split('/').last();
-    m_Ui->commitFilePB->setText(QObject::tr("Selected File: ") + fileName);
-    this->m_CommitFile = file;
+    // guarding file selected
+    auto filesSelected = true;
+    for (auto item : selectedItems) {
+        // if there is no file selected on enabled items, return
+        if (!item->IsFileSelected()) {
+            filesSelected = false;
+            break;
+        }
+    }
 
-    // enable create commit button for file selected
-    m_Ui->createCommitsPB->setDisabled(false);
-    m_Ui->createCommitsPB->setToolTip("");
+    if (!filesSelected) {
+        QMessageBox::critical(m_Ui->createCommitsPB, QObject::tr("Error"), QObject::tr("There is no file selected for enabled repository. Please select files for enable repositories"));
+        return;
+    }
+
+    // get date range
+    auto startDate = m_Ui->dateCB->isChecked() ? QDate::currentDate() : m_Ui->startDateDE->date();
+    auto endDate = m_Ui->dateCB->isChecked() ? QDate::currentDate() : m_Ui->endDateDE->date();
+
+    // create commits
+    this->_CreateCommits(startDate, endDate);
 }
 
-void RepositoryCardConnections::sl_RepositoryIndexChanged(int index) {
-    // set repository path...
-    m_Repository->SetRepositoryPath(m_Ui->repositoriesCombo->currentData(Qt::ToolTipRole).toString());
-    // ...and load branches again because of repository change
-    this->_LoadBranches();
-    // update remote url
-    auto remote = m_Repository->Remote({"get-url", m_Repository->Remote({}).split('\n').first()}).trimmed();
-    m_Ui->remoteUrlLE->setText(remote);
+void RepositoryCardConnections::sl_PushButtonClicked(bool checked) {
+    // turn push button to loading indicator
+    for (auto item : m_Items) {
+        // check if selected, otherwise continue
+        if (!item->IsEnabled()) continue;
 
-    // reset commit file
-    m_Ui->commitFilePB->setText(QObject::tr("Select Commit File(Not Selected)"));
-    this->m_CommitFile.clear();
+        // create future for every push operation
+        auto future = QtConcurrent::run(item, &RepositoryTableItem::Push);
 
-    // disable create commit button for no file selected
-    m_Ui->createCommitsPB->setDisabled(true);
-    m_Ui->createCommitsPB->setToolTip(QObject::tr("Select a commit file first"));
-}
+        // watch future to completed
+        auto watcher = new QFutureWatcher<void>(this);  // NOLINT
 
-void RepositoryCardConnections::sl_BranchIndexChanged(int index) {
-    // set branch
-    auto branch = m_Ui->branchCombo->currentText();
-    if (branch.isEmpty()) return;
+        // Capture the index and connect the finished signal to the slot
+        connect(watcher, &QFutureWatcher<void>::finished, this, [this, watcher]() {
+            sl_ItemPushCompleted(watcher);
+        });
 
-    if (branch.startsWith("* ")) return;  // current branch
+        // set watcher to watch future
+        watcher->setFuture(future);
 
-    m_Repository->Checkout({"-f", m_Ui->branchCombo->currentText()});
-    m_Ui->branchCombo->blockSignals(true);
-    this->_LoadBranches();  // load branches because of branch change
-    m_Ui->branchCombo->blockSignals(false);
+        m_PushWatchers.append(watcher);
+    }
+
+    if (!m_PushWatchers.isEmpty()) {
+        auto indicator = qobject_cast<xaprier::qt::widgets::XQCircularLoadingIndicator *>(m_Ui->pushPB->Item(RepositoryCardPush::Status::LOADING));
+        if (indicator)
+            indicator->setToolTip(QObject::tr("Remained pushes: %1").arg(m_PushWatchers.size()));
+        this->m_Ui->pushPB->SetLoading();
+    }
 }
 
 void RepositoryCardConnections::sl_CommitCountCBStateChanged(int state) {
@@ -112,24 +170,220 @@ void RepositoryCardConnections::sl_CommitContentCBStateChanged(int state) {
     m_Ui->commitContentLE->setDisabled(disable);
 }
 
-void RepositoryCardConnections::_LoadBranches() {
-    auto branches = m_Repository->Branch({"-a"}).split('\n');
-    // we should delete first two characters if they are whitespaces because of indentation
-    for (auto &branch : branches)
-        if (branch.startsWith("  "))
-            branch.remove(0, 2);
+void RepositoryCardConnections::sl_StartDateChanged(const QDate &date) {
+    // if start date bigger than end date, cancel
+    QDateEdit *start = m_Ui->startDateDE;
+    QDateEdit *end = m_Ui->endDateDE;
 
-    // remove empty branches and branches that start with "remote"
-    branches.erase(std::remove_if(branches.begin(), branches.end(), [](const QString &branch) { return branch.isEmpty() || branch.startsWith("remote"); }), branches.end());
-    m_Ui->branchCombo->clear();
-    for (const auto &branch : branches) {
-        m_Ui->branchCombo->addItem(branch);
+    start->blockSignals(true);
+    if (date > end->date()) {
+        QMessageBox::warning(start, QObject::tr("Date Error"), QObject::tr("Starting date cannot be bigger than end date."));
+        // Cancel by resetting the start date to the end date
+        start->setDate(end->date());
+    }
+    start->blockSignals(false);
+}
+
+void RepositoryCardConnections::sl_EndDateChanged(const QDate &date) {
+    // if end date lesser than start date, cancel
+    QDateEdit *start = m_Ui->startDateDE;
+    QDateEdit *end = m_Ui->endDateDE;
+
+    end->blockSignals(true);
+    if (date < start->date()) {
+        QMessageBox::warning(start, QObject::tr("Date Error"), QObject::tr("End date cannot be lesser than start date."));
+        // Cancel by resetting the end date to the start date
+        end->setDate(start->date());
+    }
+    end->blockSignals(false);
+}
+
+void RepositoryCardConnections::sl_CommitterFinished() {
+    // update tooltip to "all" remained status
+    int remained = 0;
+    for (auto item : m_Items) {
+        if (!item->IsEnabled()) continue;
+
+        remained += item->GetCommitterCount();
     }
 
-    // set current branch in comboBox
-    this->m_Ui->branchCombo->blockSignals(true);
-    auto currentBranch = this->m_Ui->branchCombo->findText("* " + m_Repository->Branch({"--show-current"}).trimmed());
-    if (currentBranch != -1)
-        this->m_Ui->branchCombo->setCurrentIndex(currentBranch);
-    this->m_Ui->branchCombo->blockSignals(false);
+    m_Ui->pushPB->setToolTip(QObject::tr("Creating commits(%1)").arg(remained));
+
+    auto indicator = qobject_cast<xaprier::qt::widgets::XQCircularLoadingIndicator *>(m_Ui->createCommitsPB->Item(RepositoryCardCreateCommits::Status::LOADING));
+
+    if (!indicator) {
+        qWarning() << "Failed to cast from RepositoryCardCreateCommits to XQCircularLoadingIndicator";
+        return;
+    }
+
+    indicator->setToolTip(QObject::tr("Creating commits(%1)").arg(remained));
+}
+
+void RepositoryCardConnections::sl_AllCommittersFinished() {
+    // enable button
+    m_Ui->pushPB->setEnabled(true);
+    m_Ui->pushPB->setToolTip(QObject::tr("Push all latest changes to remote"));
+
+    m_Ui->createCommitsPB->SetButton();
+    QMessageBox::information(m_Ui->createCommitsPB, QObject::tr("Success"), QObject::tr("All commits are created successfully"));
+
+    auto indicator = qobject_cast<xaprier::qt::widgets::XQCircularLoadingIndicator *>(m_Ui->createCommitsPB->Item(RepositoryCardCreateCommits::Status::LOADING));
+
+    if (!indicator) {
+        qWarning() << "Failed to cast from RepositoryCardCreateCommits to XQCircularLoadingIndicator";
+        return;
+    }
+
+    indicator->setToolTip("");  // clear tooltip
+    this->_WidgetsSetEnabled(true);
+}
+
+void RepositoryCardConnections::sl_ItemPushCompleted(QFutureWatcher<void> *watcher) {
+    m_PushWatchers.removeOne(watcher);
+
+    auto indicator = qobject_cast<xaprier::qt::widgets::XQCircularLoadingIndicator *>(m_Ui->pushPB->Item(RepositoryCardPush::Status::LOADING));
+    if (indicator)
+        indicator->setToolTip(QObject::tr("Remained pushes: %1").arg(m_PushWatchers.size()));
+
+    watcher->deleteLater();
+
+    if (m_PushWatchers.isEmpty()) {
+        // turn loading indicator to button
+        this->m_Ui->pushPB->SetButton();
+    }
+}
+
+quint32 RepositoryCardConnections::_GetCommitCount() const {
+    auto random = this->m_Ui->commitCountCB->isChecked();
+
+    if (random) {
+        QRandomGenerator generator;
+        auto settings = Settings::Instance();
+        return generator.bounded(quint32(1), settings->GetRandomMax());  // todo: highest value should come from config
+    }
+
+    return this->m_Ui->commitCountSP->value();
+}
+
+QString RepositoryCardConnections::_GetCommitMessage() const {
+    auto random = this->m_Ui->commitMessageCB->isChecked();
+    return random ? "" : this->m_Ui->commitMessageLE->text();
+}
+
+QString RepositoryCardConnections::_GetCommitContent() const {
+    auto random = this->m_Ui->commitContentCB->isChecked();
+    return random ? "" : this->m_Ui->commitContentLE->text();
+}
+
+void RepositoryCardConnections::_CreateCommits(const QDate &startDate, const QDate &endDate) {
+    // update button status
+    m_Ui->createCommitsPB->SetLoading();
+    m_Ui->pushPB->setDisabled(true);
+    this->_WidgetsSetEnabled(false);
+
+    // create commits between dates
+    auto currentDate = startDate;
+    auto index = 0;
+    quint32 totalCommitCount = 0;
+    while (currentDate <= endDate) {
+        // get initials
+        auto commitCount = this->_GetCommitCount();
+        auto commitMessage = this->_GetCommitMessage();
+        auto commitContent = this->_GetCommitContent();
+
+        // use item signal to create a committer
+        emit m_Items[index]->si_CreateCommitter(commitCount, currentDate, commitMessage, commitContent);
+
+        // update initials
+        currentDate = currentDate.addDays(1);
+        index = ++index % m_Items.size();
+        totalCommitCount += commitCount;
+    }
+    m_Ui->pushPB->setToolTip(QObject::tr("Creating commits(%1)").arg(totalCommitCount));
+
+    auto indicator = qobject_cast<xaprier::qt::widgets::XQCircularLoadingIndicator *>(m_Ui->createCommitsPB->Item(RepositoryCardCreateCommits::Status::LOADING));
+
+    if (!indicator) {
+        qWarning() << "Failed to cast from RepositoryCardCreateCommits to XQCircularLoadingIndicator";
+        return;
+    }
+
+    indicator->setToolTip(QObject::tr("Creating commits(%1)").arg(totalCommitCount));
+}
+
+void RepositoryCardConnections::_UpdateButtonsStatus() {
+    QList<RepositoryTableItem *> selectedRepos;
+    bool atLeastOneRepoSelected = false;
+    bool allFilesAreWritable = true;
+    bool allFilesAreSelected = true;
+
+    for (auto item : m_Items) {
+        if (item->IsEnabled()) {
+            selectedRepos << item;
+            allFilesAreSelected &= item->IsFileSelected();
+            allFilesAreWritable &= item->IsFileWritable();
+        }
+    }
+
+    atLeastOneRepoSelected = !selectedRepos.isEmpty();
+
+    auto createCommitsPB = qobject_cast<QPushButton *>(m_Ui->createCommitsPB->Item(RepositoryCardCreateCommits::Status::BUTTON));
+    auto pushPB = qobject_cast<QPushButton *>(m_Ui->pushPB->Item(RepositoryCardPush::Status::BUTTON));
+
+    if (!pushPB || !createCommitsPB) {
+        qWarning() << "Failed to cast from RepositoryCardPush to QPushButton or RepositoryCardCreateCommits to QPushButton";
+        return;
+    }
+
+    if (!atLeastOneRepoSelected) {
+        pushPB->setDisabled(true);
+        pushPB->setToolTip(QObject::tr("There must be at least one repository selected."));
+        createCommitsPB->setDisabled(true);
+        createCommitsPB->setToolTip(QObject::tr("There must be at least one repository selected."));
+        return;
+    } else {
+        pushPB->setDisabled(false);
+        pushPB->setToolTip("");
+        createCommitsPB->setDisabled(false);
+        createCommitsPB->setToolTip("");
+    }
+
+    if (!allFilesAreSelected) {
+        createCommitsPB->setDisabled(true);
+        createCommitsPB->setToolTip(QObject::tr("Commit file must be selected for all selected repositories."));
+        return;
+    } else {
+        createCommitsPB->setDisabled(false);
+        createCommitsPB->setToolTip("");
+    }
+
+    if (!allFilesAreWritable) {
+        createCommitsPB->setDisabled(true);
+        createCommitsPB->setToolTip(QObject::tr("Selected file must be writable for all selected repositories."));
+        return;
+    } else {
+        createCommitsPB->setDisabled(false);
+        createCommitsPB->setToolTip("");
+    }
+
+    auto randomContent = m_Ui->commitContentCB->isChecked();
+    auto randomMessage = m_Ui->commitMessageCB->isChecked();
+
+    if (!randomMessage && m_Ui->commitMessageLE->text().isEmpty()) {
+        createCommitsPB->setDisabled(true);
+        createCommitsPB->setToolTip(QObject::tr("Commit message must be filled."));
+        return;
+    } else {
+        createCommitsPB->setDisabled(false);
+        createCommitsPB->setToolTip("");
+    }
+
+    if (!randomContent && m_Ui->commitContentLE->text().isEmpty()) {
+        createCommitsPB->setDisabled(true);
+        createCommitsPB->setToolTip(QObject::tr("Commit content must be filled."));
+        return;
+    } else {
+        createCommitsPB->setDisabled(false);
+        createCommitsPB->setToolTip("");
+    }
 }
