@@ -12,6 +12,7 @@
  * one instance of the Config class exists throughout the application's lifetime.
  */
 class Settings final : public QSettings {  // NOLINT
+    Q_OBJECT
   public:
     /// Disable copy constructor.
     Settings(const Settings &) = delete;
