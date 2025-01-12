@@ -5,6 +5,7 @@ set(
   "${CMAKE_CURRENT_SOURCE_DIR}/XQWidgetComposer" # get external XQWidgetComposer
   "${CMAKE_CURRENT_SOURCE_DIR}/ContribCard" # get ContribCard
   "${CMAKE_CURRENT_SOURCE_DIR}/RepositoryCard" # get RepositoryCard
+  "${CMAKE_CURRENT_SOURCE_DIR}/RepositoryManagerCard" # get RepositoryManagerCard
 )
 
 foreach(DIRECTORY ${DIRECTORIES_TO_CHECK})
