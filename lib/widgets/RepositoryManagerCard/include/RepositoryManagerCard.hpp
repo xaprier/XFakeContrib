@@ -25,6 +25,8 @@ class RepositoryManagerCard final : public QWidget {
   private slots:
     void sl_RepositoryAddClicked(bool checked);
     void sl_RepositoryDeleteClicked(bool checked);
+    void sl_RepositoryUpdateClicked(bool checked);
+
     void sl_BranchCreateClicked(bool checked);
     void sl_BranchDeleteClicked(bool checked);
 

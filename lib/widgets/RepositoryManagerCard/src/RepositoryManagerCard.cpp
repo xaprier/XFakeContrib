@@ -1,9 +1,13 @@
 #include "RepositoryManagerCard.hpp"
 
 #include <qinputdialog.h>
+#include <qmessagebox.h>
+#include <qnamespace.h>
+#include <qobject.h>
 
 #include <QFileDialog>
 #include <QMessageBox>
+#include <QPushButton>
 #include <QSpacerItem>
 
 #include "../design/ui_RepositoryManagerCardUI.h"
@@ -64,26 +68,49 @@ void RepositoryManagerCard::_SetupButtons() {
     this->m_Ui->HL_branchButtonLayout->addSpacerItem(new QSpacerItem(0, 0, QSizePolicy::MinimumExpanding, QSizePolicy::Fixed));  // NOLINT
     this->m_Ui->HL_branchButtonLayout->addWidget(m_BranchDelete);
     this->m_Ui->HL_branchButtonLayout->addSpacerItem(new QSpacerItem(0, 0, QSizePolicy::MinimumExpanding, QSizePolicy::Fixed));  // NOLINT
-    // todo: set button icons
+
+    // todo: create sl_updaterepositoryclicked, create a qfiledialog and select a git repository
+
+    QIcon addIcon(":/icons/icons/add.png");
+    QIcon updateIcon(":/icons/icons/reload.png");
+    QIcon deleteIcon(":/icons/icons/delete.png");
+
+    if (addIcon.isNull() || updateIcon.isNull() || deleteIcon.isNull())
+        QMessageBox::critical(this, QObject::tr("Error"), QObject::tr("Icons are not found."));
+
+    m_RepositoryAdd->SetButtonIcon(addIcon);
+    m_RepositoryAdd->SetButtonText(QObject::tr("Add"));
+    m_RepositoryUpdate->SetButtonIcon(updateIcon);
+    m_RepositoryUpdate->SetButtonText(QObject::tr("Update"));
+    m_RepositoryDelete->SetButtonIcon(deleteIcon);
+    m_RepositoryDelete->SetButtonText(QObject::tr("Delete"));
+
+    m_BranchCreate->SetButtonIcon(addIcon);
+    m_BranchCreate->SetButtonText(QObject::tr("Create"));
+    m_BranchUpdate->SetButtonIcon(updateIcon);
+    m_BranchUpdate->SetButtonText(QObject::tr("Update"));
+    m_BranchDelete->SetButtonIcon(deleteIcon);
+    m_BranchDelete->SetButtonText(QObject::tr("Delete"));
 }
 
 void RepositoryManagerCard::_SetupConnections() {
     connect(m_RepositoryAdd, &RepositoryManagerComposedButton::si_ButtonClicked, this, &RepositoryManagerCard::sl_RepositoryAddClicked);
-    connect(m_RepositoryUpdate, &RepositoryManagerComposedButton::si_ButtonClicked, [this]() {
-        auto item = this->m_Ui->repositoryListWidget->currentItem();
-        this->m_Ui->repositoryListWidget->editItem(item);
-    });
+    connect(m_RepositoryUpdate, &RepositoryManagerComposedButton::si_ButtonClicked, this, &RepositoryManagerCard::sl_RepositoryUpdateClicked);
     connect(m_RepositoryDelete, &RepositoryManagerComposedButton::si_ButtonClicked, this, &RepositoryManagerCard::sl_RepositoryDeleteClicked);
 
     connect(m_BranchCreate, &RepositoryManagerComposedButton::si_ButtonClicked, this, &RepositoryManagerCard::sl_BranchCreateClicked);
     connect(m_BranchUpdate, &RepositoryManagerComposedButton::si_ButtonClicked, [this]() {
+        if (this->m_Ui->branchListWidget->selectedItems().isEmpty()) {
+            QMessageBox::critical(this, QObject::tr("Error"), QObject::tr("There is no selected branch to update"));
+            return;
+        }
         auto item = this->m_Ui->branchListWidget->currentItem();
         this->m_Ui->branchListWidget->editItem(item);
     });
     connect(m_BranchDelete, &RepositoryManagerComposedButton::si_ButtonClicked, this, &RepositoryManagerCard::sl_BranchDeleteClicked);
 
     connect(this->m_Ui->repositoryListWidget, &QListWidget::currentRowChanged, this, &RepositoryManagerCard::sl_CurrentRowChangedForRepository);
-    connect(this->m_Ui->repositoryListWidget, &QListWidget::itemChanged, this, &RepositoryManagerCard::sl_ItemChangedForRepository);
+    connect(this->m_Ui->repositoryListWidget, &QListWidget::itemDoubleClicked, this, &RepositoryManagerCard::sl_RepositoryUpdateClicked);
 
     connect(this->m_Ui->branchListWidget, &QListWidget::itemChanged, this, &RepositoryManagerCard::sl_ItemChangedForBranch);
     connect(this->m_Ui->branchListWidget, &QListWidget::itemClicked, [this](QListWidgetItem *item) {
@@ -101,20 +128,24 @@ void RepositoryManagerCard::_LoadRepositories() {
         // if no repositories found, disable all buttons and comboBoxes with giving information to user
         _NoRepositoriesFound(m_Repositories.isEmpty());
 
+        if (m_Repositories.isEmpty()) return;
+
         this->m_Ui->repositoryListWidget->blockSignals(true);
         this->m_Ui->repositoryListWidget->clear();
 
         // add items as editable
         for (const auto &repository : m_Repositories) {
-            auto item = new QListWidgetItem(repository);  // NOLINT
-            item->setFlags(item->flags() | Qt::ItemIsEditable);
+            // get the last part of the path
+            auto path = repository.split('/').last();
+            auto item = new QListWidgetItem(path);  // NOLINT
+            item->setToolTip(repository);
             this->m_Ui->repositoryListWidget->addItem(item);
         }
 
         this->m_Ui->repositoryListWidget->setCurrentRow(0);
         this->m_Ui->repositoryListWidget->blockSignals(false);
 
-        auto path = this->m_Ui->repositoryListWidget->selectedItems().at(0)->text();  // first item
+        auto path = this->m_Ui->repositoryListWidget->selectedItems().at(0)->toolTip();  // first item
         if (m_GitRepository)
             m_GitRepository->SetRepositoryPath(path);
         else
@@ -204,7 +235,12 @@ void RepositoryManagerCard::sl_RepositoryAddClicked(bool checked) {
         }
 
         // Check for duplicates in the repository list
-        if (m_Repositories.contains(selectedPath)) {
+        QStringList repositoryPaths;
+        for (int i = 0; i < this->m_Ui->repositoryListWidget->count(); i++) {
+            repositoryPaths.append(this->m_Ui->repositoryListWidget->item(i)->toolTip());
+        }
+
+        if (repositoryPaths.contains(selectedPath)) {
             QMessageBox::information(this, QObject::tr("Info"), QObject::tr("The selected repository is already added."));
             return;
         }
@@ -235,10 +271,76 @@ void RepositoryManagerCard::sl_RepositoryDeleteClicked(bool checked) {
         }
 
         auto selectedItem = widget->selectedItems().at(0);
-        auto path = selectedItem->text();
+        auto path = selectedItem->toolTip();
 
         // update repositories
         m_Repositories.removeOne(path);
+        m_Settings->SetRepositories(m_Repositories);
+        this->_LoadRepositories();
+    } catch (const std::exception &e) {
+        QMessageBox::critical(this, QObject::tr("Error"), QObject::tr("An error occured: %1").arg(e.what()));
+    }
+}
+
+void RepositoryManagerCard::sl_RepositoryUpdateClicked(bool checked) {
+    try {
+        // check if there is a selected item
+        if (this->m_Ui->repositoryListWidget->selectedItems().isEmpty()) {
+            QMessageBox::critical(this, QObject::tr("Error"), QObject::tr("There is no selected repository to update"));
+            return;
+        }
+
+        QFileDialog dialog(this, QObject::tr("Select Repository Path"));
+        dialog.setDirectory(QDir::homePath());
+        dialog.setFileMode(QFileDialog::Directory);
+        dialog.setOption(QFileDialog::ShowDirsOnly);
+        QString selectedPath = "";
+        if (dialog.exec()) {
+            selectedPath = dialog.selectedFiles().first();
+        }
+
+        // validate path is not empty
+        if (selectedPath.isEmpty()) {
+            QMessageBox::critical(this, QObject::tr("Error"), QObject::tr("No path was selected."));
+            return;
+        }
+
+        QDir dir(selectedPath);
+        // Check if the directory exists
+        if (!dir.exists()) {
+            QMessageBox::critical(this, QObject::tr("Error"), QObject::tr("Directory not exists: %1").arg(selectedPath));
+            return;
+        }
+
+        // validate permissions of the selected path
+        if (!QFile::permissions(selectedPath).testFlag(QFileDevice::WriteUser)) {
+            QMessageBox::critical(this, QObject::tr("Error"), QObject::tr("Cannot write to the selected path: %1").arg(selectedPath));
+            return;
+        }
+
+        // Check for duplicates in the repository list
+        QStringList repositoryPaths;
+        for (int i = 0; i < this->m_Ui->repositoryListWidget->count(); i++) {
+            repositoryPaths.append(this->m_Ui->repositoryListWidget->item(i)->toolTip());
+        }
+
+        if (repositoryPaths.contains(selectedPath)) {
+            QMessageBox::information(this, QObject::tr("Info"), QObject::tr("The selected repository is already added."));
+            return;
+        }
+
+        // check for a specific marker file or directory, e.g., `.git`
+        if (!dir.exists(".git")) {
+            QMessageBox::critical(this, QObject::tr("Error"), QObject::tr("No repository found in directory: %1\nPlease make sure the directory contains .git directory").arg(selectedPath));
+            return;
+        }
+
+        // update repositories with new path
+        auto selectedItem = this->m_Ui->repositoryListWidget->selectedItems().at(0);
+        auto oldPath = selectedItem->toolTip();
+
+        auto indexOld = m_Repositories.indexOf(oldPath);
+        m_Repositories.replace(indexOld, selectedPath);
         m_Settings->SetRepositories(m_Repositories);
         this->_LoadRepositories();
     } catch (const std::exception &e) {
@@ -251,6 +353,8 @@ void RepositoryManagerCard::sl_BranchCreateClicked(bool checked) {
         QInputDialog dialog(this);
         dialog.setInputMode(QInputDialog::TextInput);
         dialog.setToolTip(QObject::tr("Enter branch name"));
+        dialog.setLabelText(QObject::tr("Branch Name:"));
+        dialog.setWindowTitle(QObject::tr("Create Branch"));
 
         QString branchName = "";
         if (dialog.exec()) {
@@ -295,6 +399,11 @@ void RepositoryManagerCard::sl_BranchDeleteClicked(bool checked) {
             return;
         }
 
+        // control user is sure to delete
+        QMessageBox msgBox(QMessageBox::Icon::Question, QObject::tr("Warning"), QObject::tr("Are you sure to delete selected branch?"), QMessageBox::Yes | QMessageBox::No, this);
+        auto result = msgBox.exec();
+        if (result == QMessageBox::No) return;
+
         auto selectedItem = widget->selectedItems().at(0);
         auto branchName = selectedItem->text();
 
@@ -322,62 +431,8 @@ void RepositoryManagerCard::sl_ItemChangedForRepository(QListWidgetItem *item) {
     try {
         if (!item) return;
 
-        auto widget = this->m_Ui->repositoryListWidget;
-        auto index = widget->row(item);
-        auto newPath = item->text();
-        if (index < 0 || index > m_Repositories.size()) return;
-        auto oldPath = m_Repositories.at(index);
-
-        widget->blockSignals(true);
-
-        // validate path is not empty
-        if (newPath.isEmpty()) {
-            QMessageBox::critical(this, QObject::tr("Error"), QObject::tr("No path was selected."));
-            item->setText(oldPath);
-            widget->blockSignals(false);
-            return;
-        }
-
-        QDir dir(newPath);
-
-        // Check if the directory exists
-        if (!dir.exists()) {
-            QMessageBox::critical(this, QObject::tr("Error"), QObject::tr("Directory not exists: %1").arg(newPath));
-            item->setText(oldPath);
-            widget->blockSignals(false);
-            return;
-        }
-
-        // validate permissions of the selected path
-        if (!QFile::permissions(newPath).testFlag(QFileDevice::WriteUser)) {
-            QMessageBox::critical(this, QObject::tr("Error"), QObject::tr("Cannot write to the selected path: %1").arg(newPath));
-            item->setText(oldPath);
-            widget->blockSignals(false);
-            return;
-        }
-
-        // Check for duplicates in the repository list
-        if (m_Repositories.contains(newPath)) {
-            QMessageBox::information(this, QObject::tr("Info"), QObject::tr("The selected repository is already added."));
-            item->setText(oldPath);
-            widget->blockSignals(false);
-            return;
-        }
-
-        // check for a specific marker file or directory, e.g., `.git`
-        if (!dir.exists(".git")) {
-            QMessageBox::critical(this, QObject::tr("Error"), QObject::tr("No repository found in directory: %1\nPlease make sure the directory contains .git directory").arg(newPath));
-            item->setText(oldPath);
-            widget->blockSignals(false);
-            return;
-        }
-
-        widget->blockSignals(false);
-
-        // update repositories
-        m_Repositories[index] = newPath;
-        this->m_Settings->SetRepositories(m_Repositories);
-        this->_LoadRepositories();
+        // we will emit button signal to update the repository
+        emit this->m_RepositoryUpdate->si_ButtonClicked(true);
     } catch (const std::exception &e) {
         QMessageBox::critical(this, QObject::tr("Error"), QObject::tr("An error occured: %1").arg(e.what()));
     }

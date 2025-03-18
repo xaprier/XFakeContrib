@@ -1,6 +1,8 @@
 #ifndef REPOSITORYMANAGERCOMPOSEDBUTTON_HPP
 #define REPOSITORYMANAGERCOMPOSEDBUTTON_HPP
 
+#include <qpushbutton.h>
+
 #include <QPointer>
 #include <QToolButton>
 
@@ -23,6 +25,8 @@ class RepositoryManagerComposedButton final : public RepositoryManagerComposingW
 
     void SetToolTip(Status type, const QString &message = "");
     void SetDisabled(Status type, bool disable = false);
+    void SetButtonIcon(const QIcon &icon);
+    void SetButtonText(const QString &text);
 
   signals:
     void si_ButtonClicked(bool checked = false);
@@ -34,7 +38,7 @@ class RepositoryManagerComposedButton final : public RepositoryManagerComposingW
 
   private:
     QPointer<xaprier::qt::widgets::XQCircularLoadingIndicator> m_Indicator;
-    QPointer<QToolButton> m_Button;
+    QPointer<QPushButton> m_Button;
 };
 
 #endif  // REPOSITORYMANAGERCOMPOSEDBUTTON_HPP

@@ -26,6 +26,7 @@ add_library(${PROJECT_NAME} SHARED ${PROJECT_SOURCES})
 set(INTERNAL_LIBRARIES
     XFakeContribGit
     XFakeContribSettings
+    XFakeContribResources
 )
 
 set(EXTERNAL_LIBRARIES

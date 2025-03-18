@@ -1,8 +1,10 @@
 #include "RepositoryManagerComposedButton.hpp"
 
+#include <qpushbutton.h>
+
 using namespace xaprier::qt::widgets;
 
-RepositoryManagerComposedButton::RepositoryManagerComposedButton(QWidget *parent) : RepositoryManagerComposingWidgets({}, parent), m_Button(new QToolButton()), m_Indicator(new XQCircularLoadingIndicator) {
+RepositoryManagerComposedButton::RepositoryManagerComposedButton(QWidget *parent) : RepositoryManagerComposingWidgets({}, parent), m_Button(new QPushButton()), m_Indicator(new XQCircularLoadingIndicator) {
     // Setting-Up Widgets
     m_Indicator->SetSquare(true);
 
@@ -36,6 +38,14 @@ void RepositoryManagerComposedButton::SetDisabled(Status type, bool disable) {
         default:
             break;
     }
+}
+
+void RepositoryManagerComposedButton::SetButtonIcon(const QIcon &icon) {
+    this->m_Button->setIcon(icon);
+}
+
+void RepositoryManagerComposedButton::SetButtonText(const QString &text) {
+    this->m_Button->setText(text);
 }
 
 void RepositoryManagerComposedButton::SetLoading() {
