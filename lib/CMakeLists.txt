@@ -1,6 +1,7 @@
 # Specify the directory to check
 set(
   DIRECTORIES_TO_CHECK
+  "${CMAKE_CURRENT_SOURCE_DIR}/resources" # get resources
   "${CMAKE_CURRENT_SOURCE_DIR}/config" # get config
   "${CMAKE_CURRENT_SOURCE_DIR}/logger" # get logger
   "${CMAKE_CURRENT_SOURCE_DIR}/settings" # get settings

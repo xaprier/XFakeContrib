@@ -9,7 +9,6 @@ project(
 
 set(PROJECT_ORGANIZATION "SFENX")
 
-add_subdirectory(res) # icons, theming and .desktop file for gnu/linux
 add_subdirectory(lib) # build external/internal libs
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
@@ -28,13 +27,11 @@ find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets Core LinguistTool
 file(GLOB_RECURSE CPP_FILES src/*.cpp)
 file(GLOB_RECURSE HPP_FILES include/*.hpp)
 file(GLOB_RECURSE UI_FILES  design/*.ui)
-file(GLOB_RECURSE QRC_FILES res/*.qrc)
 
 set(PROJECT_SOURCES
     ${CPP_FILES}
     ${HPP_FILES}
     ${UI_FILES}
-    ${QRC_FILES}
 )
 
 set(LANGS tr)
@@ -86,6 +83,7 @@ set(INTERNAL_LIBRARIES
     XFakeContribGithub
     XFakeContribData 
     XFakeContribConfig
+    XFakeContribResources
 )
 
 set(EXTERNAL_LIBRARIES
