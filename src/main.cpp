@@ -2,6 +2,15 @@
 #include "Config.hpp"
 #include "MainWindow.hpp"
 
+QString getQSS();
+
+int main(int argc, char *argv[]) {
+    Application app(argc, argv, PROJECT_NAME, PROJECT_VERSION, PROJECT_ORGANIZATION, getQSS());
+    MainWindow &window = MainWindow::Instance();
+    window.show();
+    return app.exec();
+}
+
 QString getQSS() {
     QFile styleFile(":/qss/style.qss");
     if (!styleFile.open(QFile::ReadOnly)) {
@@ -11,11 +20,4 @@ QString getQSS() {
 
     QString style(styleFile.readAll());
     return style;
-}
-
-int main(int argc, char *argv[]) {
-    Application app(argc, argv, PROJECT_NAME, PROJECT_VERSION, PROJECT_ORGANIZATION, getQSS());
-    MainWindow &window = MainWindow::Instance();
-    window.show();
-    return app.exec();
 }
