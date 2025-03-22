@@ -4,10 +4,10 @@
 
 int main(int argc, char* argv[]) {
     QCoreApplication app(argc, argv);
-    auto* settings = Settings::Instance();
+    auto& settings = Settings::Instance();
     QStringList repos;
     repos << "/mnt/Shared/Projects/git/priv" << "/mnt/Shared/Projects/git/fillupcommit";
 
-    settings->SetRepositories(repos);
+    settings.SetRepositories(repos);
     return app.exec();
 }

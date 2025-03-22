@@ -22,7 +22,7 @@ class RepositoryCard final : public QWidget {
   private:
     QPointer<RepositoryCardConnections> m_Connections;
     QPointer<RepositoryTableView> m_Repositories;
-    QPointer<Settings> m_Settings;
+    Settings &m_Settings;
     Ui::RepositoryCardUI *m_Ui;
 };
 

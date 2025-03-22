@@ -31,7 +31,7 @@ class RepositoryTableView final : public QWidget {
     void _SetupTable();
 
   private:
-    Settings *m_Settings;
+    Settings &m_Settings;
     QStringList m_Repositories;
     QTableView *m_RepoTable;
     QStandardItemModel *m_RepoModel;

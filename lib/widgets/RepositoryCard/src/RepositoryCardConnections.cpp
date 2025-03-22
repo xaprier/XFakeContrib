@@ -18,7 +18,7 @@
 #include "RepositoryTableItem.hpp"
 #include "XQCircularLoadingIndicator.hpp"
 
-RepositoryCardConnections::RepositoryCardConnections(QList<RepositoryTableItem *> items, Settings *settings, Ui::RepositoryCardUI *ui, QObject *base) : QObject(base), m_Ui(ui), m_Settings(settings), m_Items(std::move(items)) {
+RepositoryCardConnections::RepositoryCardConnections(QList<RepositoryTableItem *> items, Ui::RepositoryCardUI *ui, QObject *base) : QObject(base), m_Ui(ui), m_Settings(Settings::Instance()), m_Items(std::move(items)) {
     this->_SetupConnections();
     this->_SetupDates();
     this->_UpdateButtonsStatus();  // updating widgets according to item count
@@ -258,8 +258,7 @@ quint32 RepositoryCardConnections::_GetCommitCount() const {
 
     if (random) {
         QRandomGenerator generator;
-        auto settings = Settings::Instance();
-        return generator.bounded(quint32(1), settings->GetRandomMax());  // todo: highest value should come from config
+        return generator.bounded(quint32(1), m_Settings.GetRandomMax());  // todo: highest value should come from config
     }
 
     return this->m_Ui->commitCountSP->value();

@@ -14,6 +14,8 @@
         <file>icons/repository.png</file>
         <file>icons/token.png</file>
         <file>icons/user.png</file>
+        <file>icons/show.png</file>
+        <file>icons/hide.png</file>
     </qresource>
     <qresource prefix="/qss">
         <file>style.qss</file>

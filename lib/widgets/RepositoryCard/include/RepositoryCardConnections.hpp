@@ -19,7 +19,7 @@ class RepositoryCardConnections final : public QObject {
     Q_OBJECT
     Q_DISABLE_COPY_MOVE(RepositoryCardConnections)
   public:
-    explicit RepositoryCardConnections(QList<RepositoryTableItem *> items, Settings *settings, Ui::RepositoryCardUI *ui, QObject *base = nullptr);
+    explicit RepositoryCardConnections(QList<RepositoryTableItem *> items, Ui::RepositoryCardUI *ui, QObject *base = nullptr);
     ~RepositoryCardConnections() final;
 
   protected slots:
@@ -54,7 +54,7 @@ class RepositoryCardConnections final : public QObject {
     QList<QFutureWatcher<void> *> m_PushWatchers;
     QList<RepositoryTableItem *> m_Items;
     Ui::RepositoryCardUI *m_Ui;
-    Settings *m_Settings;
+    Settings &m_Settings;
 };
 
 #endif  // REPOSITORYCARDCONNECTIONS_HPP

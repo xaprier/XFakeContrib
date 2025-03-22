@@ -6,4 +6,10 @@
 	url = https://github.com/xaprier/logger.git
 [submodule "lib/widgets/XQCircularLoadingIndicator"]
 	path = lib/widgets/XQCircularLoadingIndicator
-	url = git@github.com:xaprier/XQCircularLoadingIndicator.git
+	url = https://github.com/xaprier/XQCircularLoadingIndicator.git
+[submodule "lib/widgets/XQWidgetComposer"]
+	path = lib/widgets/XQWidgetComposer
+	url = https://github.com/xaprier/XQWidgetComposer.git
+[submodule "lib/widgets/XQPwdLineEdit"]
+	path = lib/widgets/XQPwdLineEdit
+	url = https://github.com/xaprier/XQPwdLineEdit

@@ -4,11 +4,9 @@
 
 Settings *Settings::m_Instance = nullptr;  // NOLINT
 
-Settings *Settings::Instance() {
-    if (!m_Instance) {
-        m_Instance = new Settings();  // NOLINT
-    }
-    return m_Instance;
+Settings &Settings::Instance() {
+    static Settings instance;
+    return instance;
 }
 
 Settings::Settings()

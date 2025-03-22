@@ -14,7 +14,7 @@ RepositoryCard::RepositoryCard(QWidget *parent) : QWidget(parent), m_Ui(new Ui::
     groupBoxLayout->addWidget(m_Repositories);
     this->m_Ui->groupBoxRepoTable->setLayout(groupBoxLayout);
     // todo: update items in repositorycardconnection when new items added.
-    m_Connections = new RepositoryCardConnections(m_Repositories->GetItems(), m_Settings, m_Ui, this);  // NOLINT
+    m_Connections = new RepositoryCardConnections(m_Repositories->GetItems(), m_Ui, this);  // NOLINT
 }
 
 RepositoryCard::~RepositoryCard() {

@@ -30,7 +30,7 @@ class Settings final : public QSettings {  // NOLINT
      * @brief Returns the Singleton instance of the Config class.
      * @return A pointer to the single instance of the Config class.
      */
-    static Settings *Instance();
+    static Settings &Instance();
 
     /**
      * @brief Retrieves the stored API key.

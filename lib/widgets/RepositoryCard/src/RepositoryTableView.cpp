@@ -31,12 +31,12 @@ RepositoryTableView::~RepositoryTableView() {
 }
 
 void RepositoryTableView::_LoadRepositories() {
-    m_Repositories = this->m_Settings->GetRepositories();
+    m_Repositories = this->m_Settings.GetRepositories();
 
     // if no repositories found, disable all buttons and comboBoxes with giving information to user
     if (m_Repositories.isEmpty()) {
         this->m_RepoTable->setDisabled(true);
-        this->m_RepoTable->setToolTip("No Repositories Found. Please Add Repository from Repository Manager");  // todo: translation
+        this->m_RepoTable->setToolTip(QObject::tr("No Repositories Found. Please Add Repository from Repository Manager"));
         qDeleteAll(m_Items);
         m_Items.clear();
         return;

@@ -46,7 +46,7 @@ class RepositoryManagerCard final : public QWidget {
     Ui::RepositoryManagerCardUI *m_Ui;
     QPointer<RepositoryManagerComposedButton> m_RepositoryDelete, m_RepositoryUpdate, m_RepositoryAdd;
     QPointer<RepositoryManagerComposedButton> m_BranchDelete, m_BranchUpdate, m_BranchCreate;
-    QPointer<Settings> m_Settings;
+    Settings &m_Settings;
     QPointer<GitRepository> m_GitRepository;
     QStringList m_Repositories;
     QString m_OldBranch;

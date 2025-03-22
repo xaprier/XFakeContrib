@@ -14,12 +14,10 @@
 #include <QSharedPointer>
 #include <QUrl>
 #include <map>
-#include <stdexcept>
 
 #include "Contrib.hpp"
 #include "ContribTotal.hpp"
 #include "GitHubAuthChecker.hpp"
-#include "GitHubContribLevels.hpp"
 
 class GitHubContribFetcher : public QObject {
     Q_OBJECT
