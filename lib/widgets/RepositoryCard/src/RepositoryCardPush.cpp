@@ -1,6 +1,6 @@
 #include "RepositoryCardPush.hpp"
 
-using namespace xaprier::qt::widgets;
+using namespace xaprier::Qt::Widgets;
 
 RepositoryCardPush::RepositoryCardPush(QWidget* parent) : RepositoryComposingWidgets({}, parent), m_Button(new QPushButton()), m_Indicator(new XQCircularLoadingIndicator) {
     // Setting-Up Widgets

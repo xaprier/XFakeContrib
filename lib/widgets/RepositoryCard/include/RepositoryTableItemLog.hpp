@@ -28,7 +28,7 @@ class RepositoryTableItemLog final : public RepositoryComposingWidgets {
 
   private:
     QPointer<QToolButton> m_Button;
-    QPointer<xaprier::qt::widgets::XQCircularLoadingIndicator> m_Indicator;
+    QPointer<xaprier::Qt::Widgets::XQCircularLoadingIndicator> m_Indicator;
 };
 
 #endif  // REPOSITORYTABLEITEMLOG_HPP

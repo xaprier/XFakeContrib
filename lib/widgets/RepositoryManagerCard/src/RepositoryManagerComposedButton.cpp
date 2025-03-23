@@ -2,7 +2,7 @@
 
 #include <qpushbutton.h>
 
-using namespace xaprier::qt::widgets;
+using namespace xaprier::Qt::Widgets;
 
 RepositoryManagerComposedButton::RepositoryManagerComposedButton(QWidget *parent) : RepositoryManagerComposingWidgets({}, parent), m_Button(new QPushButton()), m_Indicator(new XQCircularLoadingIndicator) {
     // Setting-Up Widgets

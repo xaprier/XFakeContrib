@@ -4,9 +4,33 @@
 #include <QProcess>
 
 #include "ContribTotal.hpp"
+#include "GitHubAuthChecker.hpp"
 #include "GitHubContribFetcher.hpp"
 
-void testFetcher(const QString& username, const QString& token) {
+void TestFetcher(const QString& username, const QString& token);
+
+void TestAuth(const QString& token);
+
+int main(int argc, char* argv[]) {
+    QCoreApplication app(argc, argv);
+
+    // username
+    QString username = "xaprier";
+    QString token = "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";  // will reset later
+    TestFetcher(username, token);
+    TestAuth(token);
+
+    return app.exec();
+}
+
+void TestAuth(const QString& token) {
+    // create fetcher
+    GitHubAuthChecker auth;
+
+    auth.CheckAuthKey(token);
+}
+
+void TestFetcher(const QString& username, const QString& token) {
     // create fetcher
     GitHubContribFetcher fetcher(username, token);
 
@@ -17,15 +41,4 @@ void testFetcher(const QString& username, const QString& token) {
     fetcher.FetchUserContributions();
 
     fetcher.SaveFormattedJsonToFile("data.json");
-}
-
-int main(int argc, char* argv[]) {
-    QCoreApplication app(argc, argv);
-
-    // username
-    QString username = "xaprier";
-    QString token = "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";  // will reset later
-    testFetcher(username, token);
-
-    return app.exec();
 }

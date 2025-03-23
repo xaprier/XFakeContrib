@@ -1,6 +1,6 @@
 #include "RepositoryTableItemStatus.hpp"
 
-using namespace xaprier::qt::widgets;
+using namespace xaprier::Qt::Widgets;
 
 RepositoryTableItemStatus::RepositoryTableItemStatus(QWidget *parent) : RepositoryComposingWidgets({}, parent), m_CheckBox(new RepositoryEnableCheckBox), m_Indicator(new XQCircularLoadingIndicator) {
     // Setting-Up Widgets

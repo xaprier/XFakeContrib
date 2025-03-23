@@ -2,7 +2,7 @@
 
 #include "XQWidgetComposer.hpp"
 
-using namespace xaprier::qt::widgets;
+using namespace xaprier::Qt::Widgets;
 
 RepositoryComposingWidgets::RepositoryComposingWidgets(QList<QWidget*> list, QWidget* parent) : XQWidgetComposer(list, parent) {
     // Updating This

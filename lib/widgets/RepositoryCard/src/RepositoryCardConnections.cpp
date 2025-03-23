@@ -139,7 +139,7 @@ void RepositoryCardConnections::sl_PushButtonClicked(bool checked) {
     }
 
     if (!m_PushWatchers.isEmpty()) {
-        auto indicator = qobject_cast<xaprier::qt::widgets::XQCircularLoadingIndicator *>(m_Ui->pushPB->Item(RepositoryCardPush::Status::LOADING));
+        auto indicator = qobject_cast<xaprier::Qt::Widgets::XQCircularLoadingIndicator *>(m_Ui->pushPB->Item(RepositoryCardPush::Status::LOADING));
         if (indicator)
             indicator->setToolTip(QObject::tr("Remained pushes: %1").arg(m_PushWatchers.size()));
         this->m_Ui->pushPB->SetLoading();
@@ -209,7 +209,7 @@ void RepositoryCardConnections::sl_CommitterFinished() {
 
     m_Ui->pushPB->setToolTip(QObject::tr("Creating commits(%1)").arg(remained));
 
-    auto indicator = qobject_cast<xaprier::qt::widgets::XQCircularLoadingIndicator *>(m_Ui->createCommitsPB->Item(RepositoryCardCreateCommits::Status::LOADING));
+    auto indicator = qobject_cast<xaprier::Qt::Widgets::XQCircularLoadingIndicator *>(m_Ui->createCommitsPB->Item(RepositoryCardCreateCommits::Status::LOADING));
 
     if (!indicator) {
         qWarning() << "Failed to cast from RepositoryCardCreateCommits to XQCircularLoadingIndicator";
@@ -227,7 +227,7 @@ void RepositoryCardConnections::sl_AllCommittersFinished() {
     m_Ui->createCommitsPB->SetButton();
     QMessageBox::information(m_Ui->createCommitsPB, QObject::tr("Success"), QObject::tr("All commits are created successfully"));
 
-    auto indicator = qobject_cast<xaprier::qt::widgets::XQCircularLoadingIndicator *>(m_Ui->createCommitsPB->Item(RepositoryCardCreateCommits::Status::LOADING));
+    auto indicator = qobject_cast<xaprier::Qt::Widgets::XQCircularLoadingIndicator *>(m_Ui->createCommitsPB->Item(RepositoryCardCreateCommits::Status::LOADING));
 
     if (!indicator) {
         qWarning() << "Failed to cast from RepositoryCardCreateCommits to XQCircularLoadingIndicator";
@@ -241,7 +241,7 @@ void RepositoryCardConnections::sl_AllCommittersFinished() {
 void RepositoryCardConnections::sl_ItemPushCompleted(QFutureWatcher<void> *watcher) {
     m_PushWatchers.removeOne(watcher);
 
-    auto indicator = qobject_cast<xaprier::qt::widgets::XQCircularLoadingIndicator *>(m_Ui->pushPB->Item(RepositoryCardPush::Status::LOADING));
+    auto indicator = qobject_cast<xaprier::Qt::Widgets::XQCircularLoadingIndicator *>(m_Ui->pushPB->Item(RepositoryCardPush::Status::LOADING));
     if (indicator)
         indicator->setToolTip(QObject::tr("Remained pushes: %1").arg(m_PushWatchers.size()));
 
@@ -300,7 +300,7 @@ void RepositoryCardConnections::_CreateCommits(const QDate &startDate, const QDa
     }
     m_Ui->pushPB->setToolTip(QObject::tr("Creating commits(%1)").arg(totalCommitCount));
 
-    auto indicator = qobject_cast<xaprier::qt::widgets::XQCircularLoadingIndicator *>(m_Ui->createCommitsPB->Item(RepositoryCardCreateCommits::Status::LOADING));
+    auto indicator = qobject_cast<xaprier::Qt::Widgets::XQCircularLoadingIndicator *>(m_Ui->createCommitsPB->Item(RepositoryCardCreateCommits::Status::LOADING));
 
     if (!indicator) {
         qWarning() << "Failed to cast from RepositoryCardCreateCommits to XQCircularLoadingIndicator";

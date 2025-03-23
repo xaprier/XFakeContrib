@@ -1,6 +1,6 @@
 #include "RepositoryCardCreateCommits.hpp"
 
-using namespace xaprier::qt::widgets;
+using namespace xaprier::Qt::Widgets;
 
 RepositoryCardCreateCommits::RepositoryCardCreateCommits(QWidget* parent) : RepositoryComposingWidgets({}, parent), m_Button(new QPushButton()), m_Indicator(new XQCircularLoadingIndicator) {
     // Setting-Up Widgets

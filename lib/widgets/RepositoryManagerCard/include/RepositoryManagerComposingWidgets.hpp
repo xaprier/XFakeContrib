@@ -3,7 +3,7 @@
 
 #include "XQWidgetComposer.hpp"
 
-class RepositoryManagerComposingWidgets : public xaprier::qt::widgets::XQWidgetComposer {
+class RepositoryManagerComposingWidgets : public xaprier::Qt::Widgets::XQWidgetComposer {
     Q_OBJECT
     Q_DISABLE_COPY_MOVE(RepositoryManagerComposingWidgets)
   public:

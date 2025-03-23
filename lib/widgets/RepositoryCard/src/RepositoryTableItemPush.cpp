@@ -1,6 +1,6 @@
 #include "RepositoryTableItemPush.hpp"
 
-using namespace xaprier::qt::widgets;
+using namespace xaprier::Qt::Widgets;
 
 RepositoryTableItemPush::RepositoryTableItemPush(QWidget *parent) : RepositoryComposingWidgets({}, parent), m_Button(new QToolButton()), m_Indicator(new XQCircularLoadingIndicator) {
     // Setting-Up Widgets

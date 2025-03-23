@@ -27,7 +27,7 @@ class RepositoryTableItemStatus final : public RepositoryComposingWidgets {
     void Set(Status status);
 
   private:
-    QPointer<xaprier::qt::widgets::XQCircularLoadingIndicator> m_Indicator;
+    QPointer<xaprier::Qt::Widgets::XQCircularLoadingIndicator> m_Indicator;
     QPointer<RepositoryEnableCheckBox> m_CheckBox;
 };
 
