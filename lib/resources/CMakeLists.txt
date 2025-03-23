@@ -10,9 +10,11 @@ find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Core)
 
 file(GLOB QRC_FILES "*.qrc")
 
-message(QRC_FILES: ${QRC_FILES})
-
-qt5_add_resources(QT_RESOURCES ${QRC_FILES})
+if (QT_VERSION_MAJOR EQUAL 6)
+    qt6_add_resources(QT_RESOURCES ${QRC_FILES})
+else()
+    qt5_add_resources(QT_RESOURCES ${QRC_FILES})
+endif()
 
 add_library(${PROJECT_NAME} SHARED ${QT_RESOURCES})
 

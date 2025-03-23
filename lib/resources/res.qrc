@@ -16,6 +16,7 @@
         <file>icons/user.png</file>
         <file>icons/show.png</file>
         <file>icons/hide.png</file>
+        <file>icons/checked.png</file>
     </qresource>
     <qresource prefix="/qss">
         <file>style.qss</file>
