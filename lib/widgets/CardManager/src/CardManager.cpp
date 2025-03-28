@@ -53,6 +53,8 @@ void CardManager::_SetupCard() {
 
     m_CardGroupBox->setLayout(m_CardLayout);
 
+    m_CardGroupBox->setContentsMargins(0, 0, 0, 0);
+
     QVBoxLayout *layout = new QVBoxLayout(this);
     layout->addWidget(m_CardGroupBox);
 

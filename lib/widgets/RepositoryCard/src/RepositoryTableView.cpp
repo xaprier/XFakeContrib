@@ -30,6 +30,10 @@ RepositoryTableView::~RepositoryTableView() {
     delete m_RepoTable;
 }
 
+void RepositoryTableView::_ReloadRepositories() {
+    this->_LoadRepositories();
+}
+
 void RepositoryTableView::_LoadRepositories() {
     m_Repositories = this->m_Settings.GetRepositories();
 
@@ -40,7 +44,13 @@ void RepositoryTableView::_LoadRepositories() {
         qDeleteAll(m_Items);
         m_Items.clear();
         return;
+    } else {
+        this->m_RepoTable->setDisabled(false);
+        this->m_RepoTable->setToolTip("");
     }
+
+    // Clear old rows before creating new ones
+    this->m_RepoModel->removeRows(0, this->m_RepoModel->rowCount());
 
     this->m_RepoModel->setRowCount(m_Repositories.size());
     qDeleteAll(m_Items);
@@ -48,13 +58,24 @@ void RepositoryTableView::_LoadRepositories() {
     for (int i = 0; i < m_Repositories.size(); ++i) {
         auto absolutePath = m_Repositories.at(i);
         auto item = new RepositoryTableItem(absolutePath);  // NOLINT
-        m_RepoTable->setIndexWidget(m_RepoModel->index(i, RepositoryTableType::REPO_STATUS), qobject_cast<RepositoryTableItemStatus *>(item->GetItem(RepositoryTableType::REPO_STATUS)));
-        m_RepoTable->setIndexWidget(m_RepoModel->index(i, RepositoryTableType::REPO_NAME), qobject_cast<RepositoryTableItemName *>(item->GetItem(RepositoryTableType::REPO_NAME)));
-        m_RepoTable->setIndexWidget(m_RepoModel->index(i, RepositoryTableType::REPO_BRANCH), qobject_cast<RepositoryTableItemBranch *>(item->GetItem(RepositoryTableType::REPO_BRANCH)));
-        m_RepoTable->setIndexWidget(m_RepoModel->index(i, RepositoryTableType::REPO_REMOTE), qobject_cast<RepositoryTableItemRemote *>(item->GetItem(RepositoryTableType::REPO_REMOTE)));
-        m_RepoTable->setIndexWidget(m_RepoModel->index(i, RepositoryTableType::REPO_COMMIT_FILE), qobject_cast<RepositoryTableItemCommitFile *>(item->GetItem(RepositoryTableType::REPO_COMMIT_FILE)));
-        m_RepoTable->setIndexWidget(m_RepoModel->index(i, RepositoryTableType::REPO_LOG), qobject_cast<RepositoryTableItemLog *>(item->GetItem(RepositoryTableType::REPO_LOG)));
-        m_RepoTable->setIndexWidget(m_RepoModel->index(i, RepositoryTableType::REPO_PUSH), qobject_cast<RepositoryTableItemPush *>(item->GetItem(RepositoryTableType::REPO_PUSH)));
+
+        // safe qobject_cast and nullptr check
+        auto setWidgetSafe = [&](int column, auto *widget) {
+            if (widget) {
+                m_RepoTable->setIndexWidget(m_RepoModel->index(i, column), widget);
+            } else {
+                qWarning() << QObject::tr("Failed to cast widget for column") << column;
+            }
+        };
+
+        setWidgetSafe(RepositoryTableType::REPO_STATUS, qobject_cast<RepositoryTableItemStatus *>(item->GetItem(RepositoryTableType::REPO_STATUS)));
+        setWidgetSafe(RepositoryTableType::REPO_NAME, qobject_cast<RepositoryTableItemName *>(item->GetItem(RepositoryTableType::REPO_NAME)));
+        setWidgetSafe(RepositoryTableType::REPO_BRANCH, qobject_cast<RepositoryTableItemBranch *>(item->GetItem(RepositoryTableType::REPO_BRANCH)));
+        setWidgetSafe(RepositoryTableType::REPO_REMOTE, qobject_cast<RepositoryTableItemRemote *>(item->GetItem(RepositoryTableType::REPO_REMOTE)));
+        setWidgetSafe(RepositoryTableType::REPO_COMMIT_FILE, qobject_cast<RepositoryTableItemCommitFile *>(item->GetItem(RepositoryTableType::REPO_COMMIT_FILE)));
+        setWidgetSafe(RepositoryTableType::REPO_LOG, qobject_cast<RepositoryTableItemLog *>(item->GetItem(RepositoryTableType::REPO_LOG)));
+        setWidgetSafe(RepositoryTableType::REPO_PUSH, qobject_cast<RepositoryTableItemPush *>(item->GetItem(RepositoryTableType::REPO_PUSH)));
+
         m_Items.append(item);
     }
 }
@@ -70,7 +91,7 @@ void RepositoryTableView::_SetupModel() {
 
 void RepositoryTableView::_SetupTable() {
     // Set the column width
-    this->m_RepoTable->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
+    this->m_RepoTable->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
     this->m_RepoTable->horizontalHeader()->setSectionResizeMode(RepositoryTableType::REPO_STATUS, QHeaderView::ResizeToContents);
     this->m_RepoTable->horizontalHeader()->setSectionResizeMode(RepositoryTableType::REPO_COMMIT_FILE, QHeaderView::ResizeToContents);
     this->m_RepoTable->horizontalHeader()->setSectionResizeMode(RepositoryTableType::REPO_LOG, QHeaderView::ResizeToContents);

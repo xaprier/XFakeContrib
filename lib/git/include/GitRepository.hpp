@@ -30,14 +30,15 @@ class GitRepository : public QObject {
     QString CheckIgnore(const QStringList &arguments = {});
 
     void SetRepositoryPath(const QString &localRepositoryPath = "");
-    const QString &GetRepositoryPath() const { return m_RepositoryPath; }
+    QString GetRepositoryPath() const { return m_RepositoryPath; }
+    bool IsValidRepository() const { return m_IsValidRepository; }
 
   private:
     bool _IsValidGitRepository(const QString &path);
     void _HandleCommandResult(const QString &output, const QString &error, const QString &commandType);
 
   private:
-    QString m_RepositoryPath;
+    QString m_RepositoryPath = "";
     bool m_IsValidRepository = false;
 
   private:

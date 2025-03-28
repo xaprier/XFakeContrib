@@ -7,6 +7,11 @@ using namespace xaprier::Qt::Widgets;
 RepositoryTableItemLog::RepositoryTableItemLog(QWidget *parent) : RepositoryComposingWidgets({}, parent), m_Button(new QToolButton()), m_Indicator(new XQCircularLoadingIndicator) {
     // Setting-Up Widgets
     m_Indicator->SetSquare(true);
+    m_Indicator->SetProgressColor("#e67300");
+
+    m_Button->setIcon(QIcon(":/icons/icons/log.png"));
+    m_Button->setToolTip(QObject::tr("Show logs"));
+    m_Button->setText(QObject::tr("Logs"));
 
     // Setting-Up Layout
     this->SetWidgets({m_Button, m_Indicator});

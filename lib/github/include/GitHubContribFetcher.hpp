@@ -39,6 +39,7 @@ class GitHubContribFetcher : public QObject {
   private slots:
     void sl_NetworkReplyFinished(QNetworkReply* reply);
     void sl_AuthCheckResult(bool isValid, const QString& message);
+    void sl_FetchUserContribs();
 
   signals:
     void si_AllRepliesFinished();
@@ -55,7 +56,7 @@ class GitHubContribFetcher : public QObject {
     QList<QNetworkReply*> m_ActiveReplies;
     std::map<QDate, Contrib> m_Contributions;
     std::map<int, ContribTotal> m_TotalContributions;  // year, total
-    bool m_LastTokenValidation;
+    std::atomic<bool> m_LastTokenValidation;
 };
 
 #endif  // GITHUBCONTRIBFETCHER_HPP

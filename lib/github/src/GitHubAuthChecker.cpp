@@ -6,17 +6,7 @@ GitHubAuthChecker::GitHubAuthChecker(QObject* parent) : QObject(parent), m_Proce
 }
 
 void GitHubAuthChecker::CheckAuthKey(const QString& authToken) {
-    QUrl url("https://api.github.com/graphql");
-    QNetworkRequest request(url);
-    request.setRawHeader("Authorization", "Bearer " + authToken.toUtf8());
-    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
-
-    // simple query for testing
-    QString query = "{\"query\": \"{ viewer { login } }\"}";
-    QByteArray data = query.toUtf8();
-
-    m_Manager->post(request, data);
-    m_ProcessingValidation = true;
+    QMetaObject::invokeMethod(this, "sl_Check", Qt::QueuedConnection, Q_ARG(const QString&, authToken));
 }
 
 void GitHubAuthChecker::sl_AuthCheckFinished(QNetworkReply* reply) {
@@ -35,4 +25,18 @@ void GitHubAuthChecker::sl_AuthCheckFinished(QNetworkReply* reply) {
     }
     reply->deleteLater();
     m_ProcessingValidation = false;
+}
+
+void GitHubAuthChecker::sl_Check(const QString& authToken) {
+    QUrl url("https://api.github.com/graphql");
+    QNetworkRequest request(url);
+    request.setRawHeader("Authorization", "Bearer " + authToken.toUtf8());
+    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+
+    // simple query for testing
+    QString query = "{\"query\": \"{ viewer { login } }\"}";
+    QByteArray data = query.toUtf8();
+
+    m_Manager->post(request, data);
+    m_ProcessingValidation = true;
 }

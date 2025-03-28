@@ -1,13 +1,15 @@
-/*!*************************************
-  VS15 Dark
-****************************************
-  Author: chintsu_kun, holt59, MO2 Team
-  Version: 2.5.0
-  Licence: GNU General Public License v3.0 (https://www.gnu.org/licenses/gpl-3.0.en.html)
-  Url: https://github.com/nikolay-borzov/modorganizer-themes
-****************************************
-*/
-/* For some reason applying background-color or border fixes paddings properties */
+:root {
+  --c1: #1e90ff;
+  --b2: #3f3f46;
+  --b3: #333337;
+  --b4: #2d2d30;
+  --b5: #1a1a1c;  /* dark */
+}
+
+QWidget {
+  border-radius: 4px;
+}
+
 QListWidget::item {
   border-width: 0;
 }
@@ -59,7 +61,7 @@ QListView::item:disabled,
 
 QListView::item,
 QTreeView#espList::item {
-  padding: 0.3em 0;
+  min-height: 20px;
 }
 
 /* to enable border color */

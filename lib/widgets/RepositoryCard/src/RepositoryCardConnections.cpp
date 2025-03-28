@@ -16,9 +16,10 @@
 #include "RepositoryCardCreateCommits.hpp"
 #include "RepositoryCardPush.hpp"
 #include "RepositoryTableItem.hpp"
+#include "RepositoryTableItemConnections.hpp"
 #include "XQCircularLoadingIndicator.hpp"
 
-RepositoryCardConnections::RepositoryCardConnections(QList<RepositoryTableItem *> items, Ui::RepositoryCardUI *ui, QObject *base) : QObject(base), m_Ui(ui), m_Settings(Settings::Instance()), m_Items(std::move(items)) {
+RepositoryCardConnections::RepositoryCardConnections(QList<RepositoryTableItem *> items, Ui::RepositoryCardUI *ui, QPointer<RepositoryTableView> tableView, QObject *base) : QObject(base), m_Ui(ui), m_Settings(Settings::Instance()), m_Items(std::move(items)), m_TableView(tableView) {
     this->_SetupConnections();
     this->_SetupDates();
     this->_UpdateButtonsStatus();  // updating widgets according to item count
@@ -29,6 +30,38 @@ RepositoryCardConnections::~RepositoryCardConnections() {
         watcher->future().cancel();
         watcher->future().waitForFinished();
         watcher->deleteLater();
+    }
+}
+
+void RepositoryCardConnections::sl_RepositoriesUpdated() {
+    m_TableView->_ReloadRepositories();
+    m_Items = m_TableView->GetItems();
+    for (auto item : m_Items) {
+        connect(item->GetConnections(), &RepositoryTableItemConnections::si_StatusChanged, [this]() { this->_UpdateButtonsStatus(); });
+        connect(item->GetConnections(), &RepositoryTableItemConnections::si_CommitterFinished, this, &RepositoryCardConnections::sl_CommitterFinished);
+        connect(item->GetConnections(), &RepositoryTableItemConnections::si_AllCommittersFinished, this, &RepositoryCardConnections::sl_AllCommittersFinished);
+        connect(item->GetConnections(), &RepositoryTableItemConnections::si_FileSelected, [this]() { this->_UpdateButtonsStatus(); });
+        connect(item->GetConnections(), &RepositoryTableItemConnections::si_PushStarted, [this]() {
+            auto pushing = std::count_if(m_Items.begin(), m_Items.end(), [](RepositoryTableItem *item) { return item->GetConnections()->IsPushing(); });
+            auto indicator = qobject_cast<xaprier::Qt::Widgets::XQCircularLoadingIndicator *>(m_Ui->pushPB->Item(RepositoryCardPush::Status::LOADING));
+            this->m_Ui->pushPB->SetLoading();
+            if (indicator) {
+                indicator->setToolTip(QObject::tr("Remained pushes: %1").arg(pushing));
+            }
+        });
+
+        connect(item->GetConnections(), &RepositoryTableItemConnections::si_PushFinished, [this]() {
+            // check how many items are pushing rn
+            auto pushing = std::count_if(m_Items.begin(), m_Items.end(), [](RepositoryTableItem *item) {
+                return item->GetConnections()->IsPushing();
+            });
+
+            if (pushing == 0) {
+                QMetaObject::invokeMethod(this, [this]() {
+                    emit this->si_PushesCompleted();
+                    this->m_Ui->pushPB->SetButton(); }, Qt::QueuedConnection);
+            }
+        });
     }
 }
 
@@ -56,12 +89,7 @@ void RepositoryCardConnections::_SetupConnections() {
     connect(m_Ui->commitContentCB, &QCheckBox::stateChanged, [this]() { this->_UpdateButtonsStatus(); });
     connect(m_Ui->commitMessageCB, &QCheckBox::stateChanged, [this]() { this->_UpdateButtonsStatus(); });
 
-    for (auto item : m_Items) {
-        connect(item, &RepositoryTableItem::si_StatusChanged, [this]() { this->_UpdateButtonsStatus(); });
-        connect(item, &RepositoryTableItem::si_CommitterFinished, this, &RepositoryCardConnections::sl_CommitterFinished);
-        connect(item, &RepositoryTableItem::si_AllCommittersFinished, this, &RepositoryCardConnections::sl_AllCommittersFinished);
-        connect(item, &RepositoryTableItem::si_FileSelected, [this]() { this->_UpdateButtonsStatus(); });
-    }
+    this->sl_RepositoriesUpdated();
 }
 
 void RepositoryCardConnections::_SetupDates() {
@@ -75,7 +103,7 @@ void RepositoryCardConnections::_SetupDates() {
 }
 
 void RepositoryCardConnections::_WidgetsSetEnabled(bool enabled) {
-    this->m_Ui->GL_Main->setEnabled(enabled);  // we can disable main layout directly
+    this->m_Ui->VL_Main->setEnabled(enabled);  // we can disable main layout directly
 }
 
 void RepositoryCardConnections::sl_CreateCommitsButtonClicked(bool checked) {
@@ -140,9 +168,10 @@ void RepositoryCardConnections::sl_PushButtonClicked(bool checked) {
 
     if (!m_PushWatchers.isEmpty()) {
         auto indicator = qobject_cast<xaprier::Qt::Widgets::XQCircularLoadingIndicator *>(m_Ui->pushPB->Item(RepositoryCardPush::Status::LOADING));
-        if (indicator)
-            indicator->setToolTip(QObject::tr("Remained pushes: %1").arg(m_PushWatchers.size()));
         this->m_Ui->pushPB->SetLoading();
+        if (indicator) {
+            indicator->setToolTip(QObject::tr("Remained pushes: %1").arg(m_PushWatchers.size()));
+        }
     }
 }
 
@@ -250,6 +279,7 @@ void RepositoryCardConnections::sl_ItemPushCompleted(QFutureWatcher<void> *watch
     if (m_PushWatchers.isEmpty()) {
         // turn loading indicator to button
         this->m_Ui->pushPB->SetButton();
+        emit this->si_PushesCompleted();
     }
 }
 
@@ -291,7 +321,7 @@ void RepositoryCardConnections::_CreateCommits(const QDate &startDate, const QDa
         auto commitContent = this->_GetCommitContent();
 
         // use item signal to create a committer
-        emit m_Items[index]->si_CreateCommitter(commitCount, currentDate, commitMessage, commitContent);
+        emit m_Items[index]->GetConnections()->si_CreateCommitter(commitCount, currentDate, commitMessage, commitContent);
 
         // update initials
         currentDate = currentDate.addDays(1);

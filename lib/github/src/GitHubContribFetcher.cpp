@@ -135,6 +135,10 @@ QDate GitHubContribFetcher::FetchFirstContributionDate() {
 }
 
 void GitHubContribFetcher::FetchUserContributions() {
+    QMetaObject::invokeMethod(this, "sl_FetchUserContribs", Qt::QueuedConnection);
+}
+
+void GitHubContribFetcher::sl_FetchUserContribs() {
     // first check auth key
     if (!m_LastTokenValidation && !m_AuthChecker->IsChecking()) {
         m_AuthChecker->CheckAuthKey(m_Token);

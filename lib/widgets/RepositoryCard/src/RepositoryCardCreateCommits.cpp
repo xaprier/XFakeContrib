@@ -5,6 +5,8 @@ using namespace xaprier::Qt::Widgets;
 RepositoryCardCreateCommits::RepositoryCardCreateCommits(QWidget* parent) : RepositoryComposingWidgets({}, parent), m_Button(new QPushButton()), m_Indicator(new XQCircularLoadingIndicator) {
     // Setting-Up Widgets
     m_Indicator->SetSquare(true);
+    m_Indicator->SetProgressColor("#e67300");
+
     m_Button->setToolTip(QObject::tr("Create commits in selected repositories"));
     m_Button->setText(QObject::tr("Create Commits"));
 

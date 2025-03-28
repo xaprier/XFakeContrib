@@ -130,10 +130,14 @@ void RepositoryManagerCard::_LoadRepositories() {
         // if no repositories found, disable all buttons and comboBoxes with giving information to user
         _NoRepositoriesFound(m_Repositories.isEmpty());
 
-        if (m_Repositories.isEmpty()) return;
-
         this->m_Ui->repositoryListWidget->blockSignals(true);
         this->m_Ui->repositoryListWidget->clear();
+
+        if (m_Repositories.isEmpty()) {
+            this->m_Ui->repositoryListWidget->blockSignals(false);
+            this->_LoadBranches();
+            return;
+        }
 
         // add items as editable
         for (const auto &repository : m_Repositories) {
@@ -162,6 +166,19 @@ void RepositoryManagerCard::_LoadBranches() {
     this->m_Ui->branchListWidget->clear();
 
     try {
+        if (m_Repositories.isEmpty()) return;
+
+        if (!m_GitRepository) return;
+
+        auto repoPath = m_GitRepository->GetRepositoryPath();
+
+        if (repoPath.isEmpty()) return;
+
+        if (!m_GitRepository->IsValidRepository()) {
+            QMessageBox::critical(this, QObject::tr("Error"), QObject::tr("Selected repository is not valid."));
+            return;
+        }
+
         auto branches = m_GitRepository->Branch({"-a"}).split('\n');
 
         // we should delete first two characters if they are whitespaces because of indentation
@@ -260,6 +277,7 @@ void RepositoryManagerCard::sl_RepositoryAddClicked(bool checked) {
         // update repositories
         m_Repositories.append(selectedPath);
         m_Settings.SetRepositories(m_Repositories);
+        emit this->si_RepositoriesUpdated();
         this->_LoadRepositories();
     } catch (const std::exception &e) {
         QMessageBox::critical(this, QObject::tr("Error"), QObject::tr("An error occured: %1").arg(e.what()));
@@ -282,6 +300,7 @@ void RepositoryManagerCard::sl_RepositoryDeleteClicked(bool checked) {
         // update repositories
         m_Repositories.removeOne(path);
         m_Settings.SetRepositories(m_Repositories);
+        emit this->si_RepositoriesUpdated();
         this->_LoadRepositories();
     } catch (const std::exception &e) {
         QMessageBox::critical(this, QObject::tr("Error"), QObject::tr("An error occured: %1").arg(e.what()));
@@ -348,6 +367,7 @@ void RepositoryManagerCard::sl_RepositoryUpdateClicked(bool checked) {
         auto indexOld = m_Repositories.indexOf(oldPath);
         m_Repositories.replace(indexOld, selectedPath);
         m_Settings.SetRepositories(m_Repositories);
+        emit this->si_RepositoriesUpdated();
         this->_LoadRepositories();
     } catch (const std::exception &e) {
         QMessageBox::critical(this, QObject::tr("Error"), QObject::tr("An error occured: %1").arg(e.what()));
@@ -389,6 +409,7 @@ void RepositoryManagerCard::sl_BranchCreateClicked(bool checked) {
 
         // create branch and load again in ui
         m_GitRepository->Branch({branchName});
+        emit this->si_RepositoriesUpdated();
         this->_LoadBranches();
     } catch (const std::exception &e) {
         QMessageBox::critical(this, QObject::tr("Error"), QObject::tr("An error occured: %1").arg(e.what()));
@@ -415,6 +436,7 @@ void RepositoryManagerCard::sl_BranchDeleteClicked(bool checked) {
 
         // delete branch and load branches in ui again
         m_GitRepository->Branch({"-d", branchName});
+        emit this->si_RepositoriesUpdated();
         this->_LoadBranches();
     } catch (const std::exception &e) {
         QMessageBox::critical(this, QObject::tr("Error"), QObject::tr("An error occured: %1").arg(e.what()));
@@ -428,17 +450,6 @@ void RepositoryManagerCard::sl_CurrentRowChangedForRepository(int row) {
         this->m_GitRepository->SetRepositoryPath(m_Repositories.at(row));
 
         this->_LoadBranches();
-    } catch (const std::exception &e) {
-        QMessageBox::critical(this, QObject::tr("Error"), QObject::tr("An error occured: %1").arg(e.what()));
-    }
-}
-
-void RepositoryManagerCard::sl_ItemChangedForRepository(QListWidgetItem *item) {
-    try {
-        if (!item) return;
-
-        // we will emit button signal to update the repository
-        emit this->m_RepositoryUpdate->si_ButtonClicked(true);
     } catch (const std::exception &e) {
         QMessageBox::critical(this, QObject::tr("Error"), QObject::tr("An error occured: %1").arg(e.what()));
     }
@@ -476,6 +487,7 @@ void RepositoryManagerCard::sl_ItemChangedForBranch(QListWidgetItem *item) {
         widget->blockSignals(false);
 
         m_GitRepository->Branch({"-m", oldBranch, newBranch});
+        emit this->si_RepositoriesUpdated();
 
         // update branches
         this->_LoadBranches();

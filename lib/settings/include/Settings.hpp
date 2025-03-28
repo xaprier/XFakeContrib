@@ -99,8 +99,7 @@ class Settings final : public QSettings {  // NOLINT
      */
     ~Settings() = default;  // NOLINT
 
-    /// A pointer to the Singleton instance of the Config class.
-    static Settings *m_Instance;  // NOLINT
+    void _LoadDefaults();
 
   private:
     QString m_Key;        ///< Stores the API key.

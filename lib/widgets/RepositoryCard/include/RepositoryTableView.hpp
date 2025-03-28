@@ -17,6 +17,8 @@
 #include "RepositoryTableItem.hpp"
 #include "Settings.hpp"
 
+class RepositoryCard;
+
 class RepositoryTableView final : public QWidget {
     Q_OBJECT
     Q_DISABLE_COPY_MOVE(RepositoryTableView)
@@ -26,6 +28,9 @@ class RepositoryTableView final : public QWidget {
     [[nodiscard]] QList<RepositoryTableItem *> GetItems() const { return m_Items; }
 
   private:
+    friend class RepositoryCardConnections;
+    void _ReloadRepositories();
+
     void _LoadRepositories();
     void _SetupModel();
     void _SetupTable();

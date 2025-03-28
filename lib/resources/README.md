@@ -44,4 +44,4 @@
 - icons/token.png
 
 ## <a href="https://www.flaticon.com/authors/freepik" target="_blank">Thanks to kiranshastry</a>
-- icons/user.png
+- icons/user_manager.png

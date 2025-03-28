@@ -7,6 +7,9 @@ using namespace xaprier::Qt::Widgets;
 RepositoryManagerComposedButton::RepositoryManagerComposedButton(QWidget *parent) : RepositoryManagerComposingWidgets({}, parent), m_Button(new QPushButton()), m_Indicator(new XQCircularLoadingIndicator) {
     // Setting-Up Widgets
     m_Indicator->SetSquare(true);
+    m_Indicator->SetProgressColor("#e67300");
+
+    this->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 
     // Setting-Up Layout
     this->SetWidgets({m_Button, m_Indicator});

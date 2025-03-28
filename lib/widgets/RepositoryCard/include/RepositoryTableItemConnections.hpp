@@ -15,6 +15,7 @@ class RepositoryTableItemConnections : public QObject {
   public:
     explicit RepositoryTableItemConnections(RepositoryTableItem *item, QObject *parent = nullptr);
     [[nodiscard]] int GetCommitterCount() const { return m_Committers.count(); }
+    [[nodiscard]] bool IsPushing() const { return m_Pushing; }
 
   protected slots:
     void sl_RepositoryStateChanged(int state);
@@ -28,12 +29,19 @@ class RepositoryTableItemConnections : public QObject {
 
   signals:
     void si_PushFinished();
+    void si_PushStarted();
+    void si_CreateCommitter(const quint32 &commitCount, const QDate &date, const QString &commitMessage, const QString &commitContent);
+    void si_StatusChanged(bool checked);
+    void si_CommitterFinished();
+    void si_AllCommittersFinished();
+    void si_FileSelected();
 
   private:
     void _SetupConnections();
     void _LoadBranches();
 
   private:
+    bool m_Pushing = false;
     QPointer<QFutureWatcher<QString>> m_Watcher;
     RepositoryTableItem *m_Item;
     QString m_CommitFile;

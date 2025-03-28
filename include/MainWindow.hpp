@@ -4,17 +4,19 @@
 #include <QMainWindow>
 
 #include "MainWindowConnections.hpp"
+#include "MainWindowUI.hpp"
 
-class MainWindow : public MainWindowConnections {
+class MainWindow : public Ui::MainWindow {
     Q_OBJECT
     Q_DISABLE_COPY_MOVE(MainWindow)
   public:
     static MainWindow &Instance();
 
   private:
-    static MainWindow *m_Instance;
-    explicit MainWindow(MainWindowConnections *parent = nullptr);
+    explicit MainWindow(QMainWindow *parent = nullptr);
     ~MainWindow();
+
+    QPointer<MainWindowConnections> m_Connections;
 };
 
 #endif  // MAINWINDOW_HPP

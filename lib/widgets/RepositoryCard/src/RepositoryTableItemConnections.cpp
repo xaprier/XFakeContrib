@@ -65,7 +65,7 @@ void RepositoryTableItemConnections::_SetupConnections() {
             connect(branchCombo, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &RepositoryTableItemConnections::sl_BranchIndexChanged);
     }
 
-    connect(m_Item, &RepositoryTableItem::si_CreateCommitter, this, &RepositoryTableItemConnections::sl_CreateCommitter);
+    connect(m_Item->GetConnections(), &RepositoryTableItemConnections::si_CreateCommitter, this, &RepositoryTableItemConnections::sl_CreateCommitter);
 }
 
 void RepositoryTableItemConnections::_LoadBranches() {
@@ -106,7 +106,7 @@ void RepositoryTableItemConnections::sl_RepositoryStateChanged(int state) {
     // else if (state == Qt::Unchecked)
     //     emit this->si_ItemSelected(false);
     //! maybe this is not correct
-    emit this->m_Item->si_StatusChanged(state == Qt::Checked);
+    emit this->m_Item->GetConnections()->si_StatusChanged(state == Qt::Checked);
 }
 
 void RepositoryTableItemConnections::sl_LogButtonClicked(bool checked) {
@@ -127,7 +127,7 @@ void RepositoryTableItemConnections::sl_LogButtonClicked(bool checked) {
 
 void RepositoryTableItemConnections::sl_PushButtonClicked(bool checked) {
     GitPusher *pusher = new GitPusher(m_Item->GetAbsolutePath());  // NOLINT
-
+    qDebug() << "Pushing " << m_Item->GetAbsolutePath();
     // start loading animation
     auto item = qobject_cast<QLabel *>(m_Item->m_RemoteItem->Item(RepositoryTableItemRemote::Status::LABEL));
 
@@ -140,12 +140,15 @@ void RepositoryTableItemConnections::sl_PushButtonClicked(bool checked) {
     auto remote = item->text();
     this->m_Item->m_PushItem->Set(RepositoryTableItemPush::Status::LOADING);
     this->m_Item->m_PushItem->setToolTip("Pushing Repository to " + remote);
+    m_Pushing = true;
+    emit this->si_PushStarted();
     pusher->start();
 
     // finish loading animation
     connect(pusher, &GitPusher::finished, [pusher, this]() {
         this->m_Item->m_PushItem->Set(RepositoryTableItemPush::Status::BUTTON);
         this->m_Item->m_PushItem->setToolTip("");  // clear tooltip
+        m_Pushing = false;
         emit this->si_PushFinished();
         pusher->deleteLater();
     });
@@ -203,7 +206,8 @@ void RepositoryTableItemConnections::sl_SelectCommitFileClicked(bool checked) {
     m_Item->m_SelectedFile = file;
     // update button
     commitFileButton->setToolTip("Selected File: " + m_Item->m_SelectedFile.split('/').last());
-    emit m_Item->si_FileSelected();
+    m_Item->m_CommitFileButton->SetValidFileSelected(true);
+    emit m_Item->GetConnections()->si_FileSelected();
 }
 
 void RepositoryTableItemConnections::sl_BranchIndexChanged(int index) {
@@ -253,11 +257,11 @@ void RepositoryTableItemConnections::sl_CommitterFinished() {
     // Update status
     if (m_Committers.isEmpty()) {
         m_Item->m_StatusItem->Set(RepositoryTableItemStatus::Status::CHECKBOX);
-        m_Item->m_StatusItem->setToolTip("");           // Clear tool tip
-        emit this->m_Item->si_AllCommittersFinished();  // send signal for giving info to repositorycard
+        m_Item->m_StatusItem->setToolTip("");                             // Clear tool tip
+        emit this->m_Item->GetConnections()->si_AllCommittersFinished();  // send signal for giving info to repositorycard
     } else {
         m_Item->m_StatusItem->setToolTip(QObject::tr("Creating commits for %1 days").arg(m_Committers.size()));
-        emit this->m_Item->si_CommitterFinished();  // send signal for giving info to repositorycard
+        emit this->m_Item->GetConnections()->si_CommitterFinished();  // send signal for giving info to repositorycard
     }
 
     committer->deleteLater();

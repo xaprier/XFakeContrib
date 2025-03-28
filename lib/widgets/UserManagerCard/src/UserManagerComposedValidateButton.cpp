@@ -7,14 +7,12 @@ using namespace xaprier::Qt::Widgets;
 UserManagerComposedValidateButton::UserManagerComposedValidateButton(QWidget *parent) : UserManagerComposingWidgets({}, parent), m_Button(new QToolButton()), m_Indicator(new XQCircularLoadingIndicator) {
     // Setting-Up Widgets
     m_Indicator->SetSquare(true);
+    m_Indicator->SetProgressColor("#e67300");
+    m_Indicator->setToolTip(QObject::tr("Validating changes... Please wait."));
 
     m_Button->setToolTip(QObject::tr("Validate Token"));
     m_Button->setIcon(QIcon(":/icons/icons/checked.png"));
     m_Button->setMinimumSize(50, 50);
-
-    m_Indicator->setToolTip(QObject::tr("Validating changes... Please wait."));
-    m_Indicator->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
-    m_Indicator->setMaximumSize(m_Button->width(), m_Button->height());
 
     // Setting-Up Layout
     this->SetWidgets({m_Button, m_Indicator});

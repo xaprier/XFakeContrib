@@ -16,14 +16,20 @@ file(GLOB HPP_FILES "include/*.hpp")
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
 add_library(${PROJECT_NAME} SHARED ${CPP_FILES} ${HPP_FILES})
 
-set(LIBRARIES
+set(INTERNAL_LIBRARIES
+    XFakeContribGithub
+    XFakeContribData
+    XFakeContribCard
+    XFakeContribUserManagerCard
+)
+
+set(EXTERNAL_LIBRARIES
   Qt${QT_VERSION_MAJOR}::Core
   Qt${QT_VERSION_MAJOR}::Widgets
   Qt${QT_VERSION_MAJOR}::Network
-  XFakeContribGithub
-  XFakeContribCard
-  XFakeContribData
 )
+
+set(LIBRARIES ${INTERNAL_LIBRARIES} ${EXTERNAL_LIBRARIES})
 
 target_link_libraries(${PROJECT_NAME} PUBLIC ${LIBRARIES})
 target_include_directories(${PROJECT_NAME} PUBLIC

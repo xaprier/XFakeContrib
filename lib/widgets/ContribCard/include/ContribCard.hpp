@@ -22,12 +22,18 @@ class ContribCard : public QWidget {
     ContribCard(const std::map<QDate, Contrib>& allContribs = {}, QWidget* parent = nullptr);
     void Update(const std::map<QDate, Contrib>& allContribs = {});
 
+    QIcon GetIcon() const { return QIcon(":/icons/contributions.png"); }
+    QString GetName() const { return QObject::tr("Contributions"); }
+
   private:
     void _UpdateContribs(const std::map<QDate, Contrib>& allContribs);
     void _UpdateTotalContribs(const std::map<int, ContribTotal>& allTotalContribs);
     void _UpdateFirstContrib(const QDate& firstContrib);
     void _SetupUI();
     void _CreateConnections();
+
+  signals:
+    void si_Reload();
 
   private slots:
     void sl_OnContributionPeriodChanged(int index);

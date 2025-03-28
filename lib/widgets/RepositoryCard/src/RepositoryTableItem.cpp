@@ -62,7 +62,6 @@ RepositoryTableItem::RepositoryTableItem(const QString& absolutePath, QObject* p
         }
 
         toolButton->setToolTip(QObject::tr("Select Commit File(No File Selected)"));
-        // todo: set icons for these buttons
     }
 
     // Log Button
@@ -77,7 +76,6 @@ RepositoryTableItem::RepositoryTableItem(const QString& absolutePath, QObject* p
 
         QString remote = m_GitRepository->Remote({"get-url", m_GitRepository->Remote({}).split('\n').first()}).trimmed();
         toolButton->setToolTip(QObject::tr("Get latest logs for: %1").arg(remote));
-        // todo: set icons for these buttons
     }
 
     // Setup Connections

@@ -1,3 +1,5 @@
+#include <qtimer.h>
+
 #include <QApplication>
 // #include <QDebug>
 // #include <QThread>

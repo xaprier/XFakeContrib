@@ -1,6 +1,7 @@
 #include <QCoreApplication>
 #include <QDebug>
 #include <QDir>
+#include <QObject>
 #include <QProcess>
 
 #include "ContribTotal.hpp"
@@ -25,20 +26,29 @@ int main(int argc, char* argv[]) {
 
 void TestAuth(const QString& token) {
     // create fetcher
-    GitHubAuthChecker auth;
+    GitHubAuthChecker* auth = new GitHubAuthChecker();
 
-    auth.CheckAuthKey(token);
+    QObject::connect(auth, &GitHubAuthChecker::si_AuthCheckResult, [&](bool isValid, const QString& message) {
+        qDebug() << "Auth key is valid: " << isValid;
+        qDebug() << "Message: " << message;
+    });
+
+    auth->CheckAuthKey(token);
 }
 
 void TestFetcher(const QString& username, const QString& token) {
     // create fetcher
-    GitHubContribFetcher fetcher(username, token);
+    GitHubContribFetcher* fetcher = new GitHubContribFetcher(username, token);
 
     std::vector<Contrib> contribs;
     std::vector<ContribTotal> totals;
 
     // fetch contributions
-    fetcher.FetchUserContributions();
+    QObject::connect(fetcher, &GitHubContribFetcher::si_AllRepliesFinished, [&]() {
+        qDebug() << "All replies finished";
 
-    fetcher.SaveFormattedJsonToFile("data.json");
+        fetcher->SaveFormattedJsonToFile("data.json");
+    });
+
+    fetcher->FetchUserContributions();
 }

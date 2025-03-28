@@ -24,9 +24,10 @@ class GitHubAuthChecker : public QObject {
 
   private slots:
     void sl_AuthCheckFinished(QNetworkReply* reply);
+    void sl_Check(const QString& authToken);
 
   private:
-    bool m_ProcessingValidation;
+    std::atomic<bool> m_ProcessingValidation;
     QSharedPointer<QNetworkAccessManager> m_Manager;
 };
 

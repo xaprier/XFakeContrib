@@ -22,6 +22,12 @@ class RepositoryManagerCard final : public QWidget {
     RepositoryManagerCard(QWidget *parent = nullptr);
     ~RepositoryManagerCard() final;
 
+    QIcon GetIcon() const { return QIcon(":/icons/repository_manager.png"); }
+    QString GetName() const { return QObject::tr("Repository Manager"); }
+
+  signals:
+    void si_RepositoriesUpdated();
+
   private slots:
     void sl_RepositoryAddClicked(bool checked);
     void sl_RepositoryDeleteClicked(bool checked);
@@ -32,7 +38,6 @@ class RepositoryManagerCard final : public QWidget {
 
     void sl_CurrentRowChangedForRepository(int row);
 
-    void sl_ItemChangedForRepository(QListWidgetItem *item);
     void sl_ItemChangedForBranch(QListWidgetItem *item);
 
   private:

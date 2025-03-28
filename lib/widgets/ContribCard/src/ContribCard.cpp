@@ -51,13 +51,14 @@ void ContribCard::_SetupUI() {
     // Layout for the main widget, this should raw data and will be deleted by Qt parent
     QGridLayout* layout = new QGridLayout(this);
 
-    // todo: set icons for toolbutttons
+    // todo: info button will show how to use contribcard with committer(left click start date, right click end date, middle both)
     m_InfoButton = QSharedPointer<QToolButton>::create(this);
     layout->addWidget(m_InfoButton.get(), 0, 0, 1, 1);
+    m_InfoButton->setIcon(QIcon(":/icons/icons/info.png"));
 
-    // todo: set icons for toolbutttons
     m_ReloadButton = QSharedPointer<QToolButton>::create(this);
     layout->addWidget(m_ReloadButton.get(), 0, 1, 1, 1);
+    m_ReloadButton->setIcon(QIcon(":/icons/icons/reload.png"));
 
     m_ContributionPeriod = QSharedPointer<ContributionPeriod>::create(this);
     layout->addWidget(m_ContributionPeriod.get(), 0, 2, 1, 1);
@@ -79,6 +80,9 @@ void ContribCard::_CreateConnections() {
     connect(m_ContributionPeriod.get(), QOverload<int>::of(&QComboBox::currentIndexChanged), this, &ContribCard::sl_OnContributionPeriodChanged);
     connect(m_ContributionPeriod.get(), &QComboBox::currentTextChanged, m_TotalContribWidget.get(), [&](const QString& currentText) {
         this->_UpdateTotalContribs(m_TotalContribs);
+    });
+    connect(m_ReloadButton.get(), &QToolButton::clicked, this, [this]() {
+        emit si_Reload();
     });
 }
 

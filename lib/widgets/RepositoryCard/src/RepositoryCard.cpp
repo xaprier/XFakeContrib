@@ -13,8 +13,8 @@ RepositoryCard::RepositoryCard(QWidget *parent) : QWidget(parent), m_Ui(new Ui::
     m_Repositories = new RepositoryTableView(this->m_Ui->groupBoxRepoTable);  // parent is set, no need to delete it. // NOLINT
     groupBoxLayout->addWidget(m_Repositories);
     this->m_Ui->groupBoxRepoTable->setLayout(groupBoxLayout);
-    // todo: update items in repositorycardconnection when new items added.
-    m_Connections = new RepositoryCardConnections(m_Repositories->GetItems(), m_Ui, this);  // NOLINT
+
+    m_Connections = new RepositoryCardConnections(m_Repositories->GetItems(), m_Ui, m_Repositories, this);  // NOLINT
 }
 
 RepositoryCard::~RepositoryCard() {

@@ -2,19 +2,18 @@
 
 #include "Config.hpp"
 
-Settings *Settings::m_Instance = nullptr;  // NOLINT
-
 Settings &Settings::Instance() {
     static Settings instance;
     return instance;
 }
 
+// todo: set default values if not exists in settings
 Settings::Settings()
     : QSettings(PROJECT_ORGANIZATION, PROJECT_NAME) {
     m_Key = value("API_KEY", "").toString();
     m_Username = value("USERNAME", "").toString();
     m_Repos = value("REPOSITORIES", QStringList()).toStringList();
-    m_RandomMax = value("MAX_RAND_COUNT", quint32()).toUInt();
+    m_RandomMax = value("MAX_RAND_COUNT", quint32(30)).toUInt();
 }
 
 QString Settings::GetAPIKey() const {

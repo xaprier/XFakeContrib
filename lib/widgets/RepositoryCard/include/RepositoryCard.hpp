@@ -19,8 +19,13 @@ class RepositoryCard final : public QWidget {
     RepositoryCard(QWidget *parent = nullptr);
     ~RepositoryCard() final;
 
+    QIcon GetIcon() const { return QIcon(); }
+    QString GetName() const { return QObject::tr("Repositories"); }
+
+    QPointer<RepositoryCardConnections> GetConnections() const { return m_Connections; }
+
   private:
-    QPointer<RepositoryCardConnections> m_Connections;
+    mutable QPointer<RepositoryCardConnections> m_Connections;
     QPointer<RepositoryTableView> m_Repositories;
     Settings &m_Settings;
     Ui::RepositoryCardUI *m_Ui;

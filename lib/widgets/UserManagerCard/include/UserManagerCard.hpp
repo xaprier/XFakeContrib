@@ -23,6 +23,14 @@ class UserManagerCard : public QWidget {
     explicit UserManagerCard(QWidget* parent = nullptr);
     ~UserManagerCard() override;
 
+    QIcon GetIcon() const { return QIcon(":/icons/icons/user_manager.png"); }
+    QString GetName() const { return QObject::tr("User Manager"); }
+
+    UserManager& GetManager() const { return m_UserManager; }
+
+  signals:
+    void si_UserUpdated();
+
   protected slots:
     void sl_ValidateUser(bool checked);
     void sl_AuthCheckCompleted(bool isValid, const QString& message);
@@ -36,7 +44,6 @@ class UserManagerCard : public QWidget {
     xaprier::Qt::Widgets::PasswordLineEdit* m_TokenLineEdit;
     QLineEdit* m_UsernameLineEdit;
     UserManagerComposedValidateButton* m_ValidateButton;
-    UserManagerComposedSaveButton* m_SaveButton;
     GitHubAuthChecker* m_AuthChecker;
 };
 
