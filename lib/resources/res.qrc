@@ -37,5 +37,7 @@
         <file>vs15/scrollbar-up-disabled.png</file>
         <file>vs15/scrollbar-up-hover.png</file>
         <file>vs15/scrollbar-up.png</file>
+        <file>vs15/spinner-up.png</file>
+        <file>vs15/spinner-down.png</file>
     </qresource>
 </RCC>
