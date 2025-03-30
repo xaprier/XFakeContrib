@@ -33,6 +33,27 @@ class Settings final : public QSettings {  // NOLINT
     static Settings &Instance();
 
     /**
+     * @brief Get the Theme object
+     *
+     * @return QString
+     */
+    [[nodiscard]] QString GetTheme() const;
+
+    /**
+     * @brief Get the Default Theme object
+     *
+     * @return QString
+     */
+    [[nodiscard]] QString GetDefaultTheme() const { return m_DefaultTheme; }
+
+    /**
+     * @brief Set the Theme object
+     *
+     * @param theme
+     */
+    void SetTheme(const QString &theme);
+
+    /**
      * @brief Retrieves the stored API key.
      * @return The API key as a QString.
      */
@@ -56,6 +77,13 @@ class Settings final : public QSettings {  // NOLINT
      * @return quint32 the maximum count
      */
     [[nodiscard]] quint32 GetRandomMax() const;
+
+    /**
+     * @brief Get the Default Random Max object
+     *
+     * @return quint32
+     */
+    [[nodiscard]] quint32 GetDefaultRandomMax() const { return m_DefaultRandomMax; }
 
     /**
      * @brief Sets the API key and stores it in the settings.
@@ -99,11 +127,13 @@ class Settings final : public QSettings {  // NOLINT
      */
     ~Settings() = default;  // NOLINT
 
-    void _LoadDefaults();
-
   private:
+    QString m_DefaultTheme = "orange";  ///< Stores the default theme.
+    quint32 m_DefaultRandomMax = 30;    ///< Stores the default random maximum commit count
+
     QString m_Key;        ///< Stores the API key.
     QString m_Username;   ///< Stores the username.
+    QString m_Theme;      ///< Stores the theme.
     quint32 m_RandomMax;  ///< Stores the random maximum commit count
     QStringList m_Repos;  ///< Stores the repositories.
 };

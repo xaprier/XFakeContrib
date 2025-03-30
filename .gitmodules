@@ -13,3 +13,6 @@
 [submodule "lib/widgets/XQPwdLineEdit"]
 	path = lib/widgets/XQPwdLineEdit
 	url = https://github.com/xaprier/XQPwdLineEdit
+[submodule "lib/yaml-cpp"]
+	path = lib/yaml-cpp
+	url = https://github.com/jbeder/yaml-cpp.git

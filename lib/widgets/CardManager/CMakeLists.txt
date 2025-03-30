@@ -5,8 +5,8 @@ project(XFakeContribCardManager)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_EXPORT_COMPILE_COMMANDS 1)
 
-find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Core Widgets)
-find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Core Widgets)
+find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Core Widgets Svg)
+find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Core Widgets Svg)
 
 file(GLOB CPP_FILES "src/*.cpp")
 file(GLOB HPP_FILES "include/*.hpp")
@@ -17,11 +17,13 @@ add_library(${PROJECT_NAME} SHARED ${CPP_FILES} ${HPP_FILES})
 set(INTERNAL_LIBRARIES
     XFakeContribResources
     XFakeContribUserManagerCard
+    XFakeContribStyle
 )
 
 set(EXTERNAL_LIBRARIES
     Qt${QT_VERSION_MAJOR}::Core 
     Qt${QT_VERSION_MAJOR}::Widgets 
+    Qt${QT_VERSION_MAJOR}::Svg
 )
 
 set(LIBRARIES

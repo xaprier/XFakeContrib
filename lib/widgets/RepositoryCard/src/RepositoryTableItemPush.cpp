@@ -1,13 +1,18 @@
 #include "RepositoryTableItemPush.hpp"
 
+#include "Icon.hpp"
+#include "StyleManager.hpp"
+
 using namespace xaprier::Qt::Widgets;
 
 RepositoryTableItemPush::RepositoryTableItemPush(QWidget *parent) : RepositoryComposingWidgets({}, parent), m_Button(new QToolButton()), m_Indicator(new XQCircularLoadingIndicator) {
+    QString colorHex = StyleManager::GetCurrentThemeColors()["icon"];
+
     // Setting-Up Widgets
     m_Indicator->SetSquare(true);
-    m_Indicator->SetProgressColor("#e67300");
+    m_Indicator->SetProgressColor(colorHex);
 
-    m_Button->setIcon(QIcon(":/icons/icons/push.png"));
+    m_Button->setIcon(Icon(":/icons/push.svg"));
     m_Button->setToolTip(QObject::tr("Push latest changes to remote"));
     m_Button->setText(QObject::tr("Push"));
 

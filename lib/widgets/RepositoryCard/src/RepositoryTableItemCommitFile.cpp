@@ -1,7 +1,9 @@
 #include "RepositoryTableItemCommitFile.hpp"
 
+#include "Icon.hpp"
+
 RepositoryTableItemCommitFile::RepositoryTableItemCommitFile(QWidget *parent) : RepositoryComposingWidgets({}, parent), m_Button(new QToolButton()) {
-    m_Button->setIcon(QIcon(":/icons/icons/file.png"));
+    m_Button->setIcon(Icon(":/icons/file.svg"));
     m_Button->setToolTip(QObject::tr("Select commit file"));
 
     m_Button->setStyleSheet(R"(

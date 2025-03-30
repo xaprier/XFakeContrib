@@ -1,5 +1,6 @@
 #include "ContribCard.hpp"
 
+#include "Icon.hpp"
 #include "XFakeContribHelper.hpp"
 
 ContribCard::ContribCard(
@@ -54,11 +55,11 @@ void ContribCard::_SetupUI() {
     // todo: info button will show how to use contribcard with committer(left click start date, right click end date, middle both)
     m_InfoButton = QSharedPointer<QToolButton>::create(this);
     layout->addWidget(m_InfoButton.get(), 0, 0, 1, 1);
-    m_InfoButton->setIcon(QIcon(":/icons/icons/info.png"));
+    m_InfoButton->setIcon(Icon(":/icons/info.svg"));
 
     m_ReloadButton = QSharedPointer<QToolButton>::create(this);
     layout->addWidget(m_ReloadButton.get(), 0, 1, 1, 1);
-    m_ReloadButton->setIcon(QIcon(":/icons/icons/reload.png"));
+    m_ReloadButton->setIcon(Icon(":/icons/reload.svg"));
 
     m_ContributionPeriod = QSharedPointer<ContributionPeriod>::create(this);
     layout->addWidget(m_ContributionPeriod.get(), 0, 2, 1, 1);

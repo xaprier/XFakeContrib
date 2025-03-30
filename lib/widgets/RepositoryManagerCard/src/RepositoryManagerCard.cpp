@@ -70,9 +70,9 @@ void RepositoryManagerCard::_SetupButtons() {
         this->m_Ui->HL_branchButtonLayout->addWidget(m_BranchDelete);
         this->m_Ui->HL_branchButtonLayout->addSpacerItem(new QSpacerItem(0, 0, QSizePolicy::MinimumExpanding, QSizePolicy::Fixed));  // NOLINT
 
-        QIcon addIcon(":/icons/icons/add.png");
-        QIcon updateIcon(":/icons/icons/reload.png");
-        QIcon deleteIcon(":/icons/icons/delete.png");
+        Icon addIcon(":/icons/add.svg");
+        Icon updateIcon(":/icons/reload.svg");
+        Icon deleteIcon(":/icons/delete.svg");
 
         if (addIcon.isNull() || updateIcon.isNull() || deleteIcon.isNull())
             QMessageBox::critical(this, QObject::tr("Error"), QObject::tr("Icons are not found."));

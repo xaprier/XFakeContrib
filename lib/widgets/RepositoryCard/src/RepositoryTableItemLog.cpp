@@ -1,15 +1,19 @@
 #include "RepositoryTableItemLog.hpp"
 
+#include "Icon.hpp"
+#include "StyleManager.hpp"
 #include "XQCircularLoadingIndicator.hpp"
 
 using namespace xaprier::Qt::Widgets;
 
 RepositoryTableItemLog::RepositoryTableItemLog(QWidget *parent) : RepositoryComposingWidgets({}, parent), m_Button(new QToolButton()), m_Indicator(new XQCircularLoadingIndicator) {
+    QString colorHex = StyleManager::GetCurrentThemeColors()["icon"];
+
     // Setting-Up Widgets
     m_Indicator->SetSquare(true);
-    m_Indicator->SetProgressColor("#e67300");
+    m_Indicator->SetProgressColor(colorHex);
 
-    m_Button->setIcon(QIcon(":/icons/icons/log.png"));
+    m_Button->setIcon(Icon(":/icons/log.svg"));
     m_Button->setToolTip(QObject::tr("Show logs"));
     m_Button->setText(QObject::tr("Logs"));
 

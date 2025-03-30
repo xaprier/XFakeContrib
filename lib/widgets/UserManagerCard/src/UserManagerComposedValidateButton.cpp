@@ -1,17 +1,20 @@
 #include "UserManagerComposedValidateButton.hpp"
 
-#include <qsizepolicy.h>
+#include "Icon.hpp"
+#include "StyleManager.hpp"
 
 using namespace xaprier::Qt::Widgets;
 
 UserManagerComposedValidateButton::UserManagerComposedValidateButton(QWidget *parent) : UserManagerComposingWidgets({}, parent), m_Button(new QToolButton()), m_Indicator(new XQCircularLoadingIndicator) {
+    QString colorHex = StyleManager::GetCurrentThemeColors()["icon"];
+
     // Setting-Up Widgets
     m_Indicator->SetSquare(true);
-    m_Indicator->SetProgressColor("#e67300");
+    m_Indicator->SetProgressColor(colorHex);
     m_Indicator->setToolTip(QObject::tr("Validating changes... Please wait."));
 
     m_Button->setToolTip(QObject::tr("Validate Token"));
-    m_Button->setIcon(QIcon(":/icons/icons/checked.png"));
+    m_Button->setIcon(Icon(":/icons/checked.svg"));
     m_Button->setMinimumSize(50, 50);
 
     // Setting-Up Layout

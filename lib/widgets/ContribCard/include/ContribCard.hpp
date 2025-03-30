@@ -11,6 +11,7 @@
 #include "Contrib.hpp"
 #include "ContribTotal.hpp"
 #include "ContributionPeriod.hpp"
+#include "Icon.hpp"
 #include "LevelColorIndicator.hpp"
 #include "YearContrib.hpp"
 #include "YearContribTotalIndicator.hpp"
@@ -22,7 +23,7 @@ class ContribCard : public QWidget {
     ContribCard(const std::map<QDate, Contrib>& allContribs = {}, QWidget* parent = nullptr);
     void Update(const std::map<QDate, Contrib>& allContribs = {});
 
-    QIcon GetIcon() const { return QIcon(":/icons/contributions.png"); }
+    Icon GetIcon() const { return Icon(":/icons/contributions.svg"); }
     QString GetName() const { return QObject::tr("Contributions"); }
 
   private:

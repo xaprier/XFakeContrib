@@ -1,15 +1,17 @@
 #include "Application.hpp"
 
-#include <qtranslator.h>
+#include <QTranslator>
+
+#include "Logger.hpp"
 
 QTranslator Application::translator = QTranslator();
 
-Application::Application(int &argc, char **argv, const QString &appName, const QString &appVersion, const QString &appOrg, const QString &appStyle)
-    : QApplication(argc, argv) {
+Application::Application(int &argc, char **argv, const QString &appName, const QString &appVersion, const QString &appOrg)
+    : QApplication(argc, argv), settings(Settings::Instance()) {
     this->SetApplicationName(appName);
     this->SetApplicationVersion(appVersion);
     this->SetOrganizationName(appOrg);
-    this->SetStyleSheet(appStyle);
+    this->UpdateStyleSheet();
     this->_SetAppIcon();
     this->_SetAppLanguage();
 }
@@ -32,9 +34,9 @@ void Application::SetOrganizationName(const QString &name) {
     QCoreApplication::setOrganizationName(name);
 }
 
-void Application::SetStyleSheet(const QString &sheet) {
-    m_styleSheet = sheet;
-    QApplication::setStyleSheet(sheet);
+void Application::UpdateStyleSheet() {
+    QString theme = settings.GetTheme();
+    styleManager.SetTheme(theme, *this);
 }
 
 void Application::_SetAppLanguage() {

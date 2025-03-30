@@ -187,7 +187,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/main.cpp" line="8"/>
+        <location filename="../src/main.cpp" line="19"/>
         <source>Style file cannot be opened</source>
         <translation type="unfinished"></translation>
     </message>
@@ -197,29 +197,35 @@
         <location filename="../lib/widgets/RepositoryCard/src/RepositoryTableItemConnections.cpp" line="188"/>
         <location filename="../lib/widgets/RepositoryCard/src/RepositoryTableItemConnections.cpp" line="193"/>
         <location filename="../lib/widgets/RepositoryCard/src/RepositoryTableItemConnections.cpp" line="199"/>
-        <location filename="../lib/widgets/RepositoryManagerCard/src/RepositoryManagerCard.cpp" line="141"/>
-        <location filename="../lib/widgets/RepositoryManagerCard/src/RepositoryManagerCard.cpp" line="169"/>
-        <location filename="../lib/widgets/RepositoryManagerCard/src/RepositoryManagerCard.cpp" line="206"/>
-        <location filename="../lib/widgets/RepositoryManagerCard/src/RepositoryManagerCard.cpp" line="213"/>
-        <location filename="../lib/widgets/RepositoryManagerCard/src/RepositoryManagerCard.cpp" line="219"/>
-        <location filename="../lib/widgets/RepositoryManagerCard/src/RepositoryManagerCard.cpp" line="231"/>
-        <location filename="../lib/widgets/RepositoryManagerCard/src/RepositoryManagerCard.cpp" line="240"/>
-        <location filename="../lib/widgets/RepositoryManagerCard/src/RepositoryManagerCard.cpp" line="250"/>
-        <location filename="../lib/widgets/RepositoryManagerCard/src/RepositoryManagerCard.cpp" line="262"/>
-        <location filename="../lib/widgets/RepositoryManagerCard/src/RepositoryManagerCard.cpp" line="278"/>
-        <location filename="../lib/widgets/RepositoryManagerCard/src/RepositoryManagerCard.cpp" line="293"/>
-        <location filename="../lib/widgets/RepositoryManagerCard/src/RepositoryManagerCard.cpp" line="301"/>
-        <location filename="../lib/widgets/RepositoryManagerCard/src/RepositoryManagerCard.cpp" line="311"/>
-        <location filename="../lib/widgets/RepositoryManagerCard/src/RepositoryManagerCard.cpp" line="322"/>
-        <location filename="../lib/widgets/RepositoryManagerCard/src/RepositoryManagerCard.cpp" line="334"/>
-        <location filename="../lib/widgets/RepositoryManagerCard/src/RepositoryManagerCard.cpp" line="352"/>
-        <location filename="../lib/widgets/RepositoryManagerCard/src/RepositoryManagerCard.cpp" line="362"/>
-        <location filename="../lib/widgets/RepositoryManagerCard/src/RepositoryManagerCard.cpp" line="370"/>
+        <location filename="../lib/widgets/RepositoryManagerCard/src/RepositoryManagerCard.cpp" line="78"/>
+        <location filename="../lib/widgets/RepositoryManagerCard/src/RepositoryManagerCard.cpp" line="94"/>
+        <location filename="../lib/widgets/RepositoryManagerCard/src/RepositoryManagerCard.cpp" line="106"/>
+        <location filename="../lib/widgets/RepositoryManagerCard/src/RepositoryManagerCard.cpp" line="157"/>
+        <location filename="../lib/widgets/RepositoryManagerCard/src/RepositoryManagerCard.cpp" line="185"/>
+        <location filename="../lib/widgets/RepositoryManagerCard/src/RepositoryManagerCard.cpp" line="209"/>
+        <location filename="../lib/widgets/RepositoryManagerCard/src/RepositoryManagerCard.cpp" line="226"/>
+        <location filename="../lib/widgets/RepositoryManagerCard/src/RepositoryManagerCard.cpp" line="233"/>
+        <location filename="../lib/widgets/RepositoryManagerCard/src/RepositoryManagerCard.cpp" line="239"/>
+        <location filename="../lib/widgets/RepositoryManagerCard/src/RepositoryManagerCard.cpp" line="256"/>
+        <location filename="../lib/widgets/RepositoryManagerCard/src/RepositoryManagerCard.cpp" line="265"/>
+        <location filename="../lib/widgets/RepositoryManagerCard/src/RepositoryManagerCard.cpp" line="275"/>
+        <location filename="../lib/widgets/RepositoryManagerCard/src/RepositoryManagerCard.cpp" line="287"/>
+        <location filename="../lib/widgets/RepositoryManagerCard/src/RepositoryManagerCard.cpp" line="295"/>
+        <location filename="../lib/widgets/RepositoryManagerCard/src/RepositoryManagerCard.cpp" line="310"/>
+        <location filename="../lib/widgets/RepositoryManagerCard/src/RepositoryManagerCard.cpp" line="317"/>
+        <location filename="../lib/widgets/RepositoryManagerCard/src/RepositoryManagerCard.cpp" line="323"/>
+        <location filename="../lib/widgets/RepositoryManagerCard/src/RepositoryManagerCard.cpp" line="340"/>
+        <location filename="../lib/widgets/RepositoryManagerCard/src/RepositoryManagerCard.cpp" line="353"/>
+        <location filename="../lib/widgets/RepositoryManagerCard/src/RepositoryManagerCard.cpp" line="371"/>
         <location filename="../lib/widgets/RepositoryManagerCard/src/RepositoryManagerCard.cpp" line="386"/>
-        <location filename="../lib/widgets/RepositoryManagerCard/src/RepositoryManagerCard.cpp" line="399"/>
-        <location filename="../lib/widgets/RepositoryManagerCard/src/RepositoryManagerCard.cpp" line="418"/>
-        <location filename="../lib/widgets/RepositoryManagerCard/src/RepositoryManagerCard.cpp" line="426"/>
-        <location filename="../lib/widgets/RepositoryManagerCard/src/RepositoryManagerCard.cpp" line="439"/>
+        <location filename="../lib/widgets/RepositoryManagerCard/src/RepositoryManagerCard.cpp" line="394"/>
+        <location filename="../lib/widgets/RepositoryManagerCard/src/RepositoryManagerCard.cpp" line="404"/>
+        <location filename="../lib/widgets/RepositoryManagerCard/src/RepositoryManagerCard.cpp" line="420"/>
+        <location filename="../lib/widgets/RepositoryManagerCard/src/RepositoryManagerCard.cpp" line="432"/>
+        <location filename="../lib/widgets/RepositoryManagerCard/src/RepositoryManagerCard.cpp" line="443"/>
+        <location filename="../lib/widgets/RepositoryManagerCard/src/RepositoryManagerCard.cpp" line="462"/>
+        <location filename="../lib/widgets/RepositoryManagerCard/src/RepositoryManagerCard.cpp" line="470"/>
+        <location filename="../lib/widgets/RepositoryManagerCard/src/RepositoryManagerCard.cpp" line="483"/>
         <source>Error</source>
         <translation type="unfinished"></translation>
     </message>
@@ -258,8 +264,8 @@
     <message>
         <location filename="../lib/widgets/RepositoryCard/src/RepositoryCardConnections.cpp" line="210"/>
         <location filename="../lib/widgets/RepositoryCard/src/RepositoryCardConnections.cpp" line="219"/>
-        <location filename="../lib/widgets/RepositoryCard/src/RepositoryCardConnections.cpp" line="302"/>
-        <location filename="../lib/widgets/RepositoryCard/src/RepositoryCardConnections.cpp" line="311"/>
+        <location filename="../lib/widgets/RepositoryCard/src/RepositoryCardConnections.cpp" line="301"/>
+        <location filename="../lib/widgets/RepositoryCard/src/RepositoryCardConnections.cpp" line="310"/>
         <source>Creating commits(%1)</source>
         <translation type="unfinished"></translation>
     </message>
@@ -280,28 +286,28 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../lib/widgets/RepositoryCard/src/RepositoryCardConnections.cpp" line="340"/>
-        <location filename="../lib/widgets/RepositoryCard/src/RepositoryCardConnections.cpp" line="342"/>
+        <location filename="../lib/widgets/RepositoryCard/src/RepositoryCardConnections.cpp" line="339"/>
+        <location filename="../lib/widgets/RepositoryCard/src/RepositoryCardConnections.cpp" line="341"/>
         <source>There must be at least one repository selected.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../lib/widgets/RepositoryCard/src/RepositoryCardConnections.cpp" line="353"/>
+        <location filename="../lib/widgets/RepositoryCard/src/RepositoryCardConnections.cpp" line="352"/>
         <source>Commit file must be selected for all selected repositories.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../lib/widgets/RepositoryCard/src/RepositoryCardConnections.cpp" line="362"/>
+        <location filename="../lib/widgets/RepositoryCard/src/RepositoryCardConnections.cpp" line="361"/>
         <source>Selected file must be writable for all selected repositories.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../lib/widgets/RepositoryCard/src/RepositoryCardConnections.cpp" line="374"/>
+        <location filename="../lib/widgets/RepositoryCard/src/RepositoryCardConnections.cpp" line="373"/>
         <source>Commit message must be filled.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../lib/widgets/RepositoryCard/src/RepositoryCardConnections.cpp" line="383"/>
+        <location filename="../lib/widgets/RepositoryCard/src/RepositoryCardConnections.cpp" line="382"/>
         <source>Commit content must be filled.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -469,159 +475,246 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../lib/widgets/RepositoryManagerCard/src/RepositoryManagerCard.cpp" line="38"/>
+        <location filename="../lib/widgets/RepositoryManagerCard/src/RepositoryManagerCard.cpp" line="42"/>
         <source>Add Repository</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../lib/widgets/RepositoryManagerCard/src/RepositoryManagerCard.cpp" line="39"/>
+        <location filename="../lib/widgets/RepositoryManagerCard/src/RepositoryManagerCard.cpp" line="43"/>
         <source>Delete Selected Repository</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../lib/widgets/RepositoryManagerCard/src/RepositoryManagerCard.cpp" line="40"/>
+        <location filename="../lib/widgets/RepositoryManagerCard/src/RepositoryManagerCard.cpp" line="44"/>
         <source>Update Selected Repository</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../lib/widgets/RepositoryManagerCard/src/RepositoryManagerCard.cpp" line="42"/>
+        <location filename="../lib/widgets/RepositoryManagerCard/src/RepositoryManagerCard.cpp" line="46"/>
+        <location filename="../lib/widgets/RepositoryManagerCard/src/RepositoryManagerCard.cpp" line="363"/>
         <source>Create Branch</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../lib/widgets/RepositoryManagerCard/src/RepositoryManagerCard.cpp" line="43"/>
+        <location filename="../lib/widgets/RepositoryManagerCard/src/RepositoryManagerCard.cpp" line="47"/>
         <source>Delete Selected Branch</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../lib/widgets/RepositoryManagerCard/src/RepositoryManagerCard.cpp" line="44"/>
+        <location filename="../lib/widgets/RepositoryManagerCard/src/RepositoryManagerCard.cpp" line="48"/>
         <source>Update Selected Branch</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../lib/widgets/RepositoryManagerCard/src/RepositoryManagerCard.cpp" line="141"/>
-        <location filename="../lib/widgets/RepositoryManagerCard/src/RepositoryManagerCard.cpp" line="169"/>
-        <location filename="../lib/widgets/RepositoryManagerCard/src/RepositoryManagerCard.cpp" line="240"/>
-        <location filename="../lib/widgets/RepositoryManagerCard/src/RepositoryManagerCard.cpp" line="262"/>
-        <location filename="../lib/widgets/RepositoryManagerCard/src/RepositoryManagerCard.cpp" line="301"/>
-        <location filename="../lib/widgets/RepositoryManagerCard/src/RepositoryManagerCard.cpp" line="322"/>
-        <location filename="../lib/widgets/RepositoryManagerCard/src/RepositoryManagerCard.cpp" line="334"/>
-        <location filename="../lib/widgets/RepositoryManagerCard/src/RepositoryManagerCard.cpp" line="399"/>
-        <location filename="../lib/widgets/RepositoryManagerCard/src/RepositoryManagerCard.cpp" line="439"/>
+        <location filename="../lib/widgets/RepositoryManagerCard/src/RepositoryManagerCard.cpp" line="78"/>
+        <source>Icons are not found.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../lib/widgets/RepositoryManagerCard/src/RepositoryManagerCard.cpp" line="81"/>
+        <source>Add</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../lib/widgets/RepositoryManagerCard/src/RepositoryManagerCard.cpp" line="83"/>
+        <location filename="../lib/widgets/RepositoryManagerCard/src/RepositoryManagerCard.cpp" line="90"/>
+        <source>Update</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../lib/widgets/RepositoryManagerCard/src/RepositoryManagerCard.cpp" line="85"/>
+        <location filename="../lib/widgets/RepositoryManagerCard/src/RepositoryManagerCard.cpp" line="92"/>
+        <source>Delete</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../lib/widgets/RepositoryManagerCard/src/RepositoryManagerCard.cpp" line="88"/>
+        <source>Create</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../lib/widgets/RepositoryManagerCard/src/RepositoryManagerCard.cpp" line="94"/>
+        <location filename="../lib/widgets/RepositoryManagerCard/src/RepositoryManagerCard.cpp" line="157"/>
+        <location filename="../lib/widgets/RepositoryManagerCard/src/RepositoryManagerCard.cpp" line="185"/>
+        <location filename="../lib/widgets/RepositoryManagerCard/src/RepositoryManagerCard.cpp" line="209"/>
+        <location filename="../lib/widgets/RepositoryManagerCard/src/RepositoryManagerCard.cpp" line="265"/>
+        <location filename="../lib/widgets/RepositoryManagerCard/src/RepositoryManagerCard.cpp" line="287"/>
+        <location filename="../lib/widgets/RepositoryManagerCard/src/RepositoryManagerCard.cpp" line="353"/>
+        <location filename="../lib/widgets/RepositoryManagerCard/src/RepositoryManagerCard.cpp" line="394"/>
+        <location filename="../lib/widgets/RepositoryManagerCard/src/RepositoryManagerCard.cpp" line="420"/>
+        <location filename="../lib/widgets/RepositoryManagerCard/src/RepositoryManagerCard.cpp" line="432"/>
+        <location filename="../lib/widgets/RepositoryManagerCard/src/RepositoryManagerCard.cpp" line="443"/>
+        <location filename="../lib/widgets/RepositoryManagerCard/src/RepositoryManagerCard.cpp" line="483"/>
         <source>An error occured: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../lib/widgets/RepositoryManagerCard/src/RepositoryManagerCard.cpp" line="175"/>
-        <location filename="../lib/widgets/RepositoryManagerCard/src/RepositoryManagerCard.cpp" line="179"/>
-        <location filename="../lib/widgets/RepositoryManagerCard/src/RepositoryManagerCard.cpp" line="180"/>
-        <location filename="../lib/widgets/RepositoryManagerCard/src/RepositoryManagerCard.cpp" line="185"/>
-        <location filename="../lib/widgets/RepositoryManagerCard/src/RepositoryManagerCard.cpp" line="186"/>
-        <location filename="../lib/widgets/RepositoryManagerCard/src/RepositoryManagerCard.cpp" line="187"/>
-        <location filename="../lib/widgets/RepositoryManagerCard/src/RepositoryManagerCard.cpp" line="190"/>
+        <location filename="../lib/widgets/RepositoryManagerCard/src/RepositoryManagerCard.cpp" line="106"/>
+        <source>There is no selected branch to update</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../lib/widgets/RepositoryManagerCard/src/RepositoryManagerCard.cpp" line="192"/>
+        <location filename="../lib/widgets/RepositoryManagerCard/src/RepositoryManagerCard.cpp" line="196"/>
+        <location filename="../lib/widgets/RepositoryManagerCard/src/RepositoryManagerCard.cpp" line="197"/>
+        <location filename="../lib/widgets/RepositoryManagerCard/src/RepositoryManagerCard.cpp" line="202"/>
+        <location filename="../lib/widgets/RepositoryManagerCard/src/RepositoryManagerCard.cpp" line="203"/>
+        <location filename="../lib/widgets/RepositoryManagerCard/src/RepositoryManagerCard.cpp" line="204"/>
+        <location filename="../lib/widgets/RepositoryManagerCard/src/RepositoryManagerCard.cpp" line="207"/>
         <source>No Repositories Found. Please Add Repository.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../lib/widgets/RepositoryManagerCard/src/RepositoryManagerCard.cpp" line="179"/>
+        <location filename="../lib/widgets/RepositoryManagerCard/src/RepositoryManagerCard.cpp" line="196"/>
         <source>Delete selected repository from settings</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../lib/widgets/RepositoryManagerCard/src/RepositoryManagerCard.cpp" line="180"/>
+        <location filename="../lib/widgets/RepositoryManagerCard/src/RepositoryManagerCard.cpp" line="197"/>
         <source>Update selected repository from settings</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../lib/widgets/RepositoryManagerCard/src/RepositoryManagerCard.cpp" line="185"/>
+        <location filename="../lib/widgets/RepositoryManagerCard/src/RepositoryManagerCard.cpp" line="202"/>
         <source>Create new branch for selected repository.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../lib/widgets/RepositoryManagerCard/src/RepositoryManagerCard.cpp" line="186"/>
+        <location filename="../lib/widgets/RepositoryManagerCard/src/RepositoryManagerCard.cpp" line="203"/>
         <source>Delete selected branch for selected repository.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../lib/widgets/RepositoryManagerCard/src/RepositoryManagerCard.cpp" line="187"/>
+        <location filename="../lib/widgets/RepositoryManagerCard/src/RepositoryManagerCard.cpp" line="204"/>
         <source>Update selected branch for selected repository.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../lib/widgets/RepositoryManagerCard/src/RepositoryManagerCard.cpp" line="195"/>
+        <location filename="../lib/widgets/RepositoryManagerCard/src/RepositoryManagerCard.cpp" line="215"/>
+        <location filename="../lib/widgets/RepositoryManagerCard/src/RepositoryManagerCard.cpp" line="299"/>
         <source>Select Repository Path</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../lib/widgets/RepositoryManagerCard/src/RepositoryManagerCard.cpp" line="206"/>
-        <location filename="../lib/widgets/RepositoryManagerCard/src/RepositoryManagerCard.cpp" line="352"/>
+        <location filename="../lib/widgets/RepositoryManagerCard/src/RepositoryManagerCard.cpp" line="226"/>
+        <location filename="../lib/widgets/RepositoryManagerCard/src/RepositoryManagerCard.cpp" line="310"/>
         <source>No path was selected.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../lib/widgets/RepositoryManagerCard/src/RepositoryManagerCard.cpp" line="213"/>
-        <location filename="../lib/widgets/RepositoryManagerCard/src/RepositoryManagerCard.cpp" line="362"/>
+        <location filename="../lib/widgets/RepositoryManagerCard/src/RepositoryManagerCard.cpp" line="233"/>
+        <location filename="../lib/widgets/RepositoryManagerCard/src/RepositoryManagerCard.cpp" line="317"/>
         <source>Directory not exists: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../lib/widgets/RepositoryManagerCard/src/RepositoryManagerCard.cpp" line="219"/>
-        <location filename="../lib/widgets/RepositoryManagerCard/src/RepositoryManagerCard.cpp" line="370"/>
+        <location filename="../lib/widgets/RepositoryManagerCard/src/RepositoryManagerCard.cpp" line="239"/>
+        <location filename="../lib/widgets/RepositoryManagerCard/src/RepositoryManagerCard.cpp" line="323"/>
         <source>Cannot write to the selected path: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../lib/widgets/RepositoryManagerCard/src/RepositoryManagerCard.cpp" line="225"/>
-        <location filename="../lib/widgets/RepositoryManagerCard/src/RepositoryManagerCard.cpp" line="378"/>
+        <location filename="../lib/widgets/RepositoryManagerCard/src/RepositoryManagerCard.cpp" line="250"/>
+        <location filename="../lib/widgets/RepositoryManagerCard/src/RepositoryManagerCard.cpp" line="334"/>
         <source>Info</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../lib/widgets/RepositoryManagerCard/src/RepositoryManagerCard.cpp" line="225"/>
-        <location filename="../lib/widgets/RepositoryManagerCard/src/RepositoryManagerCard.cpp" line="378"/>
+        <location filename="../lib/widgets/RepositoryManagerCard/src/RepositoryManagerCard.cpp" line="250"/>
+        <location filename="../lib/widgets/RepositoryManagerCard/src/RepositoryManagerCard.cpp" line="334"/>
         <source>The selected repository is already added.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../lib/widgets/RepositoryManagerCard/src/RepositoryManagerCard.cpp" line="231"/>
-        <location filename="../lib/widgets/RepositoryManagerCard/src/RepositoryManagerCard.cpp" line="386"/>
+        <location filename="../lib/widgets/RepositoryManagerCard/src/RepositoryManagerCard.cpp" line="256"/>
+        <location filename="../lib/widgets/RepositoryManagerCard/src/RepositoryManagerCard.cpp" line="340"/>
         <source>No repository found in directory: %1
 Please make sure the directory contains .git directory</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../lib/widgets/RepositoryManagerCard/src/RepositoryManagerCard.cpp" line="250"/>
+        <location filename="../lib/widgets/RepositoryManagerCard/src/RepositoryManagerCard.cpp" line="275"/>
         <source>There is no selected repository to delete</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../lib/widgets/RepositoryManagerCard/src/RepositoryManagerCard.cpp" line="270"/>
+        <location filename="../lib/widgets/RepositoryManagerCard/src/RepositoryManagerCard.cpp" line="295"/>
+        <source>There is no selected repository to update</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../lib/widgets/RepositoryManagerCard/src/RepositoryManagerCard.cpp" line="361"/>
         <source>Enter branch name</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../lib/widgets/RepositoryManagerCard/src/RepositoryManagerCard.cpp" line="278"/>
+        <location filename="../lib/widgets/RepositoryManagerCard/src/RepositoryManagerCard.cpp" line="362"/>
+        <source>Branch Name:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../lib/widgets/RepositoryManagerCard/src/RepositoryManagerCard.cpp" line="371"/>
         <source>No branch name entered. Please enter valid branch name.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../lib/widgets/RepositoryManagerCard/src/RepositoryManagerCard.cpp" line="293"/>
+        <location filename="../lib/widgets/RepositoryManagerCard/src/RepositoryManagerCard.cpp" line="386"/>
         <source>Entered branch name is exists. Please enter valid branch name.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../lib/widgets/RepositoryManagerCard/src/RepositoryManagerCard.cpp" line="311"/>
+        <location filename="../lib/widgets/RepositoryManagerCard/src/RepositoryManagerCard.cpp" line="404"/>
         <source>There is no selected branch to delete</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../lib/widgets/RepositoryManagerCard/src/RepositoryManagerCard.cpp" line="418"/>
+        <location filename="../lib/widgets/RepositoryManagerCard/src/RepositoryManagerCard.cpp" line="409"/>
+        <source>Warning</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../lib/widgets/RepositoryManagerCard/src/RepositoryManagerCard.cpp" line="409"/>
+        <source>Are you sure to delete selected branch?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../lib/widgets/RepositoryManagerCard/src/RepositoryManagerCard.cpp" line="462"/>
         <source>No branch name entered.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../lib/widgets/RepositoryManagerCard/src/RepositoryManagerCard.cpp" line="426"/>
+        <location filename="../lib/widgets/RepositoryManagerCard/src/RepositoryManagerCard.cpp" line="470"/>
         <source>Branch name %1 is already exists. Please enter unique branch name.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../lib/widgets/RepositoryCard/src/RepositoryTableView.cpp" line="39"/>
+        <source>No Repositories Found. Please Add Repository from Repository Manager</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../lib/widgets/UserManagerCard/src/UserManagerCard.cpp" line="31"/>
+        <source>Username</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../lib/widgets/UserManagerCard/src/UserManagerCard.cpp" line="32"/>
+        <source>Token</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../lib/widgets/UserManagerCard/src/UserManagerCard.cpp" line="33"/>
+        <source>Validate</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../lib/widgets/UserManagerCard/src/UserManagerCard.cpp" line="34"/>
+        <source>Save</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../lib/widgets/XQPwdLineEdit/src/PasswordLineEdit.cpp" line="26"/>
+        <source>Show/Hide Password</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

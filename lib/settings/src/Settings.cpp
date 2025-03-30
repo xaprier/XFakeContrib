@@ -13,7 +13,17 @@ Settings::Settings()
     m_Key = value("API_KEY", "").toString();
     m_Username = value("USERNAME", "").toString();
     m_Repos = value("REPOSITORIES", QStringList()).toStringList();
-    m_RandomMax = value("MAX_RAND_COUNT", quint32(30)).toUInt();
+    m_RandomMax = value("MAX_RAND_COUNT", m_DefaultRandomMax).toUInt();
+    m_Theme = value("THEME", m_DefaultTheme).toString();
+}
+
+QString Settings::GetTheme() const {
+    return m_Theme;
+}
+
+void Settings::SetTheme(const QString &theme) {
+    m_Theme = theme;
+    setValue("THEME", m_Theme);
 }
 
 QString Settings::GetAPIKey() const {

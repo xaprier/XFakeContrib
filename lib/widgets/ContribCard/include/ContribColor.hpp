@@ -42,6 +42,16 @@ class ContribColor : public QColor {
      * @return ContribLevel corresponding to the contribution count.
      */
     static ContribLevel _CalculateContribLevel(int level);
+
+    static QColor _AdjustBrightness(const QColor& color, double factor) {
+        int h, s, v;
+        color.getHsv(&h, &s, &v);
+
+        v = std::min(255, static_cast<int>(v * factor));
+        s = std::max(0, static_cast<int>(s * (2 - factor)));
+
+        return QColor::fromHsv(h, s, v);
+    }
 };
 
 #endif  // CONTRIBCOLOR_HPP

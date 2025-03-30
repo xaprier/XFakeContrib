@@ -1,25 +1,31 @@
 <RCC>
     <qresource prefix="/icons">
         <file>XFakeContrib.png</file>
-        <file>icons/add.png</file>
-        <file>icons/branch.png</file>
-        <file>icons/createcommit.png</file>
-        <file>icons/delete.png</file>
-        <file>icons/file.png</file>
-        <file>icons/info.png</file>
-        <file>icons/log.png</file>
-        <file>icons/push.png</file>
-        <file>icons/reload.png</file>
-        <file>icons/remote.png</file>
-        <file>icons/repository.png</file>
-        <file>icons/token.png</file>
-        <file>icons/user_manager.png</file>
-        <file>icons/show.png</file>
-        <file>icons/hide.png</file>
-        <file>icons/checked.png</file>
+    </qresource>
+    <qresource prefix="/">
+        <file>icons/add.svg</file>
+        <file>icons/branch.svg</file>
+        <file>icons/checked.svg</file>
+        <file>icons/createcommit.svg</file>
+        <file>icons/delete.svg</file>
+        <file>icons/file.svg</file>
+        <file>icons/hide.svg</file>
+        <file>icons/info.svg</file>
+        <file>icons/log.svg</file>
+        <file>icons/push.svg</file>
+        <file>icons/reload.svg</file>
+        <file>icons/remote.svg</file>
+        <file>icons/repository.svg</file>
+        <file>icons/show.svg</file>
+        <file>icons/token.svg</file>
+        <file>icons/user_manager.svg</file>
     </qresource>
     <qresource prefix="/qss">
         <file>style.qss</file>
+    </qresource>
+    <qresource prefix="/">
+        <file>themes/orange.json</file>
+        <file>themes/pink.json</file>
     </qresource>
     <qresource prefix="/qssicons">
         <file>vs15/checkbox-check-disabled.png</file>

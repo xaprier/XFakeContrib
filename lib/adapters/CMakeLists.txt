@@ -7,8 +7,8 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 set(CMAKE_EXPORT_COMPILE_COMMANDS 1)
 
-find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Core Widgets Network)
-find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Core Widgets Network)
+find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Core Widgets Network Svg)
+find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Core Widgets Network Svg)
 
 file(GLOB CPP_FILES "src/*.cpp")
 file(GLOB HPP_FILES "include/*.hpp")
@@ -21,12 +21,14 @@ set(INTERNAL_LIBRARIES
     XFakeContribData
     XFakeContribCard
     XFakeContribUserManagerCard
+    XFakeContribStyle
 )
 
 set(EXTERNAL_LIBRARIES
   Qt${QT_VERSION_MAJOR}::Core
   Qt${QT_VERSION_MAJOR}::Widgets
   Qt${QT_VERSION_MAJOR}::Network
+  Qt${QT_VERSION_MAJOR}::Svg
 )
 
 set(LIBRARIES ${INTERNAL_LIBRARIES} ${EXTERNAL_LIBRARIES})

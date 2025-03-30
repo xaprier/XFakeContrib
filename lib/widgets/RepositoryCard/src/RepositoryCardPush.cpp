@@ -1,14 +1,20 @@
 #include "RepositoryCardPush.hpp"
 
+#include "Icon.hpp"
+#include "StyleManager.hpp"
+
 using namespace xaprier::Qt::Widgets;
 
 RepositoryCardPush::RepositoryCardPush(QWidget* parent) : RepositoryComposingWidgets({}, parent), m_Button(new QPushButton()), m_Indicator(new XQCircularLoadingIndicator) {
+    QString colorHex = StyleManager::GetCurrentThemeColors()["icon"];
+
     // Setting-Up Widgets
     m_Indicator->SetSquare(true);
     m_Indicator->SetProgressColor("#e67300");
 
     m_Button->setToolTip(QObject::tr("Push all latest changes to remote"));
     m_Button->setText(QObject::tr("Push All"));
+    m_Button->setIcon(Icon(":/icons/push.svg"));
 
     // Setting-Up Layout
     this->SetWidgets({m_Button, m_Indicator});

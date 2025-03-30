@@ -5,8 +5,8 @@ project(XFakeContribUserManagerCard)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_EXPORT_COMPILE_COMMANDS 1)
 
-find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Core Widgets Network Concurrent)
-find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Core Widgets Network Concurrent)
+find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Core Widgets Network Concurrent Svg)
+find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Core Widgets Network Concurrent Svg)
 
 file(GLOB_RECURSE CPP_FILES src/*.cpp)
 file(GLOB_RECURSE HPP_FILES include/*.hpp)
@@ -23,6 +23,7 @@ set(INTERNAL_LIBRARIES
     XFakeContribSettings
     XFakeContribResources
     XFakeContribGithub
+    XFakeContribStyle
 )
 
 set(EXTERNAL_LIBRARIES
@@ -30,6 +31,7 @@ set(EXTERNAL_LIBRARIES
     Qt${QT_VERSION_MAJOR}::Widgets
     Qt${QT_VERSION_MAJOR}::Network 
     Qt${QT_VERSION_MAJOR}::Concurrent
+    Qt${QT_VERSION_MAJOR}::Svg
     XQPwdLineEdit
     XQWidgetComposer
     XQCircularLoadingIndicator

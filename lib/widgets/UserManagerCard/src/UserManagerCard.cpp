@@ -4,6 +4,7 @@
 #include <QMessageBox>
 
 #include "GitHubAuthChecker.hpp"
+#include "Icon.hpp"
 #include "PasswordLineEdit.hpp"
 #include "UserManager.hpp"
 #include "UserManagerComposedValidateButton.hpp"
@@ -23,9 +24,9 @@ UserManagerCard::~UserManagerCard() {
 }
 
 void UserManagerCard::_SetupUI() {
-    QIcon showIcon = QIcon(":/icons/icons/show.png");
-    QIcon hideIcon = QIcon(":/icons/icons/hide.png");
-    QIcon checkIcon = QIcon(":/icons/icons/checked.png");
+    Icon showIcon = Icon(":/icons/show.svg");
+    Icon hideIcon = Icon(":/icons/hide.svg");
+    Icon checkIcon = Icon(":/icons/checked.svg");
 
     // todo: show warning if icons not loaded
 

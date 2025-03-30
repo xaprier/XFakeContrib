@@ -8,6 +8,8 @@
 #include <QVBoxLayout>
 #include <QWidget>
 
+#include "Icon.hpp"
+
 class UserManager;
 class UserManagerComposedSaveButton;
 class UserManagerComposedValidateButton;
@@ -23,7 +25,7 @@ class UserManagerCard : public QWidget {
     explicit UserManagerCard(QWidget* parent = nullptr);
     ~UserManagerCard() override;
 
-    QIcon GetIcon() const { return QIcon(":/icons/icons/user_manager.png"); }
+    Icon GetIcon() const { return Icon(":/icons/user_manager.svg"); }
     QString GetName() const { return QObject::tr("User Manager"); }
 
     UserManager& GetManager() const { return m_UserManager; }

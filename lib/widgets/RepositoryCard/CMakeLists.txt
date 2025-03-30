@@ -7,8 +7,8 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 set(CMAKE_EXPORT_COMPILE_COMMANDS 1)
 
-find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Core Widgets Concurrent)
-find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Core Widgets Concurrent)
+find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Core Widgets Concurrent Svg)
+find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Core Widgets Concurrent Svg)
 
 file(GLOB_RECURSE CPP_FILES src/*.cpp)
 file(GLOB_RECURSE HPP_FILES include/*.hpp)
@@ -27,12 +27,14 @@ set(INTERNAL_LIBRARIES
     XFakeContribGit
     XFakeContribFaker
     XFakeContribSettings
+    XFakeContribStyle
 )
 
 set(EXTERNAL_LIBRARIES
     Qt${QT_VERSION_MAJOR}::Core 
     Qt${QT_VERSION_MAJOR}::Widgets
     Qt${QT_VERSION_MAJOR}::Concurrent
+    Qt${QT_VERSION_MAJOR}::Svg
     XQCircularLoadingIndicator
     XQWidgetComposer
 )

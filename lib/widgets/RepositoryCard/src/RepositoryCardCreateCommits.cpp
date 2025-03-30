@@ -1,14 +1,20 @@
 #include "RepositoryCardCreateCommits.hpp"
 
+#include "Icon.hpp"
+#include "StyleManager.hpp"
+
 using namespace xaprier::Qt::Widgets;
 
 RepositoryCardCreateCommits::RepositoryCardCreateCommits(QWidget* parent) : RepositoryComposingWidgets({}, parent), m_Button(new QPushButton()), m_Indicator(new XQCircularLoadingIndicator) {
+    QString colorHex = StyleManager::GetCurrentThemeColors()["icon"];
+
     // Setting-Up Widgets
     m_Indicator->SetSquare(true);
-    m_Indicator->SetProgressColor("#e67300");
+    m_Indicator->SetProgressColor(colorHex);
 
     m_Button->setToolTip(QObject::tr("Create commits in selected repositories"));
     m_Button->setText(QObject::tr("Create Commits"));
+    m_Button->setIcon(Icon(":/icons/createcommit.svg"));
 
     // Setting-Up Layout
     this->SetWidgets({m_Button, m_Indicator});

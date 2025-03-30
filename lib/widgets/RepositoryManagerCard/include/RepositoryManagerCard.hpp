@@ -8,6 +8,7 @@
 #include <QWidget>
 
 #include "GitRepository.hpp"
+#include "Icon.hpp"
 #include "RepositoryManagerComposedButton.hpp"
 #include "Settings.hpp"
 
@@ -22,7 +23,7 @@ class RepositoryManagerCard final : public QWidget {
     RepositoryManagerCard(QWidget *parent = nullptr);
     ~RepositoryManagerCard() final;
 
-    QIcon GetIcon() const { return QIcon(":/icons/repository_manager.png"); }
+    Icon GetIcon() const { return Icon(":/icons/repository_manager.svg"); }
     QString GetName() const { return QObject::tr("Repository Manager"); }
 
   signals:
