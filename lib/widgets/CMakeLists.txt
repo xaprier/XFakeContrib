@@ -9,6 +9,7 @@ set(
   "${CMAKE_CURRENT_SOURCE_DIR}/RepositoryManagerCard" # get RepositoryManagerCard
   "${CMAKE_CURRENT_SOURCE_DIR}/UserManagerCard" # get UserManagerCard
   "${CMAKE_CURRENT_SOURCE_DIR}/CardManager" # get CardManager
+  "${CMAKE_CURRENT_SOURCE_DIR}/ThemeSelectorCard" # get ThemeSelectorCard
 )
 
 foreach(DIRECTORY ${DIRECTORIES_TO_CHECK})

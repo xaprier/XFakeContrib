@@ -90,6 +90,7 @@ set(INTERNAL_LIBRARIES
     XFakeContribStyle
     XFakeContribRepositoryCard
     XFakeContribRepositoryManagerCard
+    XFakeContribThemeSelectorCard
     XFakeContribUserManagerCard
 )
 

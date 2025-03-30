@@ -46,6 +46,17 @@ QStringList StyleManager::GetThemes() {
     return themes;
 }
 
+QString StyleManager::GetTheme() {
+    auto &settings = Settings::Instance();
+    auto list = GetThemes();
+    auto theme = settings.GetTheme();
+    if (!list.contains(theme)) {
+        theme = settings.GetDefaultTheme();
+        settings.SetTheme(theme);
+    }
+    return theme;
+}
+
 QMap<QString, QString> StyleManager::GetCurrentThemeColors() {
     Settings &settings = Settings::Instance();
     QString theme = settings.GetTheme();

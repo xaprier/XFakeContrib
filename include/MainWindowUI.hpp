@@ -10,6 +10,7 @@
 #include "ContribCard.hpp"
 #include "RepositoryCard.hpp"
 #include "RepositoryManagerCard.hpp"
+#include "ThemeSelectionCard.hpp"
 #include "UserManagerCard.hpp"
 
 class MainWindow;
@@ -21,13 +22,15 @@ enum class Cards {
     CONTRIB_CARD,
     REPOSITORY_CARD,
     REPOSITORY_MANAGER_CARD,
-    USER_MANAGER_CARD
+    USER_MANAGER_CARD,
+    THEME_SELECTION_CARD
 };
 
 class MainWindow : public QMainWindow {
     Q_OBJECT
   public:
     explicit MainWindow(QMainWindow *parent = nullptr);
+    ~MainWindow();
 
   private:
     void _SetupUI();
@@ -49,6 +52,7 @@ class MainWindow : public QMainWindow {
     QSharedPointer<RepositoryCard> m_RepositoryCard;
     QSharedPointer<RepositoryManagerCard> m_RepositoryManagerCard;
     QSharedPointer<UserManagerCard> m_UserManagerCard;
+    QSharedPointer<ThemeSelectionCard> m_ThemeSelectionCard;
 };
 }  // namespace Ui
 

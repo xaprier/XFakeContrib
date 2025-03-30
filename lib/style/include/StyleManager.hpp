@@ -18,6 +18,7 @@ class StyleManager {
     static void SetTheme(const QString &theme);
     static void SetTheme(const QString &theme, QApplication &app);
     static QStringList GetThemes();
+    static QString GetTheme();
     static QMap<QString, QString> GetCurrentThemeColors();
 
   private:

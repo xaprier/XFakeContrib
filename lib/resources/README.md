@@ -42,6 +42,9 @@
 ## <a href="https://www.flaticon.com/authors/smashicons" target="_blank">Thanks to smashicons</a>
 - icons/repository.png
 
+## <a href="https://www.flaticon.com/authors/ian-anandara" target="_blank">Thanks to ian-anandara</a>
+- icons/theme.png
+
 ## <a href="https://www.flaticon.com/authors/uniconlabs" target="_blank">Thanks to uniconlabs</a>
 - icons/token.png
 

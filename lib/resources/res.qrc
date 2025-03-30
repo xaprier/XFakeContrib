@@ -17,6 +17,7 @@
         <file>icons/remote.svg</file>
         <file>icons/repository.svg</file>
         <file>icons/show.svg</file>
+        <file>icons/theme.svg</file>
         <file>icons/token.svg</file>
         <file>icons/user_manager.svg</file>
     </qresource>

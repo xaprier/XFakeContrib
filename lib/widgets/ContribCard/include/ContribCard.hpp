@@ -20,7 +20,11 @@ class ContribCard : public QWidget {
     Q_OBJECT
 
   public:
-    ContribCard(const std::map<QDate, Contrib>& allContribs = {}, QWidget* parent = nullptr);
+    ContribCard(QWidget* parent = nullptr) {
+        this->_SetupUI();
+        this->_CreateConnections();
+    }
+    ContribCard(const std::map<QDate, Contrib>& allContribs, QWidget* parent = nullptr);
     void Update(const std::map<QDate, Contrib>& allContribs = {});
 
     Icon GetIcon() const { return Icon(":/icons/contributions.svg"); }
