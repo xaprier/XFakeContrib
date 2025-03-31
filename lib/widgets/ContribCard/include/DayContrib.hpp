@@ -32,6 +32,8 @@ class DayContrib : public QWidget {
         return m_Date;
     }
 
+    void UpdateColor();
+
   protected:
     // Override the paintEvent to draw the widget with the corresponding color
     void paintEvent(QPaintEvent* event) override;
@@ -48,6 +50,7 @@ class DayContrib : public QWidget {
 
   private:
     int m_ContribCount;    // Contribution count for the day
+    int m_ContribLevel;    // Contribution level for the day
     ContribColor m_Color;  // Color based on contribution count
     QDate m_Date;          // Date associated with the contribution
 };

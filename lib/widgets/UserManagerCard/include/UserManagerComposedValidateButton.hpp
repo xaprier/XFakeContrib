@@ -20,6 +20,7 @@ class UserManagerComposedValidateButton final : public UserManagerComposingWidge
     ~UserManagerComposedValidateButton() final = default;
 
     [[nodiscard]] inline QWidget *Item(Status status) const noexcept { return UserManagerComposingWidgets::Item(static_cast<int>(status)); }
+    void UpdateColors() final override;
 
     void SetDisabled(Status type, bool disable = false);
 

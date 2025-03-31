@@ -85,8 +85,10 @@ set(INTERNAL_LIBRARIES
     XFakeContribGithub
     XFakeContribSettings
     XFakeContribResources
-    XFakeContribCardManager
     XFakeContribCard
+    XFakeContribContribCard
+    XFakeContribCardManager
+    XFakeContribContribCard
     XFakeContribStyle
     XFakeContribRepositoryCard
     XFakeContribRepositoryManagerCard

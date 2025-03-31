@@ -19,6 +19,7 @@ class MainWindowConnections : public QObject {
     void sl_FetchContribs();
     void sl_FetchCompleted();
     void sl_PushCompleted();
+    void sl_ThemeUpdated();
 
   private:
     Ui::MainWindow *m_Ui;

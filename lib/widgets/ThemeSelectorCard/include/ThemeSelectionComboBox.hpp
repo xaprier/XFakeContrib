@@ -10,9 +10,7 @@ class ThemeSelectionComboBox : public QComboBox {
     Q_OBJECT
   public:
     explicit ThemeSelectionComboBox(QWidget *parent = nullptr);
-    ~ThemeSelectionComboBox() {
-        qDebug() << "ThemeSelectionComboBox destructor";
-    };
+    ~ThemeSelectionComboBox() = default;
 
   public slots:
     void sl_OnApplyButtonClicked();

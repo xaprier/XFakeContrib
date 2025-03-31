@@ -8,6 +8,7 @@
 #include <QVBoxLayout>
 #include <QWidget>
 
+#include "Card.hpp"
 #include "Icon.hpp"
 
 class UserManager;
@@ -19,14 +20,17 @@ namespace xaprier::Qt::Widgets {
 class PasswordLineEdit;
 }
 
-class UserManagerCard : public QWidget {
+class UserManagerCard : public Card {
     Q_OBJECT
   public:
     explicit UserManagerCard(QWidget* parent = nullptr);
     ~UserManagerCard() override;
 
-    Icon GetIcon() const { return Icon(":/icons/user_manager.svg"); }
-    QString GetName() const { return QObject::tr("User Manager"); }
+    virtual Icon GetIcon() const override { return Icon(":/icons/user_manager.svg"); }
+    virtual QString GetName() const override { return QObject::tr("User Manager"); }
+
+    virtual void Update() override {}
+    virtual void UpdateIcons() override;
 
     UserManager& GetManager() const { return m_UserManager; }
 

@@ -7,24 +7,30 @@
 #include <QPointer>
 #include <QWidget>
 
+#include "Card.hpp"
 #include "GitRepository.hpp"
 #include "Icon.hpp"
-#include "RepositoryManagerComposedButton.hpp"
+#include "RepositoryManagerComposedAddButton.hpp"
+#include "RepositoryManagerComposedDeleteButton.hpp"
+#include "RepositoryManagerComposedUpdateButton.hpp"
 #include "Settings.hpp"
 
 namespace Ui {
 class RepositoryManagerCardUI;
 }
 
-class RepositoryManagerCard final : public QWidget {
+class RepositoryManagerCard final : public Card {
     Q_OBJECT
     Q_DISABLE_COPY_MOVE(RepositoryManagerCard)
   public:
     RepositoryManagerCard(QWidget *parent = nullptr);
     ~RepositoryManagerCard() final;
 
-    Icon GetIcon() const { return Icon(":/icons/repository_manager.svg"); }
-    QString GetName() const { return QObject::tr("Repository Manager"); }
+    virtual Icon GetIcon() const override { return Icon(":/icons/repository_manager.svg"); }
+    virtual QString GetName() const override { return QObject::tr("Repository Manager"); }
+
+    virtual void UpdateIcons() override;
+    virtual void Update() override {}
 
   signals:
     void si_RepositoriesUpdated();
@@ -50,8 +56,9 @@ class RepositoryManagerCard final : public QWidget {
 
   private:
     Ui::RepositoryManagerCardUI *m_Ui;
-    QPointer<RepositoryManagerComposedButton> m_RepositoryDelete, m_RepositoryUpdate, m_RepositoryAdd;
-    QPointer<RepositoryManagerComposedButton> m_BranchDelete, m_BranchUpdate, m_BranchCreate;
+    QPointer<RepositoryManagerComposedAddButton> m_RepositoryAdd, m_BranchCreate;
+    QPointer<RepositoryManagerComposedDeleteButton> m_RepositoryDelete, m_BranchDelete;
+    QPointer<RepositoryManagerComposedUpdateButton> m_RepositoryUpdate, m_BranchUpdate;
     Settings &m_Settings;
     QPointer<GitRepository> m_GitRepository;
     QStringList m_Repositories;

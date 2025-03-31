@@ -9,7 +9,7 @@
 #include "UserManager.hpp"
 #include "UserManagerComposedValidateButton.hpp"
 
-UserManagerCard::UserManagerCard(QWidget* parent) : m_UserManager(UserManager::Instance()), m_AuthChecker(new GitHubAuthChecker(this)), QWidget(parent) {
+UserManagerCard::UserManagerCard(QWidget* parent) : m_UserManager(UserManager::Instance()), m_AuthChecker(new GitHubAuthChecker(this)), Card(parent) {
     this->_SetupUI();
     this->_LoadUser();
 
@@ -21,6 +21,15 @@ UserManagerCard::~UserManagerCard() {
     delete m_TokenLineEdit;
     delete m_UsernameLineEdit;
     delete m_ValidateButton;
+}
+
+void UserManagerCard::UpdateIcons() {
+    Icon showIcon = Icon(":/icons/show.svg");
+    Icon hideIcon = Icon(":/icons/hide.svg");
+
+    m_TokenLineEdit->SetShowIcon(showIcon);
+    m_TokenLineEdit->SetHideIcon(hideIcon);
+    m_ValidateButton->UpdateColors();
 }
 
 void UserManagerCard::_SetupUI() {

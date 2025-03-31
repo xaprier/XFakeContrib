@@ -19,6 +19,7 @@ add_library(${PROJECT_NAME} SHARED ${CPP_FILES} ${HPP_FILES})
 set(INTERNAL_LIBRARIES
     XFakeContribGithub
     XFakeContribData
+    XFakeContribContribCard
     XFakeContribCard
     XFakeContribUserManagerCard
     XFakeContribStyle

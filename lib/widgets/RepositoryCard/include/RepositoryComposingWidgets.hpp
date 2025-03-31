@@ -14,6 +14,8 @@ class RepositoryComposingWidgets : public xaprier::Qt::Widgets::XQWidgetComposer
 
     [[nodiscard]] virtual QWidget *Item(int index = 0) const;
 
+    virtual void UpdateColors() = 0;
+
   public slots:
     virtual void Set(int index = 0);
 

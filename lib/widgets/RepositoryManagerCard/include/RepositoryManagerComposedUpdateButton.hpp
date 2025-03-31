@@ -1,31 +1,32 @@
-#ifndef REPOSITORYMANAGERCOMPOSEDBUTTON_HPP
-#define REPOSITORYMANAGERCOMPOSEDBUTTON_HPP
-
-#include <qpushbutton.h>
+#ifndef REPOSITORYMANAGERCOMPOSEDUPDATEBUTTON_HPP
+#define REPOSITORYMANAGERCOMPOSEDUPDATEBUTTON_HPP
 
 #include <QPointer>
-#include <QToolButton>
+#include <QPushButton>
 
+#include "Icon.hpp"
 #include "RepositoryManagerComposingWidgets.hpp"
 #include "XQCircularLoadingIndicator.hpp"
 
-class RepositoryManagerComposedButton final : public RepositoryManagerComposingWidgets {
+class RepositoryManagerComposedUpdateButton final : public RepositoryManagerComposingWidgets {
     Q_OBJECT
-    Q_DISABLE_COPY_MOVE(RepositoryManagerComposedButton)
+    Q_DISABLE_COPY_MOVE(RepositoryManagerComposedUpdateButton)
   public:
     enum class Status {
         BUTTON = 0,
         LOADING
     };
 
-    explicit RepositoryManagerComposedButton(QWidget *parent = nullptr);
-    ~RepositoryManagerComposedButton() final = default;
+    explicit RepositoryManagerComposedUpdateButton(QWidget *parent = nullptr);
+    ~RepositoryManagerComposedUpdateButton() final = default;
 
     [[nodiscard]] inline QWidget *Item(Status status) const noexcept { return RepositoryManagerComposingWidgets::Item(static_cast<int>(status)); }
 
+    void UpdateColors() override;
+
     void SetToolTip(Status type, const QString &message = "");
     void SetDisabled(Status type, bool disable = false);
-    void SetButtonIcon(const QIcon &icon);
+    void SetButtonIcon(const Icon &icon);
     void SetButtonText(const QString &text);
 
   signals:
@@ -41,4 +42,4 @@ class RepositoryManagerComposedButton final : public RepositoryManagerComposingW
     QPointer<QPushButton> m_Button;
 };
 
-#endif  // REPOSITORYMANAGERCOMPOSEDBUTTON_HPP
+#endif  // REPOSITORYMANAGERCOMPOSEDUPDATEBUTTON_HPP

@@ -1,7 +1,7 @@
 #include "DayContrib.hpp"
 
 DayContrib::DayContrib(int contribCount, int contribLevel, const QDate& date, QWidget* parent)
-    : QWidget(parent), m_ContribCount(contribCount), m_Date(date) {
+    : QWidget(parent), m_ContribCount(contribCount), m_Date(date), m_ContribLevel(contribLevel) {
     this->SetContribCount(contribCount, contribLevel);
     setMinimumSize(16, 16);  // Set a minimum size for the widget
     setContentsMargins(2, 2, 2, 2);
@@ -10,7 +10,12 @@ DayContrib::DayContrib(int contribCount, int contribLevel, const QDate& date, QW
 
 void DayContrib::SetContribCount(int contribCount, int contribLevel) {
     m_ContribCount = contribCount;
-    m_Color = ContribColor(contribLevel);
+    m_ContribLevel = contribLevel;
+    this->UpdateColor();
+}
+
+void DayContrib::UpdateColor() {
+    m_Color = ContribColor(m_ContribLevel);
     update();  // Repaint the widget
 }
 

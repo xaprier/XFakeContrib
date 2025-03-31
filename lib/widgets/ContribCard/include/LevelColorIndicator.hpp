@@ -4,7 +4,6 @@
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QWidget>
-#include <cstddef>
 #include <memory>
 
 #include "DayContrib.hpp"
@@ -17,6 +16,9 @@
  * when the cursor hovers over the widget.
  */
 class _DayContribWithoutToolTip : public DayContrib {
+  public:
+    _DayContribWithoutToolTip(int contribCount = 0, int contribLevel = 0, const QDate& date = QDate::currentDate(), QWidget* parent = nullptr) : DayContrib(contribCount, contribLevel, date, parent) {}
+
   protected:
     /**
      * @brief Override to disable tooltip on hover.
@@ -44,6 +46,8 @@ class LevelColorIndicator : public QWidget {
      * @param parent The parent widget, if any.
      */
     LevelColorIndicator(QWidget* parent = nullptr);
+
+    void UpdateColors();
 
   private:
     std::shared_ptr<std::array<_DayContribWithoutToolTip, 5>> m_DayContribs;

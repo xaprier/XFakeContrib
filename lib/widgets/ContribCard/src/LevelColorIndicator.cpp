@@ -21,3 +21,9 @@ LevelColorIndicator::LevelColorIndicator(QWidget* parent) : QWidget(parent) {
 
     setLayout(layout);
 }
+
+void LevelColorIndicator::UpdateColors() {
+    for (std::size_t i = 0; i < m_DayContribs->size(); i++) {
+        m_DayContribs->at(i).UpdateColor();
+    }
+}

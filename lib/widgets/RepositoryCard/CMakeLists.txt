@@ -28,6 +28,7 @@ set(INTERNAL_LIBRARIES
     XFakeContribFaker
     XFakeContribSettings
     XFakeContribStyle
+    XFakeContribCard
 )
 
 set(EXTERNAL_LIBRARIES

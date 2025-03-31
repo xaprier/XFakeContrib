@@ -1,37 +1,38 @@
 #include "CardManager.hpp"
 
-#include <qlabel.h>
+#include "Card.hpp"
+#include "Icon.hpp"
 
-CardManager::CardManager(QWidget *parent) : QWidget(parent) {
+CardManager::CardManager(QWidget *parent) : QWidget(parent), m_CardIcon(Icon("")), m_CardName(""), m_Card(nullptr) {
     this->_SetupCard();
 }
 
-CardManager::CardManager(const QIcon &icon, const QString &name, QWidget *card, QWidget *parent) : QWidget(parent), m_Card(card), m_CardIcon(icon), m_CardName(name) {
+CardManager::CardManager(const Icon &icon, const QString &name, QWidget *card, QWidget *parent) : QWidget(parent), m_Card(card), m_CardIcon(icon), m_CardName(name) {
     this->_SetupCard();
 }
 
 CardManager::~CardManager() {
 }
 
-void CardManager::SetCardIcon(const QIcon &icon) {
+void CardManager::SetCardIcon(const Icon &icon) {
     this->m_CardIcon = icon;
 
-    this->_UpdateCard();
+    this->UpdateCard();
 }
 
 void CardManager::SetCardName(const QString &name) {
     this->m_CardName = name;
 
-    this->_UpdateCard();
+    this->UpdateCard();
 }
 
 void CardManager::SetCard(QWidget *card) {
     this->m_Card = card;
 
-    this->_UpdateCard();
+    this->UpdateCard();
 }
 
-QIcon CardManager::GetCardIcon() const {
+Icon CardManager::GetCardIcon() const {
     return m_CardIcon;
 }
 
@@ -60,13 +61,21 @@ void CardManager::_SetupCard() {
 
     this->setLayout(layout);
 
-    this->_UpdateCard();
+    this->UpdateCard();
 }
 
-void CardManager::_UpdateCard() {
+void CardManager::UpdateCard() {
     m_CardGroupBox->setTitle(m_CardName);
+
+    m_CardIcon.Update();
 
     QPixmap pixmap = m_CardIcon.pixmap(32, 32);
     m_CardIconLabel->setPixmap(pixmap);
     m_CardIconLabel->setFixedSize(pixmap.size());
+
+    auto card = qobject_cast<Card *>(m_Card);
+    if (card) {
+        card->Update();
+        card->UpdateIcons();
+    }
 }

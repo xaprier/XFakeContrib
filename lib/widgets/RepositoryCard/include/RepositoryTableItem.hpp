@@ -38,6 +38,7 @@ class RepositoryTableItem final : public QObject {
     QPointer<RepositoryTableItemConnections> GetConnections() const { return m_Connections; }
 
     void Push();
+    void UpdateColors();
 
     friend class RepositoryTableItemConnections;
 

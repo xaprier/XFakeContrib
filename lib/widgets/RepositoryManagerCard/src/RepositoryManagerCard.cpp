@@ -12,7 +12,7 @@
 
 #include "../design/ui_RepositoryManagerCardUI.h"
 
-RepositoryManagerCard::RepositoryManagerCard(QWidget *parent) : m_Ui(new Ui::RepositoryManagerCardUI), m_Settings(Settings::Instance()) {
+RepositoryManagerCard::RepositoryManagerCard(QWidget *parent) : Card(parent), m_Ui(new Ui::RepositoryManagerCardUI), m_Settings(Settings::Instance()) {
     m_Ui->setupUi(this);
     this->_SetupButtons();
     this->_SetupConnections();
@@ -31,28 +31,28 @@ RepositoryManagerCard::~RepositoryManagerCard() {
 
 void RepositoryManagerCard::_SetupButtons() {
     try {
-        m_RepositoryAdd = new RepositoryManagerComposedButton;     // NOLINT
-        m_RepositoryUpdate = new RepositoryManagerComposedButton;  // NOLINT
-        m_RepositoryDelete = new RepositoryManagerComposedButton;  // NOLINT
+        m_RepositoryAdd = new RepositoryManagerComposedAddButton;        // NOLINT
+        m_RepositoryUpdate = new RepositoryManagerComposedUpdateButton;  // NOLINT
+        m_RepositoryDelete = new RepositoryManagerComposedDeleteButton;  // NOLINT
 
-        m_BranchCreate = new RepositoryManagerComposedButton;  // NOLINT
-        m_BranchUpdate = new RepositoryManagerComposedButton;  // NOLINT
-        m_BranchDelete = new RepositoryManagerComposedButton;  // NOLINT
+        m_BranchCreate = new RepositoryManagerComposedAddButton;     // NOLINT
+        m_BranchUpdate = new RepositoryManagerComposedUpdateButton;  // NOLINT
+        m_BranchDelete = new RepositoryManagerComposedDeleteButton;  // NOLINT
 
-        m_RepositoryAdd->SetToolTip(RepositoryManagerComposedButton::Status::BUTTON, QObject::tr("Add Repository"));
-        m_RepositoryDelete->SetToolTip(RepositoryManagerComposedButton::Status::BUTTON, QObject::tr("Delete Selected Repository"));
-        m_RepositoryUpdate->SetToolTip(RepositoryManagerComposedButton::Status::BUTTON, QObject::tr("Update Selected Repository"));
+        m_RepositoryAdd->SetToolTip(RepositoryManagerComposedAddButton::Status::BUTTON, QObject::tr("Add Repository"));
+        m_RepositoryDelete->SetToolTip(RepositoryManagerComposedDeleteButton::Status::BUTTON, QObject::tr("Delete Selected Repository"));
+        m_RepositoryUpdate->SetToolTip(RepositoryManagerComposedUpdateButton::Status::BUTTON, QObject::tr("Update Selected Repository"));
 
-        m_BranchCreate->SetToolTip(RepositoryManagerComposedButton::Status::BUTTON, QObject::tr("Create Branch"));
-        m_BranchDelete->SetToolTip(RepositoryManagerComposedButton::Status::BUTTON, QObject::tr("Delete Selected Branch"));
-        m_BranchUpdate->SetToolTip(RepositoryManagerComposedButton::Status::BUTTON, QObject::tr("Update Selected Branch"));
+        m_BranchCreate->SetToolTip(RepositoryManagerComposedAddButton::Status::BUTTON, QObject::tr("Create Branch"));
+        m_BranchDelete->SetToolTip(RepositoryManagerComposedDeleteButton::Status::BUTTON, QObject::tr("Delete Selected Branch"));
+        m_BranchUpdate->SetToolTip(RepositoryManagerComposedUpdateButton::Status::BUTTON, QObject::tr("Update Selected Branch"));
 
         // Delete and update buttons will be disabled in first because of there will no be selected
-        m_BranchDelete->SetDisabled(RepositoryManagerComposedButton::Status::BUTTON, true);
-        m_BranchUpdate->SetDisabled(RepositoryManagerComposedButton::Status::BUTTON, true);
+        m_BranchDelete->SetDisabled(RepositoryManagerComposedDeleteButton::Status::BUTTON, true);
+        m_BranchUpdate->SetDisabled(RepositoryManagerComposedUpdateButton::Status::BUTTON, true);
 
-        m_RepositoryDelete->SetDisabled(RepositoryManagerComposedButton::Status::BUTTON, true);
-        m_RepositoryUpdate->SetDisabled(RepositoryManagerComposedButton::Status::BUTTON, true);
+        m_RepositoryDelete->SetDisabled(RepositoryManagerComposedDeleteButton::Status::BUTTON, true);
+        m_RepositoryUpdate->SetDisabled(RepositoryManagerComposedUpdateButton::Status::BUTTON, true);
 
         this->m_Ui->HL_repositoryButtonLayout->addSpacerItem(new QSpacerItem(0, 0, QSizePolicy::MinimumExpanding, QSizePolicy::Fixed));  // NOLINT
         this->m_Ui->HL_repositoryButtonLayout->addWidget(m_RepositoryAdd);
@@ -70,38 +70,20 @@ void RepositoryManagerCard::_SetupButtons() {
         this->m_Ui->HL_branchButtonLayout->addWidget(m_BranchDelete);
         this->m_Ui->HL_branchButtonLayout->addSpacerItem(new QSpacerItem(0, 0, QSizePolicy::MinimumExpanding, QSizePolicy::Fixed));  // NOLINT
 
-        Icon addIcon(":/icons/add.svg");
-        Icon updateIcon(":/icons/reload.svg");
-        Icon deleteIcon(":/icons/delete.svg");
-
-        if (addIcon.isNull() || updateIcon.isNull() || deleteIcon.isNull())
-            QMessageBox::critical(this, QObject::tr("Error"), QObject::tr("Icons are not found."));
-
-        m_RepositoryAdd->SetButtonIcon(addIcon);
         m_RepositoryAdd->SetButtonText(QObject::tr("Add"));
-        m_RepositoryUpdate->SetButtonIcon(updateIcon);
-        m_RepositoryUpdate->SetButtonText(QObject::tr("Update"));
-        m_RepositoryDelete->SetButtonIcon(deleteIcon);
-        m_RepositoryDelete->SetButtonText(QObject::tr("Delete"));
-
-        m_BranchCreate->SetButtonIcon(addIcon);
         m_BranchCreate->SetButtonText(QObject::tr("Create"));
-        m_BranchUpdate->SetButtonIcon(updateIcon);
-        m_BranchUpdate->SetButtonText(QObject::tr("Update"));
-        m_BranchDelete->SetButtonIcon(deleteIcon);
-        m_BranchDelete->SetButtonText(QObject::tr("Delete"));
     } catch (const std::exception &e) {
         QMessageBox::critical(this, QObject::tr("Error"), QObject::tr("An error occured: %1").arg(e.what()));
     }
 }
 
 void RepositoryManagerCard::_SetupConnections() {
-    connect(m_RepositoryAdd, &RepositoryManagerComposedButton::si_ButtonClicked, this, &RepositoryManagerCard::sl_RepositoryAddClicked);
-    connect(m_RepositoryUpdate, &RepositoryManagerComposedButton::si_ButtonClicked, this, &RepositoryManagerCard::sl_RepositoryUpdateClicked);
-    connect(m_RepositoryDelete, &RepositoryManagerComposedButton::si_ButtonClicked, this, &RepositoryManagerCard::sl_RepositoryDeleteClicked);
+    connect(m_RepositoryAdd, &RepositoryManagerComposedAddButton::si_ButtonClicked, this, &RepositoryManagerCard::sl_RepositoryAddClicked);
+    connect(m_RepositoryUpdate, &RepositoryManagerComposedUpdateButton::si_ButtonClicked, this, &RepositoryManagerCard::sl_RepositoryUpdateClicked);
+    connect(m_RepositoryDelete, &RepositoryManagerComposedDeleteButton::si_ButtonClicked, this, &RepositoryManagerCard::sl_RepositoryDeleteClicked);
 
-    connect(m_BranchCreate, &RepositoryManagerComposedButton::si_ButtonClicked, this, &RepositoryManagerCard::sl_BranchCreateClicked);
-    connect(m_BranchUpdate, &RepositoryManagerComposedButton::si_ButtonClicked, [this]() {
+    connect(m_BranchCreate, &RepositoryManagerComposedAddButton::si_ButtonClicked, this, &RepositoryManagerCard::sl_BranchCreateClicked);
+    connect(m_BranchUpdate, &RepositoryManagerComposedUpdateButton::si_ButtonClicked, [this]() {
         if (this->m_Ui->branchListWidget->selectedItems().isEmpty()) {
             QMessageBox::critical(this, QObject::tr("Error"), QObject::tr("There is no selected branch to update"));
             return;
@@ -109,7 +91,7 @@ void RepositoryManagerCard::_SetupConnections() {
         auto item = this->m_Ui->branchListWidget->currentItem();
         this->m_Ui->branchListWidget->editItem(item);
     });
-    connect(m_BranchDelete, &RepositoryManagerComposedButton::si_ButtonClicked, this, &RepositoryManagerCard::sl_BranchDeleteClicked);
+    connect(m_BranchDelete, &RepositoryManagerComposedDeleteButton::si_ButtonClicked, this, &RepositoryManagerCard::sl_BranchDeleteClicked);
 
     connect(this->m_Ui->repositoryListWidget, &QListWidget::currentRowChanged, this, &RepositoryManagerCard::sl_CurrentRowChangedForRepository);
     connect(this->m_Ui->repositoryListWidget, &QListWidget::itemDoubleClicked, this, &RepositoryManagerCard::sl_RepositoryUpdateClicked);
@@ -208,23 +190,33 @@ void RepositoryManagerCard::_NoRepositoriesFound(bool yes) {
         this->m_Ui->repositoryListWidget->setDisabled(yes);
         this->m_Ui->repositoryListWidget->setToolTip(yes ? QObject::tr("No Repositories Found. Please Add Repository.") : "");
 
-        this->m_RepositoryDelete->SetDisabled(RepositoryManagerComposedButton::Status::BUTTON, yes);
-        this->m_RepositoryUpdate->SetDisabled(RepositoryManagerComposedButton::Status::BUTTON, yes);
-        this->m_RepositoryDelete->SetToolTip(RepositoryManagerComposedButton::Status::BUTTON, yes ? QObject::tr("No Repositories Found. Please Add Repository.") : QObject::tr("Delete selected repository from settings"));
-        this->m_RepositoryUpdate->SetToolTip(RepositoryManagerComposedButton::Status::BUTTON, yes ? QObject::tr("No Repositories Found. Please Add Repository.") : QObject::tr("Update selected repository from settings"));
+        this->m_RepositoryDelete->SetDisabled(RepositoryManagerComposedDeleteButton::Status::BUTTON, yes);
+        this->m_RepositoryUpdate->SetDisabled(RepositoryManagerComposedUpdateButton::Status::BUTTON, yes);
+        this->m_RepositoryDelete->SetToolTip(RepositoryManagerComposedDeleteButton::Status::BUTTON, yes ? QObject::tr("No Repositories Found. Please Add Repository.") : QObject::tr("Delete selected repository from settings"));
+        this->m_RepositoryUpdate->SetToolTip(RepositoryManagerComposedUpdateButton::Status::BUTTON, yes ? QObject::tr("No Repositories Found. Please Add Repository.") : QObject::tr("Update selected repository from settings"));
 
-        this->m_BranchCreate->SetDisabled(RepositoryManagerComposedButton::Status::BUTTON, yes);
-        this->m_BranchDelete->SetDisabled(RepositoryManagerComposedButton::Status::BUTTON, yes);
-        this->m_BranchUpdate->SetDisabled(RepositoryManagerComposedButton::Status::BUTTON, yes);
-        this->m_BranchCreate->SetToolTip(RepositoryManagerComposedButton::Status::BUTTON, yes ? QObject::tr("No Repositories Found. Please Add Repository.") : QObject::tr("Create new branch for selected repository."));
-        this->m_BranchDelete->SetToolTip(RepositoryManagerComposedButton::Status::BUTTON, yes ? QObject::tr("No Repositories Found. Please Add Repository.") : QObject::tr("Delete selected branch for selected repository."));
-        this->m_BranchUpdate->SetToolTip(RepositoryManagerComposedButton::Status::BUTTON, yes ? QObject::tr("No Repositories Found. Please Add Repository.") : QObject::tr("Update selected branch for selected repository."));
+        this->m_BranchCreate->SetDisabled(RepositoryManagerComposedAddButton::Status::BUTTON, yes);
+        this->m_BranchDelete->SetDisabled(RepositoryManagerComposedDeleteButton::Status::BUTTON, yes);
+        this->m_BranchUpdate->SetDisabled(RepositoryManagerComposedUpdateButton::Status::BUTTON, yes);
+        this->m_BranchCreate->SetToolTip(RepositoryManagerComposedAddButton::Status::BUTTON, yes ? QObject::tr("No Repositories Found. Please Add Repository.") : QObject::tr("Create new branch for selected repository."));
+        this->m_BranchDelete->SetToolTip(RepositoryManagerComposedDeleteButton::Status::BUTTON, yes ? QObject::tr("No Repositories Found. Please Add Repository.") : QObject::tr("Delete selected branch for selected repository."));
+        this->m_BranchUpdate->SetToolTip(RepositoryManagerComposedUpdateButton::Status::BUTTON, yes ? QObject::tr("No Repositories Found. Please Add Repository.") : QObject::tr("Update selected branch for selected repository."));
 
         this->m_Ui->branchListWidget->setDisabled(yes);
         this->m_Ui->branchListWidget->setToolTip(yes ? QObject::tr("No Repositories Found. Please Add Repository.") : "");
     } catch (const std::exception &e) {
         QMessageBox::critical(this, QObject::tr("Error"), QObject::tr("An error occured: %1").arg(e.what()));
     }
+}
+
+void RepositoryManagerCard::UpdateIcons() {
+    m_RepositoryAdd->UpdateColors();
+    m_RepositoryUpdate->UpdateColors();
+    m_RepositoryDelete->UpdateColors();
+
+    m_BranchCreate->UpdateColors();
+    m_BranchUpdate->UpdateColors();
+    m_BranchDelete->UpdateColors();
 }
 
 void RepositoryManagerCard::sl_RepositoryAddClicked(bool checked) {

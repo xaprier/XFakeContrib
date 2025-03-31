@@ -158,3 +158,13 @@ void RepositoryTableItem::Push() {
     // Start the event loop and block until pushCompleted is emitted
     loop.exec();
 }
+
+void RepositoryTableItem::UpdateColors() {
+    this->m_StatusItem->UpdateColors();
+    this->m_BranchItem->UpdateColors();
+    this->m_RemoteItem->UpdateColors();
+    this->m_CommitFileButton->UpdateColors();
+    this->m_LogItem->UpdateColors();
+    this->m_PushItem->UpdateColors();
+    this->m_RepoNameItem->UpdateColors();
+}

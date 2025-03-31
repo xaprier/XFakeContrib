@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.0...3.20)
 
-project(XFakeContribCardManager)
+project(XFakeContribCard)
 
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_EXPORT_COMPILE_COMMANDS 1)
@@ -17,7 +17,6 @@ add_library(${PROJECT_NAME} SHARED ${CPP_FILES} ${HPP_FILES})
 set(INTERNAL_LIBRARIES
     XFakeContribResources
     XFakeContribStyle
-    XFakeContribCard
 )
 
 set(EXTERNAL_LIBRARIES

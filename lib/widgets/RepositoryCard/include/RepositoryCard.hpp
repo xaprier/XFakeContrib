@@ -4,6 +4,7 @@
 #include <QPointer>
 #include <QWidget>
 
+#include "Card.hpp"
 #include "RepositoryCardConnections.hpp"
 #include "RepositoryTableView.hpp"
 #include "Settings.hpp"
@@ -12,15 +13,18 @@ namespace Ui {
 class RepositoryCardUI;
 }
 
-class RepositoryCard final : public QWidget {
+class RepositoryCard final : public Card {
     Q_OBJECT
     Q_DISABLE_COPY_MOVE(RepositoryCard)
   public:
     RepositoryCard(QWidget *parent = nullptr);
     ~RepositoryCard() final;
 
-    QIcon GetIcon() const { return QIcon(); }
-    QString GetName() const { return QObject::tr("Repositories"); }
+    virtual Icon GetIcon() const override { return Icon(":/icons/repositories.svg"); }
+    virtual QString GetName() const override { return QObject::tr("Repositories"); }
+
+    virtual void UpdateIcons() override;
+    virtual void Update() override {}
 
     QPointer<RepositoryCardConnections> GetConnections() const { return m_Connections; }
 

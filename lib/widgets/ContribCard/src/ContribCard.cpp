@@ -3,16 +3,27 @@
 #include "Icon.hpp"
 #include "XFakeContribHelper.hpp"
 
-ContribCard::ContribCard(
-    const std::map<QDate, Contrib>& allContribs,
-    QWidget* parent) : QWidget(parent), m_Contribs(allContribs) {
+ContribCard::ContribCard(QWidget* parent) : Card(parent) {
     this->_SetupUI();
     this->_CreateConnections();
+}
+
+ContribCard::ContribCard(
+    const std::map<QDate, Contrib>& allContribs,
+    QWidget* parent) : ContribCard(parent) {
+    m_Contribs = allContribs;
     this->Update(allContribs);
 }
 
 void ContribCard::Update(const std::map<QDate, Contrib>& allContribs) {
     this->_UpdateContribs(allContribs);
+}
+
+void ContribCard::UpdateIcons() {
+    m_InfoButton->setIcon(Icon(":/icons/info.svg"));
+    m_ReloadButton->setIcon(Icon(":/icons/reload.svg"));
+    this->sl_OnContributionPeriodChanged(m_ContributionPeriod->currentIndex());
+    this->m_Indicator->UpdateColors();
 }
 
 void ContribCard::_UpdateContribs(const std::map<QDate, Contrib>& allContribs) {

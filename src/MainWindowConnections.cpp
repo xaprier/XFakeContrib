@@ -1,9 +1,5 @@
 #include "MainWindowConnections.hpp"
 
-#include <QtConcurrent/qtconcurrentmap.h>
-#include <QtConcurrent/qtconcurrentrun.h>
-#include <qnamespace.h>
-
 #include "GitHubFetchAdapterWithUser.hpp"
 #include "RepositoryCardConnections.hpp"
 
@@ -16,7 +12,7 @@ void MainWindowConnections::_CreateConnections() {
     connect(m_Ui->m_ContribCard.get(), &ContribCard::si_Reload, this, &MainWindowConnections::sl_FetchContribs);
     connect(m_Ui->m_UserManagerCard.get(), &UserManagerCard::si_UserUpdated, this, &MainWindowConnections::sl_FetchContribs);
     connect(m_Ui->m_RepositoryCard->GetConnections(), &RepositoryCardConnections::si_PushesCompleted, this, &MainWindowConnections::sl_PushCompleted, Qt::QueuedConnection);
-
+    connect(m_Ui->m_ThemeSelectionCard.get(), &ThemeSelectionCard::si_ThemeUpdated, this, &MainWindowConnections::sl_ThemeUpdated);
     QTimer::singleShot(0, [this]() {
         this->sl_FetchContribs();
     });
@@ -49,5 +45,11 @@ void MainWindowConnections::sl_PushCompleted() {
 
     if (msgBox.exec() == QMessageBox::Yes) {
         this->sl_FetchContribs();
+    }
+}
+
+void MainWindowConnections::sl_ThemeUpdated() {
+    for (auto card : m_Ui->m_Cards) {
+        card->UpdateCard();
     }
 }

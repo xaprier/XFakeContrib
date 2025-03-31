@@ -3,7 +3,6 @@
 #include "Icon.hpp"
 
 RepositoryTableItemCommitFile::RepositoryTableItemCommitFile(QWidget *parent) : RepositoryComposingWidgets({}, parent), m_Button(new QToolButton()) {
-    m_Button->setIcon(Icon(":/icons/file.svg"));
     m_Button->setToolTip(QObject::tr("Select commit file"));
 
     m_Button->setStyleSheet(R"(
@@ -15,8 +14,14 @@ RepositoryTableItemCommitFile::RepositoryTableItemCommitFile(QWidget *parent) : 
         }
     )");
 
+    this->UpdateColors();
+
     // Setting-Up Layout
     this->SetWidgets({m_Button});
+}
+
+void RepositoryTableItemCommitFile::UpdateColors() {
+    m_Button->setIcon(Icon(":/icons/file.svg"));
 }
 
 void RepositoryTableItemCommitFile::SetButton() {

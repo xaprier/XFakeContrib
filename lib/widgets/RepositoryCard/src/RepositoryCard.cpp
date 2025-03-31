@@ -3,9 +3,10 @@
 #include <QGridLayout>
 
 #include "../design/ui_RepositoryCardUI.h"
+#include "RepositoryComposingWidgets.hpp"
 #include "RepositoryTableView.hpp"
 
-RepositoryCard::RepositoryCard(QWidget *parent) : QWidget(parent), m_Ui(new Ui::RepositoryCardUI), m_Settings(Settings::Instance()) {
+RepositoryCard::RepositoryCard(QWidget *parent) : Card(parent), m_Ui(new Ui::RepositoryCardUI), m_Settings(Settings::Instance()) {
     m_Ui->setupUi(this);
 
     QGridLayout *groupBoxLayout = new QGridLayout(this->m_Ui->groupBoxRepoTable);  // parent is set, no need to delete it. // NOLINT
@@ -20,4 +21,13 @@ RepositoryCard::RepositoryCard(QWidget *parent) : QWidget(parent), m_Ui(new Ui::
 RepositoryCard::~RepositoryCard() {
     delete m_Ui;
     delete m_Connections;
+}
+
+void RepositoryCard::UpdateIcons() {
+    for (auto *item : m_Repositories->GetItems()) {
+        item->UpdateColors();
+    }
+
+    m_Ui->pushPB->UpdateColors();
+    m_Ui->createCommitsPB->UpdateColors();
 }

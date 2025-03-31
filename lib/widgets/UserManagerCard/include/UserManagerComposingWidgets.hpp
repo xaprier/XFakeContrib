@@ -13,6 +13,7 @@ class UserManagerComposingWidgets : public xaprier::Qt::Widgets::XQWidgetCompose
     void SetWidgets(QList<QWidget *> list = {});
 
     [[nodiscard]] virtual QWidget *Item(int index = 0) const;
+    virtual void UpdateColors() = 0;
 
   public slots:
     virtual void Set(int index = 0);

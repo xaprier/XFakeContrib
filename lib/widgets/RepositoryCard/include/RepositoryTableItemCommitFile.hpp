@@ -18,7 +18,10 @@ class RepositoryTableItemCommitFile final : public RepositoryComposingWidgets {
     ~RepositoryTableItemCommitFile() final = default;
 
     [[nodiscard]] inline QWidget *Item(Status status) const noexcept { return RepositoryComposingWidgets::Item(static_cast<int>(status)); }
+
     void SetValidFileSelected(bool selected);
+
+    void UpdateColors() final override;
 
   public slots:
     void SetButton();

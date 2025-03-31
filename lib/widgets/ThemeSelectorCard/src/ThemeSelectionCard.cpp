@@ -1,19 +1,22 @@
 #include "ThemeSelectionCard.hpp"
 
-#include <qboxlayout.h>
-#include <qscopedpointer.h>
-
 ThemeSelectionCard::ThemeSelectionCard(QWidget *parent)
-    : QWidget(parent),
+    : Card(parent),
       m_Layout(new QHBoxLayout(this)),
       m_ThemeSelectionComboBox(new ThemeSelectionComboBox(this)),
       m_ApplyButton(new QPushButton(Icon(":/icons/checked.svg"), QObject::tr("Apply"), this)) {
     m_Layout->addWidget(m_ThemeSelectionComboBox.data());
     m_Layout->addWidget(m_ApplyButton.data());
 
-    connect(m_ApplyButton.data(), &QPushButton::clicked, m_ThemeSelectionComboBox.data(), &ThemeSelectionComboBox::sl_OnApplyButtonClicked);
+    connect(m_ApplyButton.data(), &QPushButton::clicked, [this]() {
+        this->m_ThemeSelectionComboBox->sl_OnApplyButtonClicked();
+        emit si_ThemeUpdated();
+    });
 }
 
 ThemeSelectionCard::~ThemeSelectionCard() {
-    qDebug() << "ThemeSelectionCard destructor";
+}
+
+void ThemeSelectionCard::UpdateIcons() {
+    m_ApplyButton->setIcon(Icon(":/icons/checked.svg"));
 }

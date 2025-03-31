@@ -33,6 +33,9 @@ void StyleManager::SetTheme(const QString &theme, QApplication &app) {
     QString styledQSS = ProcessQSSWithColors(qssContent, colors);
 
     app.setStyleSheet(styledQSS);
+
+    // save to settings
+    Settings::Instance().SetTheme(theme);
 }
 
 QStringList StyleManager::GetThemes() {

@@ -8,6 +8,7 @@
 #include <QWidget>
 #include <map>
 
+#include "Card.hpp"
 #include "Contrib.hpp"
 #include "ContribTotal.hpp"
 #include "ContributionPeriod.hpp"
@@ -16,19 +17,18 @@
 #include "YearContrib.hpp"
 #include "YearContribTotalIndicator.hpp"
 
-class ContribCard : public QWidget {
+class ContribCard : public Card {
     Q_OBJECT
 
   public:
-    ContribCard(QWidget* parent = nullptr) {
-        this->_SetupUI();
-        this->_CreateConnections();
-    }
+    ContribCard(QWidget* parent = nullptr);
     ContribCard(const std::map<QDate, Contrib>& allContribs, QWidget* parent = nullptr);
-    void Update(const std::map<QDate, Contrib>& allContribs = {});
+    void Update(const std::map<QDate, Contrib>& allContribs);
 
-    Icon GetIcon() const { return Icon(":/icons/contributions.svg"); }
-    QString GetName() const { return QObject::tr("Contributions"); }
+    virtual Icon GetIcon() const override { return Icon(":/icons/contributions.svg"); }
+    virtual QString GetName() const override { return QObject::tr("Contributions"); }
+    virtual void UpdateIcons() override;
+    virtual void Update() override {}
 
   private:
     void _UpdateContribs(const std::map<QDate, Contrib>& allContribs);

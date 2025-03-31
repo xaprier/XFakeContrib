@@ -8,28 +8,31 @@
 #include <QString>
 #include <QWidget>
 
+#include "Icon.hpp"
+
 class CardManager : public QWidget {
     Q_OBJECT
   public:
     explicit CardManager(QWidget *parent = nullptr);
-    CardManager(const QIcon &icon, const QString &name, QWidget *card, QWidget *parent = nullptr);
+    CardManager(const Icon &icon, const QString &name, QWidget *card, QWidget *parent = nullptr);
     ~CardManager();
 
-    void SetCardIcon(const QIcon &icon);
+    virtual void UpdateCard();
+
+    void SetCardIcon(const Icon &icon);
     void SetCardName(const QString &name);
     void SetCard(QWidget *card);
 
-    QIcon GetCardIcon() const;
+    Icon GetCardIcon() const;
     QString GetCardName() const;
     QWidget *GetCard() const;
 
   protected:
     virtual void _SetupCard();
-    virtual void _UpdateCard();
 
   private:
     QWidget *m_Card = nullptr;
-    QIcon m_CardIcon;
+    Icon m_CardIcon;
     QString m_CardName;
 
     QLabel *m_CardIconLabel = nullptr;

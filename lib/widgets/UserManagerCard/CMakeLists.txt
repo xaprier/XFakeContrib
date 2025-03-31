@@ -24,6 +24,7 @@ set(INTERNAL_LIBRARIES
     XFakeContribResources
     XFakeContribGithub
     XFakeContribStyle
+    XFakeContribCard
 )
 
 set(EXTERNAL_LIBRARIES

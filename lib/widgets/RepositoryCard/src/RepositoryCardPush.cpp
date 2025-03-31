@@ -5,19 +5,25 @@
 
 using namespace xaprier::Qt::Widgets;
 
-RepositoryCardPush::RepositoryCardPush(QWidget* parent) : RepositoryComposingWidgets({}, parent), m_Button(new QPushButton()), m_Indicator(new XQCircularLoadingIndicator) {
-    QString colorHex = StyleManager::GetCurrentThemeColors()["icon"];
-
+RepositoryCardPush::RepositoryCardPush(QWidget* parent) : RepositoryComposingWidgets({}, parent),
+                                                          m_Button(new QPushButton()),
+                                                          m_Indicator(new XQCircularLoadingIndicator) {
     // Setting-Up Widgets
     m_Indicator->SetSquare(true);
-    m_Indicator->SetProgressColor("#e67300");
 
     m_Button->setToolTip(QObject::tr("Push all latest changes to remote"));
     m_Button->setText(QObject::tr("Push All"));
-    m_Button->setIcon(Icon(":/icons/push.svg"));
+
+    this->UpdateColors();
 
     // Setting-Up Layout
     this->SetWidgets({m_Button, m_Indicator});
+}
+
+void RepositoryCardPush::UpdateColors() {
+    QString colorHex = StyleManager::GetCurrentThemeColors()["icon"];
+    m_Indicator->SetProgressColor(colorHex);
+    m_Button->setIcon(Icon(":/icons/push.svg"));  // this will reload the icon with color
 }
 
 void RepositoryCardPush::SetLoading() {
