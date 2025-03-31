@@ -1,5 +1,9 @@
 #include "CardManager.hpp"
 
+#include <qnamespace.h>
+
+#include <QDebug>
+
 #include "Card.hpp"
 #include "Icon.hpp"
 
@@ -49,12 +53,16 @@ void CardManager::_SetupCard() {
     m_CardLayout = new QHBoxLayout(m_CardGroupBox);
     m_CardIconLabel = new QLabel(m_CardGroupBox);
 
-    m_CardLayout->addWidget(m_CardIconLabel);
+    if (!m_CardIcon.GetSvgPath().isEmpty()) {
+        m_CardLayout->addWidget(m_CardIconLabel);
+    }
+
     m_CardLayout->addWidget(m_Card);
 
     m_CardGroupBox->setLayout(m_CardLayout);
 
     m_CardGroupBox->setContentsMargins(0, 0, 0, 0);
+    m_CardGroupBox->setAlignment(Qt::AlignCenter);
 
     QVBoxLayout *layout = new QVBoxLayout(this);
     layout->addWidget(m_CardGroupBox);
@@ -68,6 +76,14 @@ void CardManager::UpdateCard() {
     m_CardGroupBox->setTitle(m_CardName);
 
     m_CardIcon.Update();
+
+    if (m_CardIcon.GetSvgPath().isEmpty()) {
+        m_CardLayout->removeWidget(m_CardIconLabel);
+        m_CardIconLabel->hide();
+    } else {
+        m_CardLayout->insertWidget(0, m_CardIconLabel);
+        m_CardIconLabel->show();
+    }
 
     QPixmap pixmap = m_CardIcon.pixmap(32, 32);
     m_CardIconLabel->setPixmap(pixmap);

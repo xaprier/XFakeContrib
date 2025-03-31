@@ -26,7 +26,7 @@ class RepositoryManagerCard final : public Card {
     RepositoryManagerCard(QWidget *parent = nullptr);
     ~RepositoryManagerCard() final;
 
-    virtual Icon GetIcon() const override { return Icon(":/icons/repository_manager.svg"); }
+    virtual Icon GetIcon() const override { return Icon(":/icons/branch.svg"); }
     virtual QString GetName() const override { return QObject::tr("Repository Manager"); }
 
     virtual void UpdateIcons() override;

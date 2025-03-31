@@ -25,7 +25,7 @@ class ContribCard : public Card {
     ContribCard(const std::map<QDate, Contrib>& allContribs, QWidget* parent = nullptr);
     void Update(const std::map<QDate, Contrib>& allContribs);
 
-    virtual Icon GetIcon() const override { return Icon(":/icons/contributions.svg"); }
+    virtual Icon GetIcon() const override { return Icon(""); }
     virtual QString GetName() const override { return QObject::tr("Contributions"); }
     virtual void UpdateIcons() override;
     virtual void Update() override {}

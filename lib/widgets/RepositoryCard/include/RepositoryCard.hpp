@@ -20,7 +20,7 @@ class RepositoryCard final : public Card {
     RepositoryCard(QWidget *parent = nullptr);
     ~RepositoryCard() final;
 
-    virtual Icon GetIcon() const override { return Icon(":/icons/repositories.svg"); }
+    virtual Icon GetIcon() const override { return Icon(":/icons/repository.svg"); }
     virtual QString GetName() const override { return QObject::tr("Repositories"); }
 
     virtual void UpdateIcons() override;
