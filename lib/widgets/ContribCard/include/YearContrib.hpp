@@ -6,7 +6,6 @@
 #include <QLabel>
 #include <QVBoxLayout>
 #include <QWidget>
-#include <set>
 #include <vector>
 
 #include "Contrib.hpp"

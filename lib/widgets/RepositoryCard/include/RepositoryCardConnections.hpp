@@ -33,10 +33,10 @@ class RepositoryCardConnections final : public QObject {
   protected slots:
     void sl_CreateCommitsButtonClicked(bool checked);
     void sl_PushButtonClicked(bool checked);
-    void sl_CommitCountCBStateChanged(int state);
-    void sl_DateCBStateChanged(int state);
-    void sl_CommitMessageCBStateChanged(int state);
-    void sl_CommitContentCBStateChanged(int state);
+    void sl_CommitCountCBStateChanged(Qt::CheckState state);
+    void sl_DateCBStateChanged(Qt::CheckState state);
+    void sl_CommitMessageCBStateChanged(Qt::CheckState state);
+    void sl_CommitContentCBStateChanged(Qt::CheckState state);
 
     void sl_StartDateChanged(const QDate &date);
     void sl_EndDateChanged(const QDate &date);

@@ -6,6 +6,7 @@
 #include "GitManager.hpp"
 
 class GitBranchManager : public GitManager {
+    Q_OBJECT
   public:
     GitBranchManager(GitCommandExecutor &executor) : m_Executor(executor) {}
     void Execute(const QStringList &arguments, QString &output, QString &error) override {

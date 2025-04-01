@@ -40,3 +40,15 @@ void DayContrib::leaveEvent(QEvent* event) {
     QWidget::leaveEvent(event);  // Call base class implementation
     QToolTip::hideText();
 }
+
+void DayContrib::mousePressEvent(QMouseEvent* event) {
+    if (event->button() == Qt::LeftButton) {
+        emit si_LeftClicked(m_Date);
+    } else if (event->button() == Qt::RightButton) {
+        emit si_RightClicked(m_Date);
+    } else if (event->button() == Qt::MiddleButton) {
+        emit si_MiddleClicked(m_Date);
+    }
+
+    QWidget::mousePressEvent(event);  // Call base class implementation
+}

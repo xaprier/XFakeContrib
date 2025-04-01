@@ -2,9 +2,12 @@
 
 #include "GitHubFetchAdapterWithUser.hpp"
 #include "RepositoryCardConnections.hpp"
+#include "RequirementsController.hpp"
 
 MainWindowConnections::MainWindowConnections(Ui::MainWindow *ui) : m_Ui(ui) {
     this->_CreateConnections();
+    this->_CheckForUpdates();
+    this->_CheckForRequirements();
 }
 
 void MainWindowConnections::_CreateConnections() {
@@ -13,9 +16,22 @@ void MainWindowConnections::_CreateConnections() {
     connect(m_Ui->m_UserManagerCard.get(), &UserManagerCard::si_UserUpdated, this, &MainWindowConnections::sl_FetchContribs);
     connect(m_Ui->m_RepositoryCard->GetConnections(), &RepositoryCardConnections::si_PushesCompleted, this, &MainWindowConnections::sl_PushCompleted, Qt::QueuedConnection);
     connect(m_Ui->m_ThemeSelectionCard.get(), &ThemeSelectionCard::si_ThemeUpdated, this, &MainWindowConnections::sl_ThemeUpdated);
+    connect(m_Ui->m_ContribCard.get(), &ContribCard::si_SetEndDate, this, &MainWindowConnections::sl_SetEndDate);
+    connect(m_Ui->m_ContribCard.get(), &ContribCard::si_SetStartDate, this, &MainWindowConnections::sl_SetStartDate);
     QTimer::singleShot(0, [this]() {
         this->sl_FetchContribs();
     });
+}
+
+void MainWindowConnections::_CheckForUpdates() {
+}
+
+void MainWindowConnections::_CheckForRequirements() {
+    RequirementsController reqController;
+    QStringList requirements;
+    requirements << "git" << "openssl";
+    reqController.CheckRequirements(requirements);
+    connect(&reqController, &RequirementsController::si_RequirementChecked, this, &MainWindowConnections::sl_RequirementCheckCompleted);
 }
 
 void MainWindowConnections::sl_FetchContribs() {
@@ -52,4 +68,22 @@ void MainWindowConnections::sl_ThemeUpdated() {
     for (auto card : m_Ui->m_Cards) {
         card->UpdateCard();
     }
+}
+
+void MainWindowConnections::sl_RequirementCheckCompleted(const QString &name, bool isInstalled) {
+    if (!isInstalled) {
+        auto msg = QString(QObject::tr("The requirement %1 is not installed. Please install it to use the application.")).arg(name);
+        QMessageBox::critical(nullptr, QObject::tr("Requirement Not Found"), msg);
+        qApp->exit(1);
+    } else {
+        qDebug() << "Requirement" << name << "is installed.";
+    }
+}
+
+void MainWindowConnections::sl_SetEndDate(const QDate &date) {
+    this->m_Ui->m_RepositoryCard->SetEndDate(date);
+}
+
+void MainWindowConnections::sl_SetStartDate(const QDate &date) {
+    this->m_Ui->m_RepositoryCard->SetStartDate(date);
 }

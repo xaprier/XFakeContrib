@@ -96,6 +96,15 @@ void ContribCard::_CreateConnections() {
     connect(m_ReloadButton.get(), &QToolButton::clicked, this, [this]() {
         emit si_Reload();
     });
+
+    for (auto monthContrib : m_YearContribWidget->GetMonthContribs()) {
+        auto dayContribs = monthContrib.lock()->GetDayContribs();
+        for (auto dayContrib : dayContribs) {
+            connect(dayContrib.lock().get(), &DayContrib::si_LeftClicked, this, &ContribCard::sl_LeftClickedToDay);
+            connect(dayContrib.lock().get(), &DayContrib::si_RightClicked, this, &ContribCard::sl_RightClickedToDay);
+            connect(dayContrib.lock().get(), &DayContrib::si_MiddleClicked, this, &ContribCard::sl_MiddleClickedToDay);
+        }
+    }
 }
 
 void ContribCard::sl_OnContributionPeriodChanged(int index) {
@@ -109,5 +118,39 @@ void ContribCard::sl_OnContributionPeriodChanged(int index) {
         int selectedYear = selectedItem.toInt();
         endDate = QDate(selectedYear, 12, 31);  // Set the date to 31/12/selectedYear
     }
+
+    // Remove the connections between day contrib click signals
+    for (auto monthContrib : m_YearContribWidget->GetMonthContribs()) {
+        auto dayContribs = monthContrib.lock()->GetDayContribs();
+        for (auto dayContrib : dayContribs) {
+            disconnect(dayContrib.lock().get(), &DayContrib::si_LeftClicked, this, &ContribCard::sl_LeftClickedToDay);
+            disconnect(dayContrib.lock().get(), &DayContrib::si_RightClicked, this, &ContribCard::sl_RightClickedToDay);
+            disconnect(dayContrib.lock().get(), &DayContrib::si_MiddleClicked, this, &ContribCard::sl_MiddleClickedToDay);
+        }
+    }
+
     m_YearContribWidget->Update(selectedItem, m_Contribs, endDate);
+
+    // Create the connections between day contrib click signals
+    for (auto monthContrib : m_YearContribWidget->GetMonthContribs()) {
+        auto dayContribs = monthContrib.lock()->GetDayContribs();
+        for (auto dayContrib : dayContribs) {
+            connect(dayContrib.lock().get(), &DayContrib::si_LeftClicked, this, &ContribCard::sl_LeftClickedToDay);
+            connect(dayContrib.lock().get(), &DayContrib::si_RightClicked, this, &ContribCard::sl_RightClickedToDay);
+            connect(dayContrib.lock().get(), &DayContrib::si_MiddleClicked, this, &ContribCard::sl_MiddleClickedToDay);
+        }
+    }
+}
+
+void ContribCard::sl_LeftClickedToDay(const QDate& date) {
+    emit this->si_SetStartDate(date);
+}
+
+void ContribCard::sl_RightClickedToDay(const QDate& date) {
+    emit this->si_SetEndDate(date);
+}
+
+void ContribCard::sl_MiddleClickedToDay(const QDate& date) {
+    emit this->si_SetStartDate(date);
+    emit this->si_SetEndDate(date);
 }

@@ -39,9 +39,14 @@ class ContribCard : public Card {
 
   signals:
     void si_Reload();
+    void si_SetStartDate(const QDate& date);
+    void si_SetEndDate(const QDate& date);
 
   private slots:
     void sl_OnContributionPeriodChanged(int index);
+    void sl_LeftClickedToDay(const QDate& date);
+    void sl_RightClickedToDay(const QDate& date);
+    void sl_MiddleClickedToDay(const QDate& date);
 
   private:
     QSharedPointer<QToolButton> m_ReloadButton, m_InfoButton;

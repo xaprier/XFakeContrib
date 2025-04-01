@@ -14,12 +14,17 @@ class MainWindowConnections : public QObject {
 
   protected:
     void _CreateConnections();
+    void _CheckForUpdates();
+    void _CheckForRequirements();
 
   protected slots:
     void sl_FetchContribs();
     void sl_FetchCompleted();
     void sl_PushCompleted();
     void sl_ThemeUpdated();
+    void sl_RequirementCheckCompleted(const QString &name, bool isInstalled);
+    void sl_SetEndDate(const QDate &date);
+    void sl_SetStartDate(const QDate &date);
 
   private:
     Ui::MainWindow *m_Ui;

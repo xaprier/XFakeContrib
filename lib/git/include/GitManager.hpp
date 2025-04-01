@@ -1,10 +1,12 @@
 #ifndef GITMANAGER_HPP
 #define GITMANAGER_HPP
 
+#include <QObject>
 #include <QString>
 #include <QStringList>
 
-class GitManager {
+class GitManager : public QObject {
+    Q_OBJECT
   public:
     virtual ~GitManager() = default;
 

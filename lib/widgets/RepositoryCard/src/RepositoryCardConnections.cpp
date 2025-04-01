@@ -80,14 +80,14 @@ void RepositoryCardConnections::_SetupConnections() {
         connect(createCommitsButton, &QPushButton::clicked, this, &RepositoryCardConnections::sl_CreateCommitsButtonClicked);
     }
 
-    connect(m_Ui->commitCountCB, &QCheckBox::stateChanged, this, &RepositoryCardConnections::sl_CommitCountCBStateChanged);
-    connect(m_Ui->dateCB, &QCheckBox::stateChanged, this, &RepositoryCardConnections::sl_DateCBStateChanged);
-    connect(m_Ui->commitMessageCB, &QCheckBox::stateChanged, this, &RepositoryCardConnections::sl_CommitMessageCBStateChanged);
-    connect(m_Ui->commitContentCB, &QCheckBox::stateChanged, this, &RepositoryCardConnections::sl_CommitContentCBStateChanged);
+    connect(m_Ui->commitCountCB, &QCheckBox::checkStateChanged, this, &RepositoryCardConnections::sl_CommitCountCBStateChanged);
+    connect(m_Ui->dateCB, &QCheckBox::checkStateChanged, this, &RepositoryCardConnections::sl_DateCBStateChanged);
+    connect(m_Ui->commitMessageCB, &QCheckBox::checkStateChanged, this, &RepositoryCardConnections::sl_CommitMessageCBStateChanged);
+    connect(m_Ui->commitContentCB, &QCheckBox::checkStateChanged, this, &RepositoryCardConnections::sl_CommitContentCBStateChanged);
     connect(m_Ui->commitMessageLE, &QLineEdit::textChanged, [this]() { this->_UpdateButtonsStatus(); });
     connect(m_Ui->commitContentLE, &QLineEdit::textChanged, [this]() { this->_UpdateButtonsStatus(); });
-    connect(m_Ui->commitContentCB, &QCheckBox::stateChanged, [this]() { this->_UpdateButtonsStatus(); });
-    connect(m_Ui->commitMessageCB, &QCheckBox::stateChanged, [this]() { this->_UpdateButtonsStatus(); });
+    connect(m_Ui->commitContentCB, &QCheckBox::checkStateChanged, [this]() { this->_UpdateButtonsStatus(); });
+    connect(m_Ui->commitMessageCB, &QCheckBox::checkStateChanged, [this]() { this->_UpdateButtonsStatus(); });
 
     this->sl_RepositoriesUpdated();
 }
@@ -100,6 +100,7 @@ void RepositoryCardConnections::_SetupDates() {
     auto currentDate = QDate::currentDate();
     end->setMaximumDate(currentDate);
     start->setMaximumDate(currentDate);
+    end->setDate(currentDate);
 }
 
 void RepositoryCardConnections::_WidgetsSetEnabled(bool enabled) {
@@ -150,8 +151,12 @@ void RepositoryCardConnections::sl_PushButtonClicked(bool checked) {
         if (!item->IsEnabled()) continue;
 
         // create future for every push operation
-        auto future = QtConcurrent::run(item, &RepositoryTableItem::Push);
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+        auto future = QtConcurrent::run(&RepositoryTableItem::Push, item);
 
+#else
+        auto future = QtConcurrent::run(item, &RepositoryTableItem::Push);
+#endif
         // watch future to completed
         auto watcher = new QFutureWatcher<void>(this);  // NOLINT
 
@@ -175,25 +180,25 @@ void RepositoryCardConnections::sl_PushButtonClicked(bool checked) {
     }
 }
 
-void RepositoryCardConnections::sl_CommitCountCBStateChanged(int state) {
+void RepositoryCardConnections::sl_CommitCountCBStateChanged(Qt::CheckState state) {
     // disable commit count if checked
     m_Ui->commitCountSP->setDisabled(state == Qt::Checked);
 }
 
-void RepositoryCardConnections::sl_DateCBStateChanged(int state) {
+void RepositoryCardConnections::sl_DateCBStateChanged(Qt::CheckState state) {
     // disable dateedits if today is checked
     bool disable = state == Qt::Checked;
     m_Ui->startDateDE->setDisabled(disable);
     m_Ui->endDateDE->setDisabled(disable);
 }
 
-void RepositoryCardConnections::sl_CommitMessageCBStateChanged(int state) {
+void RepositoryCardConnections::sl_CommitMessageCBStateChanged(Qt::CheckState state) {
     // disable static commit message if checked
     bool disable = state == Qt::Checked;
     m_Ui->commitMessageLE->setDisabled(disable);
 }
 
-void RepositoryCardConnections::sl_CommitContentCBStateChanged(int state) {
+void RepositoryCardConnections::sl_CommitContentCBStateChanged(Qt::CheckState state) {
     // disable static commit content if checked
     bool disable = state == Qt::Checked;
     m_Ui->commitContentLE->setDisabled(disable);

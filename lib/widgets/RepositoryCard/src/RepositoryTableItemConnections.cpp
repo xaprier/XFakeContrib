@@ -65,7 +65,7 @@ void RepositoryTableItemConnections::_SetupConnections() {
             connect(branchCombo, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &RepositoryTableItemConnections::sl_BranchIndexChanged);
     }
 
-    connect(m_Item->GetConnections(), &RepositoryTableItemConnections::si_CreateCommitter, this, &RepositoryTableItemConnections::sl_CreateCommitter);
+    connect(this, &RepositoryTableItemConnections::si_CreateCommitter, this, &RepositoryTableItemConnections::sl_CreateCommitter);
 }
 
 void RepositoryTableItemConnections::_LoadBranches() {
@@ -112,7 +112,11 @@ void RepositoryTableItemConnections::sl_RepositoryStateChanged(int state) {
 void RepositoryTableItemConnections::sl_LogButtonClicked(bool checked) {
     m_Item->m_LogItem->SetLoading();
 
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+    QFuture<QString> futureForLogFetch = QtConcurrent::run(&GitRepository::Log, m_Item->m_GitRepository, QStringList{});
+#else
     QFuture<QString> futureForLogFetch = QtConcurrent::run(m_Item->m_GitRepository, &GitRepository::Log, QStringList{});
+#endif
 
     if (!m_Watcher.isNull()) delete m_Watcher;
     // Create a QFutureWatcher to monitor the operation

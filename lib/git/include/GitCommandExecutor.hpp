@@ -29,6 +29,9 @@ class GitCommandExecutor : public QObject {
      */
     void Execute(const GitCommand::Command& command, const QStringList& arguments, QString& output, QString& error);
 
+  signals:
+    void si_InputRequired(const QString& message);
+
   private:
     QString m_Path;
 };

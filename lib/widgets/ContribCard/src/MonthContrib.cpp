@@ -18,7 +18,7 @@ void MonthContrib::SetContribs(const std::map<QDate, Contrib>& allContribs) {
     this->_Update();
 }
 
-std::vector<QWeakPointer<DayContrib>> MonthContrib::getDayContribs() const {
+std::vector<QWeakPointer<DayContrib>> MonthContrib::GetDayContribs() const {
     std::vector<QWeakPointer<DayContrib>> weakPtrs;
     weakPtrs.reserve(m_DayContribs.size());  // Optimize allocation
 

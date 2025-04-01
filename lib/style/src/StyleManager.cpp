@@ -96,10 +96,16 @@ QMap<QString, QString> StyleManager::LoadJSONColors(const QString &jsonPath) {
 
 QString StyleManager::ProcessQSSWithColors(const QString &qss, const QMap<QString, QString> &colorMap) {
     QString processedQSS = qss;
-    for (auto it = colorMap.begin(); it != colorMap.end(); ++it) {
-        // Using regular expression to replace only exact matches
-        QRegExp regex("@(" + it.key() + ")");
-        processedQSS.replace(regex, it.value());
+
+    // sort the keys by length to replace the longest keys first
+    QStringList keys = colorMap.keys();
+    std::sort(keys.begin(), keys.end(), [](const QString &a, const QString &b) {
+        return a.length() > b.length();
+    });
+
+    for (const QString &key : keys) {
+        processedQSS.replace("@" + key, colorMap.value(key));
     }
+
     return processedQSS;
 }

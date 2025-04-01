@@ -34,6 +34,11 @@ class DayContrib : public QWidget {
 
     void UpdateColor();
 
+  signals:
+    void si_LeftClicked(const QDate& date);
+    void si_RightClicked(const QDate& date);
+    void si_MiddleClicked(const QDate& date);
+
   protected:
     // Override the paintEvent to draw the widget with the corresponding color
     void paintEvent(QPaintEvent* event) override;
@@ -47,6 +52,9 @@ class DayContrib : public QWidget {
 
     // Override the leaveEvent to hide the tooltip when the cursor leaves the widget
     void leaveEvent(QEvent* event) override;
+
+    // Override the mousePressEvent to emit signals when the widget is clicked
+    void mousePressEvent(QMouseEvent* event) override;
 
   private:
     int m_ContribCount;    // Contribution count for the day

@@ -35,7 +35,7 @@ class MonthContrib : public QWidget {
     }
 
     // Function to get the list of WeekContrib widgets as weak pointers
-    std::vector<QWeakPointer<DayContrib>> getDayContribs() const;
+    std::vector<QWeakPointer<DayContrib>> GetDayContribs() const;
 
   private:
     int _GetWeekCountInMonth(const QDate& date) const;

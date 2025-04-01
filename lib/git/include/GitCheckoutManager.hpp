@@ -5,6 +5,7 @@
 #include "GitManager.hpp"
 
 class GitCheckoutManager : public GitManager {
+    Q_OBJECT
   public:
     GitCheckoutManager(GitCommandExecutor& executor) : m_Executor(executor) {}
     void Execute(const QStringList& arguments, QString& output, QString& error) override {

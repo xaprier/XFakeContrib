@@ -17,6 +17,7 @@
 #include "GitRemoteManager.hpp"
 
 class GitRepository : public QObject {
+    Q_OBJECT
   public:
     GitRepository(const QString &localRepositoryPath = "", QObject *parent = nullptr);
     QString Push(const QStringList &arguments);

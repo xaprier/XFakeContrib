@@ -21,8 +21,8 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS 1) # required for clangd analyzes
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets Core Svg Concurrent LinguistTools)
-find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets Core Svg Concurrent LinguistTools)
+find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets Core Svg Concurrent LinguistTools Network)
+find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets Core Svg Concurrent LinguistTools Network)
 
 file(GLOB_RECURSE CPP_FILES src/*.cpp)
 file(GLOB_RECURSE HPP_FILES include/*.hpp)
@@ -100,6 +100,7 @@ set(EXTERNAL_LIBRARIES
     Qt${QT_VERSION_MAJOR}::Core 
     Qt${QT_VERSION_MAJOR}::Widgets
     Qt${QT_VERSION_MAJOR}::Concurrent
+    Qt${QT_VERSION_MAJOR}::Network
     Qt${QT_VERSION_MAJOR}::Svg
     Logger
     XQWidgetComposer

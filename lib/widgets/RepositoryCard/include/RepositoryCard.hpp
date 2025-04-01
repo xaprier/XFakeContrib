@@ -28,6 +28,9 @@ class RepositoryCard final : public Card {
 
     QPointer<RepositoryCardConnections> GetConnections() const { return m_Connections; }
 
+    void SetEndDate(const QDate &date);
+    void SetStartDate(const QDate &date);
+
   private:
     mutable QPointer<RepositoryCardConnections> m_Connections;
     QPointer<RepositoryTableView> m_Repositories;
