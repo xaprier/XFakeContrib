@@ -56,7 +56,7 @@ class RepositoryCardConnections final : public QObject {
     [[nodiscard]] QString _GetCommitMessage() const;
     [[nodiscard]] QString _GetCommitContent() const;
 
-    void _CreateCommits(const QDate &startDate, const QDate &endDate);
+    void _CreateCommits(QList<RepositoryTableItem *> &enabledItems, const QDate &startDate, const QDate &endDate);
 
   private:
     friend class RepositoryCard;

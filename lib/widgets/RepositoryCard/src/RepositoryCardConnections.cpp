@@ -141,7 +141,7 @@ void RepositoryCardConnections::sl_CreateCommitsButtonClicked(bool checked) {
     auto endDate = m_Ui->dateCB->isChecked() ? QDate::currentDate() : m_Ui->endDateDE->date();
 
     // create commits
-    this->_CreateCommits(startDate, endDate);
+    this->_CreateCommits(selectedItems, startDate, endDate);
 }
 
 void RepositoryCardConnections::sl_PushButtonClicked(bool checked) {
@@ -309,7 +309,7 @@ QString RepositoryCardConnections::_GetCommitContent() const {
     return random ? "" : this->m_Ui->commitContentLE->text();
 }
 
-void RepositoryCardConnections::_CreateCommits(const QDate &startDate, const QDate &endDate) {
+void RepositoryCardConnections::_CreateCommits(QList<RepositoryTableItem *> &enabledItems, const QDate &startDate, const QDate &endDate) {
     // update button status
     m_Ui->createCommitsPB->SetLoading();
     m_Ui->pushPB->setDisabled(true);
@@ -326,11 +326,11 @@ void RepositoryCardConnections::_CreateCommits(const QDate &startDate, const QDa
         auto commitContent = this->_GetCommitContent();
 
         // use item signal to create a committer
-        emit m_Items[index]->GetConnections()->si_CreateCommitter(commitCount, currentDate, commitMessage, commitContent);
+        emit enabledItems[index]->GetConnections()->si_CreateCommitter(commitCount, currentDate, commitMessage, commitContent);
 
         // update initials
         currentDate = currentDate.addDays(1);
-        index = ++index % m_Items.size();
+        index = ++index % enabledItems.size();
         totalCommitCount += commitCount;
     }
     m_Ui->pushPB->setToolTip(QObject::tr("Creating commits(%1)").arg(totalCommitCount));

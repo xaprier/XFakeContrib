@@ -37,6 +37,8 @@ void RepositoryTableView::_ReloadRepositories() {
 void RepositoryTableView::_LoadRepositories() {
     m_Repositories = this->m_Settings.GetRepositories();
 
+    qDebug() << QObject::tr("Repositories:") << m_Repositories << "size: " << m_Repositories.size();
+
     // if no repositories found, disable all buttons and comboBoxes with giving information to user
     if (m_Repositories.isEmpty()) {
         this->m_RepoTable->setDisabled(true);
