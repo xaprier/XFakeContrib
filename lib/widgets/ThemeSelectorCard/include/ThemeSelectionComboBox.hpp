@@ -16,7 +16,7 @@ class ThemeSelectionComboBox : public QComboBox {
     void sl_OnApplyButtonClicked();
 
   private:
-    void _LoadThemes();
+    void _LoadThemes() noexcept;
 
   private:
     QStringList m_Themes;

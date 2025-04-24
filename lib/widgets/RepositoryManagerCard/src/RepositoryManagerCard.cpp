@@ -107,7 +107,7 @@ void RepositoryManagerCard::_LoadRepositories() {
         // clear all items first
         m_Repositories.clear();
 
-        m_Repositories = this->m_Settings.GetRepositories();
+        m_Repositories = this->m_Settings->GetRepositories();
 
         // if no repositories found, disable all buttons and comboBoxes with giving information to user
         _NoRepositoriesFound(m_Repositories.isEmpty());
@@ -268,7 +268,7 @@ void RepositoryManagerCard::sl_RepositoryAddClicked(bool checked) {
 
         // update repositories
         m_Repositories.append(selectedPath);
-        m_Settings.SetRepositories(m_Repositories);
+        m_Settings->SetRepositories(m_Repositories);
         emit this->si_RepositoriesUpdated();
         this->_LoadRepositories();
     } catch (const std::exception &e) {
@@ -291,7 +291,7 @@ void RepositoryManagerCard::sl_RepositoryDeleteClicked(bool checked) {
 
         // update repositories
         m_Repositories.removeOne(path);
-        m_Settings.SetRepositories(m_Repositories);
+        m_Settings->SetRepositories(m_Repositories);
         emit this->si_RepositoriesUpdated();
         this->_LoadRepositories();
     } catch (const std::exception &e) {
@@ -358,7 +358,7 @@ void RepositoryManagerCard::sl_RepositoryUpdateClicked(bool checked) {
 
         auto indexOld = m_Repositories.indexOf(oldPath);
         m_Repositories.replace(indexOld, selectedPath);
-        m_Settings.SetRepositories(m_Repositories);
+        m_Settings->SetRepositories(m_Repositories);
         emit this->si_RepositoriesUpdated();
         this->_LoadRepositories();
     } catch (const std::exception &e) {

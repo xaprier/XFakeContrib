@@ -1,6 +1,9 @@
 #ifndef CARD_HPP
 #define CARD_HPP
 
+#include <qwidget.h>
+
+#include <QDebug>
 #include <QString>
 #include <QWidget>
 
@@ -8,10 +11,8 @@
 
 class Card : public QWidget {
     Q_OBJECT
-    Q_DISABLE_COPY_MOVE(Card)
   public:
-    Card(QWidget *parent = nullptr) : QWidget(parent) {};
-    virtual ~Card() = default;
+    using QWidget::QWidget;
 
     virtual Icon GetIcon() const = 0;
     virtual QString GetName() const = 0;

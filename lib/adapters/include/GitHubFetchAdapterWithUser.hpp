@@ -12,8 +12,8 @@ class GitHubFetchAdapterWithUser : public IAdapter<UserManagerCard, GitHubContri
         : IAdapter<UserManagerCard, GitHubContribFetcher>(card) {}
 
     virtual QSharedPointer<GitHubContribFetcher> adapt() const override {
-        QString userName = this->m_Adaptee.GetManager().GetUsername();
-        QString token = this->m_Adaptee.GetManager().GetToken();
+        QString userName = this->m_Adaptee.GetManager()->GetUsername();
+        QString token = this->m_Adaptee.GetManager()->GetToken();
 
         return QSharedPointer<GitHubContribFetcher>::create(userName, token);
     }

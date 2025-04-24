@@ -34,7 +34,7 @@ class RepositoryCard final : public Card {
   private:
     mutable QPointer<RepositoryCardConnections> m_Connections;
     QPointer<RepositoryTableView> m_Repositories;
-    Settings &m_Settings;
+    Settings *m_Settings;
     Ui::RepositoryCardUI *m_Ui;
 };
 

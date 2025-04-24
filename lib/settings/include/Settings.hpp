@@ -13,24 +13,13 @@
  */
 class Settings final : public QSettings {  // NOLINT
     Q_OBJECT
+    Q_DISABLE_COPY_MOVE(Settings)
   public:
-    /// Disable copy constructor.
-    Settings(const Settings &) = delete;
-
-    /// Disable assignment operator.
-    Settings &operator=(const Settings &) = delete;
-
-    /// Disable move constructor
-    Settings(const Settings &&) = delete;
-
-    /// Disable move assignment operator
-    Settings &operator=(const Settings &&) = delete;
-
     /**
      * @brief Returns the Singleton instance of the Config class.
      * @return A pointer to the single instance of the Config class.
      */
-    static Settings &Instance();
+    static Settings *Instance();
 
     /**
      * @brief Get the Theme object

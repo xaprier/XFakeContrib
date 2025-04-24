@@ -29,7 +29,7 @@ enum class Cards {
 class MainWindow : public QMainWindow {
     Q_OBJECT
   public:
-    explicit MainWindow(QMainWindow *parent = nullptr);
+    explicit MainWindow(QMainWindow* parent = nullptr);
     ~MainWindow();
 
   private:

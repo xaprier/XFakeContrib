@@ -59,7 +59,7 @@ class RepositoryManagerCard final : public Card {
     QPointer<RepositoryManagerComposedAddButton> m_RepositoryAdd, m_BranchCreate;
     QPointer<RepositoryManagerComposedDeleteButton> m_RepositoryDelete, m_BranchDelete;
     QPointer<RepositoryManagerComposedUpdateButton> m_RepositoryUpdate, m_BranchUpdate;
-    Settings &m_Settings;
+    Settings *m_Settings;
     QPointer<GitRepository> m_GitRepository;
     QStringList m_Repositories;
     QString m_OldBranch;

@@ -11,6 +11,7 @@ class MainWindowConnections : public QObject {
     Q_OBJECT
   public:
     explicit MainWindowConnections(Ui::MainWindow *ui = nullptr);
+    ~MainWindowConnections();
 
   protected:
     void _CreateConnections();

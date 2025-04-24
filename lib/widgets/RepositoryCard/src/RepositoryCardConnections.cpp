@@ -80,14 +80,14 @@ void RepositoryCardConnections::_SetupConnections() {
         connect(createCommitsButton, &QPushButton::clicked, this, &RepositoryCardConnections::sl_CreateCommitsButtonClicked);
     }
 
-    connect(m_Ui->commitCountCB, &QCheckBox::checkStateChanged, this, &RepositoryCardConnections::sl_CommitCountCBStateChanged);
-    connect(m_Ui->dateCB, &QCheckBox::checkStateChanged, this, &RepositoryCardConnections::sl_DateCBStateChanged);
-    connect(m_Ui->commitMessageCB, &QCheckBox::checkStateChanged, this, &RepositoryCardConnections::sl_CommitMessageCBStateChanged);
-    connect(m_Ui->commitContentCB, &QCheckBox::checkStateChanged, this, &RepositoryCardConnections::sl_CommitContentCBStateChanged);
+    connect(m_Ui->commitCountCB, &QCheckBox::stateChanged, this, &RepositoryCardConnections::sl_CommitCountCBStateChanged);
+    connect(m_Ui->dateCB, &QCheckBox::stateChanged, this, &RepositoryCardConnections::sl_DateCBStateChanged);
+    connect(m_Ui->commitMessageCB, &QCheckBox::stateChanged, this, &RepositoryCardConnections::sl_CommitMessageCBStateChanged);
+    connect(m_Ui->commitContentCB, &QCheckBox::stateChanged, this, &RepositoryCardConnections::sl_CommitContentCBStateChanged);
     connect(m_Ui->commitMessageLE, &QLineEdit::textChanged, [this]() { this->_UpdateButtonsStatus(); });
     connect(m_Ui->commitContentLE, &QLineEdit::textChanged, [this]() { this->_UpdateButtonsStatus(); });
-    connect(m_Ui->commitContentCB, &QCheckBox::checkStateChanged, [this]() { this->_UpdateButtonsStatus(); });
-    connect(m_Ui->commitMessageCB, &QCheckBox::checkStateChanged, [this]() { this->_UpdateButtonsStatus(); });
+    connect(m_Ui->commitContentCB, &QCheckBox::stateChanged, [this]() { this->_UpdateButtonsStatus(); });
+    connect(m_Ui->commitMessageCB, &QCheckBox::stateChanged, [this]() { this->_UpdateButtonsStatus(); });
 
     this->sl_RepositoriesUpdated();
 }
@@ -180,25 +180,25 @@ void RepositoryCardConnections::sl_PushButtonClicked(bool checked) {
     }
 }
 
-void RepositoryCardConnections::sl_CommitCountCBStateChanged(Qt::CheckState state) {
+void RepositoryCardConnections::sl_CommitCountCBStateChanged(int state) {
     // disable commit count if checked
     m_Ui->commitCountSP->setDisabled(state == Qt::Checked);
 }
 
-void RepositoryCardConnections::sl_DateCBStateChanged(Qt::CheckState state) {
+void RepositoryCardConnections::sl_DateCBStateChanged(int state) {
     // disable dateedits if today is checked
     bool disable = state == Qt::Checked;
     m_Ui->startDateDE->setDisabled(disable);
     m_Ui->endDateDE->setDisabled(disable);
 }
 
-void RepositoryCardConnections::sl_CommitMessageCBStateChanged(Qt::CheckState state) {
+void RepositoryCardConnections::sl_CommitMessageCBStateChanged(int state) {
     // disable static commit message if checked
     bool disable = state == Qt::Checked;
     m_Ui->commitMessageLE->setDisabled(disable);
 }
 
-void RepositoryCardConnections::sl_CommitContentCBStateChanged(Qt::CheckState state) {
+void RepositoryCardConnections::sl_CommitContentCBStateChanged(int state) {
     // disable static commit content if checked
     bool disable = state == Qt::Checked;
     m_Ui->commitContentLE->setDisabled(disable);
@@ -293,7 +293,7 @@ quint32 RepositoryCardConnections::_GetCommitCount() const {
 
     if (random) {
         QRandomGenerator generator;
-        return generator.bounded(quint32(1), m_Settings.GetRandomMax());  // todo: highest value should come from config
+        return generator.bounded(quint32(1), m_Settings->GetRandomMax());  // todo: highest value should come from config
     }
 
     return this->m_Ui->commitCountSP->value();

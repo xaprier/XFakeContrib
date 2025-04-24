@@ -1,10 +1,16 @@
 #include "Settings.hpp"
 
+#include <QCoreApplication>
+
 #include "Config.hpp"
 
-Settings &Settings::Instance() {
-    static Settings instance;
-    return instance;
+Settings *Settings::Instance() {
+    static Settings *obj = nullptr;
+    if (!obj) {
+        obj = new Settings();
+        connect(qApp, &QCoreApplication::aboutToQuit, obj, &Settings::deleteLater);
+    }
+    return obj;
 }
 
 // todo: set default values if not exists in settings

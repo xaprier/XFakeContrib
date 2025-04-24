@@ -8,11 +8,13 @@ ContribCard::ContribCard(QWidget* parent) : Card(parent) {
     this->_CreateConnections();
 }
 
-ContribCard::ContribCard(
-    const std::map<QDate, Contrib>& allContribs,
-    QWidget* parent) : ContribCard(parent) {
+ContribCard::ContribCard(const std::map<QDate, Contrib>& allContribs, QWidget* parent) : ContribCard(parent) {
     m_Contribs = allContribs;
     this->Update(allContribs);
+}
+
+ContribCard::~ContribCard() {
+    qDebug() << "ContribCard destructor called";
 }
 
 void ContribCard::Update(const std::map<QDate, Contrib>& allContribs) {

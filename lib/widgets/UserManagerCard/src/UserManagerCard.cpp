@@ -60,17 +60,17 @@ void UserManagerCard::_SetupUI() {
 }
 
 void UserManagerCard::_LoadUser() {
-    this->m_UsernameLineEdit->setText(this->m_UserManager.GetUsername());
-    this->m_TokenLineEdit->setText(this->m_UserManager.GetToken());
+    this->m_UsernameLineEdit->setText(this->m_UserManager->GetUsername());
+    this->m_TokenLineEdit->setText(this->m_UserManager->GetToken());
 }
 
 void UserManagerCard::sl_ValidateUser(bool checked) {
-    this->m_UserManager.SetUsername(this->m_UsernameLineEdit->text());
-    this->m_UserManager.SetToken(this->m_TokenLineEdit->text());
+    this->m_UserManager->SetUsername(this->m_UsernameLineEdit->text());
+    this->m_UserManager->SetToken(this->m_TokenLineEdit->text());
 
     this->m_ValidateButton->SetLoading();
 
-    this->m_AuthChecker->CheckAuthKey(this->m_UserManager.GetToken());
+    this->m_AuthChecker->CheckAuthKey(this->m_UserManager->GetToken());
 
     this->_LoadUser();
 }
@@ -82,7 +82,7 @@ void UserManagerCard::sl_AuthCheckCompleted(bool isValid, const QString& message
         auto result = msg.exec();
 
         if (result == QMessageBox::StandardButton::Yes) {
-            this->m_UserManager.SaveCredentials();
+            this->m_UserManager->SaveCredentials();
         }
 
         emit si_UserUpdated();

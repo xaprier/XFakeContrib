@@ -14,7 +14,7 @@
 #include "RepositoryTableItemStatus.hpp"
 #include "RepositoryTableType.hpp"
 
-RepositoryTableView::RepositoryTableView(QWidget *parent) : QWidget(parent), m_RepoTable(new QTableView), m_RepoModel(new QStandardItemModel), m_Settings(Settings::Instance()) {
+RepositoryTableView::RepositoryTableView(QWidget *parent) : QWidget(parent), m_RepoTable(new QTableView(this)), m_RepoModel(new QStandardItemModel(this)), m_Settings(Settings::Instance()) {
     QVBoxLayout *layout = new QVBoxLayout(this);  // NOLINT
     layout->addWidget(m_RepoTable);
     setLayout(layout);
@@ -24,10 +24,8 @@ RepositoryTableView::RepositoryTableView(QWidget *parent) : QWidget(parent), m_R
 }
 
 RepositoryTableView::~RepositoryTableView() {
-    qDeleteAll(m_Items);
+    // qDeleteAll(m_Items);
     m_Items.clear();
-    delete m_RepoModel;
-    delete m_RepoTable;
 }
 
 void RepositoryTableView::_ReloadRepositories() {
@@ -35,7 +33,7 @@ void RepositoryTableView::_ReloadRepositories() {
 }
 
 void RepositoryTableView::_LoadRepositories() {
-    m_Repositories = this->m_Settings.GetRepositories();
+    m_Repositories = this->m_Settings->GetRepositories();
 
     qDebug() << QObject::tr("Repositories:") << m_Repositories << "size: " << m_Repositories.size();
 
@@ -43,7 +41,7 @@ void RepositoryTableView::_LoadRepositories() {
     if (m_Repositories.isEmpty()) {
         this->m_RepoTable->setDisabled(true);
         this->m_RepoTable->setToolTip(QObject::tr("No Repositories Found. Please Add Repository from Repository Manager"));
-        qDeleteAll(m_Items);
+        // qDeleteAll(m_Items);
         m_Items.clear();
         return;
     } else {
@@ -55,7 +53,7 @@ void RepositoryTableView::_LoadRepositories() {
     this->m_RepoModel->removeRows(0, this->m_RepoModel->rowCount());
 
     this->m_RepoModel->setRowCount(m_Repositories.size());
-    qDeleteAll(m_Items);
+    // qDeleteAll(m_Items);
     m_Items.clear();
     for (int i = 0; i < m_Repositories.size(); ++i) {
         auto absolutePath = m_Repositories.at(i);

@@ -20,14 +20,15 @@ class Application : public QApplication {
     static StyleManager styleManager;
 
   private:
-    void
-    _SetAppLanguage();
+    void _SetAppLanguage();
     void _SetAppIcon();
-    QString m_applicationName;
-    QString m_applicationVersion;
-    QString m_organizationName;
-    QString m_styleSheet;
-    Settings &settings;
+
+  private:
+    QString m_ApplicationName;
+    QString m_ApplicationVersion;
+    QString m_OrganizationName;
+    QString m_StyleSheet;
+    Settings *m_Settings;
 };
 
 #endif  // APPLICATION_HPP

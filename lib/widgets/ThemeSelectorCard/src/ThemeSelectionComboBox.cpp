@@ -6,12 +6,7 @@ ThemeSelectionComboBox::ThemeSelectionComboBox(QWidget *parent) : QComboBox(pare
     _LoadThemes();
 }
 
-void ThemeSelectionComboBox::sl_OnApplyButtonClicked() {
-    auto selected = currentText();
-    StyleManager::SetTheme(selected);
-}
-
-void ThemeSelectionComboBox::_LoadThemes() {
+void ThemeSelectionComboBox::_LoadThemes() noexcept {
     m_Themes = StyleManager::GetThemes();
     auto current = StyleManager::GetTheme();
 
@@ -22,4 +17,9 @@ void ThemeSelectionComboBox::_LoadThemes() {
             setCurrentText(theme);
         }
     }
+}
+
+void ThemeSelectionComboBox::sl_OnApplyButtonClicked() {
+    auto selected = currentText();
+    StyleManager::SetTheme(selected);
 }

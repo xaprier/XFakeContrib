@@ -1,8 +1,12 @@
 #include "MainWindowConnections.hpp"
 
+#include <qnamespace.h>
+
 #include "GitHubFetchAdapterWithUser.hpp"
 #include "RepositoryCardConnections.hpp"
+#include "RepositoryManagerCard.hpp"
 #include "RequirementsController.hpp"
+#include "XFakeContribHelper.hpp"
 
 MainWindowConnections::MainWindowConnections(Ui::MainWindow *ui) : m_Ui(ui) {
     this->_CreateConnections();
@@ -10,14 +14,62 @@ MainWindowConnections::MainWindowConnections(Ui::MainWindow *ui) : m_Ui(ui) {
     this->_CheckForRequirements();
 }
 
+MainWindowConnections::~MainWindowConnections() {
+}
+
 void MainWindowConnections::_CreateConnections() {
-    connect(m_Ui->m_RepositoryManagerCard.get(), &RepositoryManagerCard::si_RepositoriesUpdated, m_Ui->m_RepositoryCard->GetConnections(), &RepositoryCardConnections::sl_RepositoriesUpdated);
-    connect(m_Ui->m_ContribCard.get(), &ContribCard::si_Reload, this, &MainWindowConnections::sl_FetchContribs);
-    connect(m_Ui->m_UserManagerCard.get(), &UserManagerCard::si_UserUpdated, this, &MainWindowConnections::sl_FetchContribs);
-    connect(m_Ui->m_RepositoryCard->GetConnections(), &RepositoryCardConnections::si_PushesCompleted, this, &MainWindowConnections::sl_PushCompleted, Qt::QueuedConnection);
-    connect(m_Ui->m_ThemeSelectionCard.get(), &ThemeSelectionCard::si_ThemeUpdated, this, &MainWindowConnections::sl_ThemeUpdated);
-    connect(m_Ui->m_ContribCard.get(), &ContribCard::si_SetEndDate, this, &MainWindowConnections::sl_SetEndDate);
-    connect(m_Ui->m_ContribCard.get(), &ContribCard::si_SetStartDate, this, &MainWindowConnections::sl_SetStartDate);
+    using namespace XFakeContribHelper;
+    // connect(m_Ui->m_RepositoryManagerCard, &RepositoryManagerCard::si_RepositoriesUpdated, m_Ui->m_RepositoryCard->GetConnections(), &RepositoryCardConnections::sl_RepositoriesUpdated);
+    safeConnect(
+        m_Ui->m_RepositoryManagerCard.get(),
+        &RepositoryManagerCard::si_RepositoriesUpdated,
+        m_Ui->m_RepositoryCard->GetConnections().data(),
+        &RepositoryCardConnections::sl_RepositoriesUpdated,
+        "RepositoryManagerCard::si_RepositoriesUpdated -> RepositoryCardConnections::sl_RepositoriesUpdated");
+
+    safeConnect(
+        m_Ui->m_ContribCard.get(),
+        &ContribCard::si_Reload,
+        this,
+        &MainWindowConnections::sl_FetchContribs,
+        "ContribCard::si_Reload -> MainWindowConnections::sl_FetchContribs");
+
+    safeConnect(
+        m_Ui->m_UserManagerCard.get(),
+        &UserManagerCard::si_UserUpdated,
+        this,
+        &MainWindowConnections::sl_FetchContribs,
+        "UserManagerCard::si_UserUpdated -> MainWindowConnections::sl_FetchContribs");
+
+    safeConnect(
+        m_Ui->m_RepositoryCard->GetConnections().data(),
+        &RepositoryCardConnections::si_PushesCompleted,
+        this,
+        &MainWindowConnections::sl_PushCompleted,
+        "RepositoryCardConnections::si_PushesCompleted -> MainWindowConnections::sl_PushCompleted",
+        Qt::QueuedConnection);
+
+    safeConnect(
+        m_Ui->m_ThemeSelectionCard.get(),
+        &ThemeSelectionCard::si_ThemeUpdated,
+        this,
+        &MainWindowConnections::sl_ThemeUpdated,
+        "ThemeSelectionCard::si_ThemeUpdated -> MainWindowConnections::sl_ThemeUpdated");
+
+    safeConnect(
+        m_Ui->m_ContribCard.get(),
+        &ContribCard::si_SetEndDate,
+        this,
+        &MainWindowConnections::sl_SetEndDate,
+        "ContribCard::si_SetEndDate -> MainWindowConnections::sl_SetEndDate");
+
+    safeConnect(
+        m_Ui->m_ContribCard.get(),
+        &ContribCard::si_SetStartDate,
+        this,
+        &MainWindowConnections::sl_SetStartDate,
+        "ContribCard::si_SetStartDate -> MainWindowConnections::sl_SetStartDate");
+
     QTimer::singleShot(0, [this]() {
         this->sl_FetchContribs();
     });
@@ -37,7 +89,7 @@ void MainWindowConnections::_CheckForRequirements() {
 void MainWindowConnections::sl_FetchContribs() {
     m_Ui->m_ContribCard->Update();  // clear the list
 
-    GitHubFetchAdapterWithUser fetcherFromUser(*m_Ui->m_UserManagerCard.get());
+    GitHubFetchAdapterWithUser fetcherFromUser(*m_Ui->m_UserManagerCard);
     m_Fetcher = fetcherFromUser.adapt();
     connect(m_Fetcher.get(), &GitHubContribFetcher::si_AllRepliesFinished, this, &MainWindowConnections::sl_FetchCompleted);
     m_Fetcher->FetchUserContributions();

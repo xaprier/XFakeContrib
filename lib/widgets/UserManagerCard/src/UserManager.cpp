@@ -1,5 +1,7 @@
 #include "UserManager.hpp"
 
+#include <qcoreapplication.h>
+
 #include "Settings.hpp"
 
 UserManager::UserManager(QObject* parent) : m_Settings(Settings::Instance()) {
@@ -7,9 +9,13 @@ UserManager::UserManager(QObject* parent) : m_Settings(Settings::Instance()) {
     _LoadToken();
 }
 
-UserManager& UserManager::Instance() {
-    static UserManager instance;
-    return instance;
+UserManager* UserManager::Instance() {
+    static UserManager* obj = nullptr;
+    if (!obj) {
+        obj = new UserManager();
+        connect(qApp, &QCoreApplication::aboutToQuit, obj, &UserManager::deleteLater);
+    }
+    return obj;
 }
 
 void UserManager::SetUsername(const QString& username) {
@@ -34,17 +40,17 @@ void UserManager::SaveCredentials() {
 }
 
 void UserManager::_LoadUsername() {
-    m_Username = m_Settings.GetUsername();
+    m_Username = m_Settings->GetUsername();
 }
 
 void UserManager::_LoadToken() {
-    m_Token = m_Settings.GetAPIKey();
+    m_Token = m_Settings->GetAPIKey();
 }
 
 void UserManager::_SaveUsername() {
-    m_Settings.SetUsername(m_Username);
+    m_Settings->SetUsername(m_Username);
 }
 
 void UserManager::_SaveToken() {
-    m_Settings.SetAPIKey(m_Token);
+    m_Settings->SetAPIKey(m_Token);
 }

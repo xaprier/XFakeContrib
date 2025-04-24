@@ -14,9 +14,9 @@ void StyleManager::SetTheme(const QString &theme, QApplication &app) {
 
     // invalid theme name on config, default will be used
     if (colors.isEmpty()) {
-        Settings &settings = Settings::Instance();
-        QString theme = settings.GetDefaultTheme();
-        settings.SetTheme(theme);
+        Settings *settings = Settings::Instance();
+        QString theme = settings->GetDefaultTheme();
+        settings->SetTheme(theme);
 
         colors = LoadJSONColors(QString(":/themes/%1.json").arg(theme));
     }
@@ -33,9 +33,10 @@ void StyleManager::SetTheme(const QString &theme, QApplication &app) {
     QString styledQSS = ProcessQSSWithColors(qssContent, colors);
 
     app.setStyleSheet(styledQSS);
+    QApplication::processEvents();
 
     // save to settings
-    Settings::Instance().SetTheme(theme);
+    Settings::Instance()->SetTheme(theme);
 }
 
 QStringList StyleManager::GetThemes() {
@@ -50,21 +51,33 @@ QStringList StyleManager::GetThemes() {
 }
 
 QString StyleManager::GetTheme() {
-    auto &settings = Settings::Instance();
+    auto *settings = Settings::Instance();
     auto list = GetThemes();
-    auto theme = settings.GetTheme();
+    auto theme = settings->GetTheme();
     if (!list.contains(theme)) {
-        theme = settings.GetDefaultTheme();
-        settings.SetTheme(theme);
+        theme = settings->GetDefaultTheme();
+        settings->SetTheme(theme);
     }
     return theme;
 }
 
 QMap<QString, QString> StyleManager::GetCurrentThemeColors() {
-    Settings &settings = Settings::Instance();
-    QString theme = settings.GetTheme();
+    Settings *settings = Settings::Instance();
+    QString theme = settings->GetTheme();
     QString themePath = QString(":/themes/%1.json").arg(theme);
-    return LoadJSONColors(themePath);
+
+    QMap<QString, QString> colors = LoadJSONColors(themePath);
+
+    // invalid theme name on config, default will be used
+    if (colors.isEmpty()) {
+        Settings *settings = Settings::Instance();
+        QString theme = settings->GetDefaultTheme();
+        settings->SetTheme(theme);
+
+        colors = LoadJSONColors(QString(":/themes/%1.json").arg(theme));
+    }
+
+    return colors;
 }
 
 QMap<QString, QString> StyleManager::LoadJSONColors(const QString &jsonPath) {

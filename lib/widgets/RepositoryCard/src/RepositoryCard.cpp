@@ -16,7 +16,7 @@ RepositoryCard::RepositoryCard(QWidget *parent) : Card(parent), m_Ui(new Ui::Rep
 #else
     groupBoxLayout->setMargin(0);
 #endif
-    m_Repositories = new RepositoryTableView(this->m_Ui->groupBoxRepoTable);  // parent is set, no need to delete it. // NOLINT
+    m_Repositories = new RepositoryTableView(this);  // parent is set, no need to delete it. // NOLINT
     groupBoxLayout->addWidget(m_Repositories);
     this->m_Ui->groupBoxRepoTable->setLayout(groupBoxLayout);
 
@@ -24,8 +24,8 @@ RepositoryCard::RepositoryCard(QWidget *parent) : Card(parent), m_Ui(new Ui::Rep
 }
 
 RepositoryCard::~RepositoryCard() {
-    delete m_Ui;
     delete m_Connections;
+    delete m_Ui;
 }
 
 void RepositoryCard::UpdateIcons() {

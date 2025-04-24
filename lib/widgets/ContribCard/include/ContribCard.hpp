@@ -19,10 +19,10 @@
 
 class ContribCard : public Card {
     Q_OBJECT
-
   public:
     ContribCard(QWidget* parent = nullptr);
     ContribCard(const std::map<QDate, Contrib>& allContribs, QWidget* parent = nullptr);
+    ~ContribCard();
     void Update(const std::map<QDate, Contrib>& allContribs);
 
     virtual Icon GetIcon() const override { return Icon(""); }

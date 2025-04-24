@@ -7,16 +7,9 @@ class Settings;
 
 class UserManager : public QObject {
     Q_OBJECT
+    Q_DISABLE_COPY_MOVE(UserManager)
   public:
-    static UserManager &Instance();
-
-    /**
-     * @brief Disable move and copy constructors for Singleton
-     */
-    UserManager &operator=(const UserManager &) = delete;
-    UserManager(const UserManager &) = delete;
-    UserManager &operator=(UserManager &&) = delete;
-    UserManager(UserManager &&) = delete;
+    static UserManager *Instance();
 
     /**
      * @brief Set the token for the user
@@ -59,7 +52,7 @@ class UserManager : public QObject {
 
   private:
     QString m_Token, m_Username;
-    Settings &m_Settings;
+    Settings *m_Settings;
 };
 
 #endif  // USERMANAGER_HPP

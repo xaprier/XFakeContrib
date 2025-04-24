@@ -7,7 +7,7 @@
 QTranslator Application::translator = QTranslator();
 
 Application::Application(int &argc, char **argv, const QString &appName, const QString &appVersion, const QString &appOrg)
-    : QApplication(argc, argv), settings(Settings::Instance()) {
+    : QApplication(argc, argv), m_Settings(Settings::Instance()) {
     this->SetApplicationName(appName);
     this->SetApplicationVersion(appVersion);
     this->SetOrganizationName(appOrg);
@@ -20,22 +20,22 @@ Application::~Application() {
 }
 
 void Application::SetApplicationName(const QString &name) {
-    m_applicationName = name;
+    m_ApplicationName = name;
     QApplication::setApplicationName(name);
 }
 
 void Application::SetApplicationVersion(const QString &version) {
-    m_applicationVersion = version;
+    m_ApplicationVersion = version;
     QApplication::setApplicationVersion(version);
 }
 
 void Application::SetOrganizationName(const QString &name) {
-    m_organizationName = name;
+    m_OrganizationName = name;
     QCoreApplication::setOrganizationName(name);
 }
 
 void Application::UpdateStyleSheet() {
-    QString theme = settings.GetTheme();
+    QString theme = m_Settings->GetTheme();
     styleManager.SetTheme(theme, *this);
 }
 

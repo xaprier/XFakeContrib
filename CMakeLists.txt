@@ -56,7 +56,7 @@ foreach(QM_FILE ${QM_FILES})
 endforeach()
 
 if(WIN32)
-    set(app_icon_resource_windows "${CMAKE_CURRENT_SOURCE_DIR}/res/icon.rc")
+    set(app_icon_resource_windows "${CMAKE_CURRENT_SOURCE_DIR}/lib/resources/icon.rc")
     list(APPEND PROJECT_SOURCES ${app_icon_resource_windows})
 endif()
 
@@ -83,6 +83,7 @@ set(INTERNAL_LIBRARIES
     XFakeContribData 
     XFakeContribGit
     XFakeContribGithub
+    XFakeContribHelper
     XFakeContribSettings
     XFakeContribResources
     XFakeContribCard

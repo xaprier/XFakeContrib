@@ -1,7 +1,10 @@
 #ifndef THEMESELECTIONCARD_HPP
 #define THEMESELECTIONCARD_HPP
 
+#include <qcombobox.h>
+
 #include <QBoxLayout>
+#include <QListWidget>
 #include <QPushButton>
 #include <QScopedPointer>
 #include <QWidget>
@@ -22,13 +25,20 @@ class ThemeSelectionCard : public Card {
     virtual void UpdateIcons() override;
     virtual void Update() override {}
 
+  private slots:
+    void sl_OnApplyButtonClicked();
+
   signals:
     void si_ThemeUpdated();
 
   private:
-    QScopedPointer<QPushButton> m_ApplyButton;
-    QScopedPointer<ThemeSelectionComboBox> m_ThemeSelectionComboBox;
-    QScopedPointer<QHBoxLayout> m_Layout;
+    void _LoadThemes() noexcept;
+
+    QPushButton* m_ApplyButton;
+    // QSharedPointer<ThemeSelectionComboBox> m_ThemeSelectionComboBox;
+    QStringList m_Themes;
+    QComboBox* m_ThemeSelectionComboBox;
+    QHBoxLayout* m_Layout;
 };
 
 #endif  // THEMESELECTIONCARD_HPP

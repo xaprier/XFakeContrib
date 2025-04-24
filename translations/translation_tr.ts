@@ -688,6 +688,11 @@ Please make sure the directory contains .git directory</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="../lib/widgets/RepositoryCard/src/RepositoryTableView.cpp" line="38"/>
+        <source>Repositories:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../lib/widgets/RepositoryCard/src/RepositoryTableView.cpp" line="43"/>
         <source>No Repositories Found. Please Add Repository from Repository Manager</source>
         <translation type="unfinished"></translation>
@@ -761,12 +766,12 @@ Please make sure the directory contains .git directory</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../lib/widgets/ThemeSelectorCard/include/ThemeSelectionCard.hpp" line="20"/>
+        <location filename="../lib/widgets/ThemeSelectorCard/include/ThemeSelectionCard.hpp" line="23"/>
         <source>Theme Manager</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../lib/widgets/ThemeSelectorCard/src/ThemeSelectionCard.cpp" line="7"/>
+        <location filename="../lib/widgets/ThemeSelectorCard/src/ThemeSelectionCard.cpp" line="11"/>
         <source>Apply</source>
         <translation type="unfinished"></translation>
     </message>
@@ -786,23 +791,55 @@ Please make sure the directory contains .git directory</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/MainWindowConnections.cpp" line="57"/>
+        <location filename="../old/MainWindowConnections.cpp" line="60"/>
+        <location filename="../src/MainWindowConnections.cpp" line="109"/>
         <source>All pushes completed. Do you want to reload the contributions?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/MainWindowConnections.cpp" line="58"/>
+        <location filename="../old/MainWindowConnections.cpp" line="61"/>
+        <location filename="../src/MainWindowConnections.cpp" line="110"/>
         <source>Reload Contributions</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/MainWindowConnections.cpp" line="75"/>
+        <location filename="../old/MainWindowConnections.cpp" line="78"/>
+        <location filename="../src/MainWindowConnections.cpp" line="127"/>
         <source>The requirement %1 is not installed. Please install it to use the application.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/MainWindowConnections.cpp" line="76"/>
+        <location filename="../old/MainWindowConnections.cpp" line="79"/>
+        <location filename="../src/MainWindowConnections.cpp" line="128"/>
         <source>Requirement Not Found</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../lib/git/src/GitChangeCreate.cpp" line="13"/>
+        <location filename="../lib/git/src/GitChangeDelete.cpp" line="12"/>
+        <location filename="../lib/git/src/GitChangeEdit.cpp" line="17"/>
+        <source>Repository path is empty: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../lib/git/src/GitChangeCreate.cpp" line="17"/>
+        <location filename="../lib/git/src/GitChangeDelete.cpp" line="16"/>
+        <location filename="../lib/git/src/GitChangeEdit.cpp" line="21"/>
+        <source>File name is empty: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../lib/git/src/GitChangeCreate.cpp" line="23"/>
+        <location filename="../lib/git/src/GitChangeDelete.cpp" line="22"/>
+        <location filename="../lib/git/src/GitChangeEdit.cpp" line="27"/>
+        <source>Repository path does not exist: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../lib/git/src/GitChangeCreate.cpp" line="29"/>
+        <location filename="../lib/git/src/GitChangeDelete.cpp" line="28"/>
+        <location filename="../lib/git/src/GitChangeEdit.cpp" line="33"/>
+        <source>Failed to open file for writing: %1</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

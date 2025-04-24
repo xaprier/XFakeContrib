@@ -32,7 +32,7 @@ class UserManagerCard : public Card {
     virtual void Update() override {}
     virtual void UpdateIcons() override;
 
-    UserManager& GetManager() const { return m_UserManager; }
+    UserManager* GetManager() const { return m_UserManager; }
 
   signals:
     void si_UserUpdated();
@@ -46,7 +46,7 @@ class UserManagerCard : public Card {
     void _LoadUser();
 
   private:
-    UserManager& m_UserManager;
+    UserManager* m_UserManager;
     xaprier::Qt::Widgets::PasswordLineEdit* m_TokenLineEdit;
     QLineEdit* m_UsernameLineEdit;
     UserManagerComposedValidateButton* m_ValidateButton;
