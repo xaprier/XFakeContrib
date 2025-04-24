@@ -1,25 +1,22 @@
 cmake_minimum_required(VERSION 3.0...3.20)
 
-project(XFakeContribWidgets)
-
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_EXPORT_COMPILE_COMMANDS 1)
 
-find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Core Widgets Svg Concurrent)
-find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Core Widgets Svg Concurrent)
+find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Core Gui Svg)
+find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Core Gui Svg)
 
 # Specify the directory to check
 set(
   DIRECTORIES_TO_CHECK
-  "${CMAKE_CURRENT_SOURCE_DIR}/Card" # get Card
-  "${CMAKE_CURRENT_SOURCE_DIR}/ContribCard" # get ContribCard
-  "${CMAKE_CURRENT_SOURCE_DIR}/RepositoryCard" # get RepositoryCard
-  "${CMAKE_CURRENT_SOURCE_DIR}/RepositoryManagerCard" # get RepositoryManagerCard
-  "${CMAKE_CURRENT_SOURCE_DIR}/UserManagerCard" # get UserManagerCard
-  "${CMAKE_CURRENT_SOURCE_DIR}/CardManager" # get CardManager
-  "${CMAKE_CURRENT_SOURCE_DIR}/ThemeSelectorCard" # get ThemeSelectorCard
+  "${CMAKE_CURRENT_SOURCE_DIR}/adapters" # get adapters
+  "${CMAKE_CURRENT_SOURCE_DIR}/settings" # get settings
+  "${CMAKE_CURRENT_SOURCE_DIR}/data" # get data
+  "${CMAKE_CURRENT_SOURCE_DIR}/helpers" # get helpers
+  "${CMAKE_CURRENT_SOURCE_DIR}/style" # get style
+  "${CMAKE_CURRENT_SOURCE_DIR}/faker" # get faker
 )
 
 set(ALL_FILES "")
@@ -34,6 +31,18 @@ foreach(DIRECTORY ${DIRECTORIES_TO_CHECK})
     file(GLOB_RECURSE CPP_FILES ${DIRECTORY}/src/*.cpp)
     file(GLOB_RECURSE HPP_FILES ${DIRECTORY}/include/*.hpp)
     file(GLOB_RECURSE UI_FILES  ${DIRECTORY}/design/*.ui)
+    file(GLOB_RECURSE CONFIG_FILES ${DIRECTORY}/include/*.hpp.cmake)
+
+    foreach(file ${CONFIG_FILES})
+      message(STATUS "Configuring file: ${file}")
+      get_filename_component(FILE_NAME ${file} NAME)
+      string(REPLACE ".hpp.cmake" ".hpp" FILE_NAME ${FILE_NAME})
+      configure_file(
+        ${file}
+        ${CMAKE_CURRENT_BINARY_DIR}/include/${FILE_NAME}
+      )
+      include_directories(${CMAKE_CURRENT_BINARY_DIR}/include)
+    endforeach()
 
     list(APPEND ALL_FILES ${CPP_FILES} ${HPP_FILES} ${UI_FILES})
     list(APPEND INCLUDE_DIRS ${DIRECTORY}/include)
@@ -41,22 +50,18 @@ foreach(DIRECTORY ${DIRECTORIES_TO_CHECK})
   endif()
 endforeach()
 
+project(XFakeContribUtils) # we define this project name later to get the main project name in configure_file
+
 add_library(${PROJECT_NAME} SHARED ${ALL_FILES})
 
 set(INTERNAL_LIBRARIES
-    XFakeContribResources
-    XFakeContribGit
-    XFakeContribUtils
 )
 
 set(EXTERNAL_LIBRARIES
-    Qt${QT_VERSION_MAJOR}::Core 
-    Qt${QT_VERSION_MAJOR}::Widgets
-    Qt${QT_VERSION_MAJOR}::Svg
-    Qt${QT_VERSION_MAJOR}::Concurrent
-    XQPwdLineEdit
-    XQWidgetComposer
-    XQCircularLoadingIndicator
+  Qt${QT_VERSION_MAJOR}::Core
+  Qt${QT_VERSION_MAJOR}::Gui
+  Qt${QT_VERSION_MAJOR}::Svg
+  faker-cxx
 )
 
 set(LIBRARIES

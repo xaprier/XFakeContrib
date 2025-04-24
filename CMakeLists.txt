@@ -78,23 +78,10 @@ else()
 endif()
 
 set(INTERNAL_LIBRARIES
-    XFakeContribAdapter
-    XFakeContribConfig
-    XFakeContribData 
     XFakeContribGit
-    XFakeContribGithub
-    XFakeContribHelper
-    XFakeContribSettings
     XFakeContribResources
-    XFakeContribCard
-    XFakeContribContribCard
-    XFakeContribCardManager
-    XFakeContribContribCard
-    XFakeContribStyle
-    XFakeContribRepositoryCard
-    XFakeContribRepositoryManagerCard
-    XFakeContribThemeSelectorCard
-    XFakeContribUserManagerCard
+    XFakeContribWidgets
+    XFakeContribUtils
 )
 
 set(EXTERNAL_LIBRARIES

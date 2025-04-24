@@ -1,18 +1,11 @@
 # Specify the directory to check
 set(
   DIRECTORIES_TO_CHECK
+  "${CMAKE_CURRENT_SOURCE_DIR}/external" # get external
   "${CMAKE_CURRENT_SOURCE_DIR}/resources" # get resources
-  "${CMAKE_CURRENT_SOURCE_DIR}/config" # get config
-  "${CMAKE_CURRENT_SOURCE_DIR}/logger" # get logger
-  "${CMAKE_CURRENT_SOURCE_DIR}/settings" # get settings
-  "${CMAKE_CURRENT_SOURCE_DIR}/data" # get data
-  "${CMAKE_CURRENT_SOURCE_DIR}/style" # get style
-  "${CMAKE_CURRENT_SOURCE_DIR}/faker" # get faker
-  "${CMAKE_CURRENT_SOURCE_DIR}/helpers" # get helpers
-  "${CMAKE_CURRENT_SOURCE_DIR}/github" # get github
+  "${CMAKE_CURRENT_SOURCE_DIR}/utils" # get utils
   "${CMAKE_CURRENT_SOURCE_DIR}/git" # get git
   "${CMAKE_CURRENT_SOURCE_DIR}/widgets" # get widgets
-  "${CMAKE_CURRENT_SOURCE_DIR}/adapters" # get adapters
 )
 
 foreach(DIRECTORY ${DIRECTORIES_TO_CHECK})

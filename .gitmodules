@@ -1,18 +1,15 @@
-[submodule "lib/faker/lib/faker-cxx"]
-	path = lib/faker/lib/faker-cxx
+[submodule "lib/external/faker-cxx"]
+	path = lib/external/faker-cxx
 	url = https://github.com/cieslarmichal/faker-cxx
-[submodule "lib/logger"]
-	path = lib/logger
+[submodule "lib/external/logger"]
+	path = lib/external/logger
 	url = https://github.com/xaprier/logger.git
-[submodule "lib/widgets/XQCircularLoadingIndicator"]
-	path = lib/widgets/XQCircularLoadingIndicator
+[submodule "lib/external/XQCircularLoadingIndicator"]
+	path = lib/external/XQCircularLoadingIndicator
 	url = https://github.com/xaprier/XQCircularLoadingIndicator.git
-[submodule "lib/widgets/XQWidgetComposer"]
-	path = lib/widgets/XQWidgetComposer
+[submodule "lib/external/XQWidgetComposer"]
+	path = lib/external/XQWidgetComposer
 	url = https://github.com/xaprier/XQWidgetComposer.git
-[submodule "lib/widgets/XQPwdLineEdit"]
-	path = lib/widgets/XQPwdLineEdit
-	url = https://github.com/xaprier/XQPwdLineEdit
-[submodule "lib/yaml-cpp"]
-	path = lib/yaml-cpp
-	url = https://github.com/jbeder/yaml-cpp.git
+[submodule "lib/external/XQPwdLineEdit"]
+	path = lib/external/XQPwdLineEdit
+	url = https://github.com/xaprier/XQPwdLineEdit.git
