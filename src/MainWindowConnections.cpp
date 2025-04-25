@@ -19,7 +19,13 @@ MainWindowConnections::~MainWindowConnections() {
 
 void MainWindowConnections::_CreateConnections() {
     using namespace XFakeContribHelper;
-    // connect(m_Ui->m_RepositoryManagerCard, &RepositoryManagerCard::si_RepositoriesUpdated, m_Ui->m_RepositoryCard->GetConnections(), &RepositoryCardConnections::sl_RepositoriesUpdated);
+
+    // check memory initialized
+    if (!m_Ui->m_RepositoryManagerCard || !m_Ui->m_ContribCard || !m_Ui->m_UserManagerCard || !m_Ui->m_RepositoryCard) {
+        qDebug() << "Memory not initialized";
+        return;
+    }
+
     safeConnect(
         m_Ui->m_RepositoryManagerCard.get(),
         &RepositoryManagerCard::si_RepositoriesUpdated,
@@ -76,6 +82,7 @@ void MainWindowConnections::_CreateConnections() {
 }
 
 void MainWindowConnections::_CheckForUpdates() {
+    // todo: implement here
 }
 
 void MainWindowConnections::_CheckForRequirements() {

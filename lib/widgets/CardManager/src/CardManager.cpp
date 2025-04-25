@@ -16,11 +16,6 @@ CardManager::CardManager(const Icon &icon, const QString &name, QWidget *card, Q
 }
 
 CardManager::~CardManager() {
-    qDebug() << "CardManager destructor called for: " << m_CardName;
-    // if (m_CardGroupBox) {
-    //     m_CardGroupBox->deleteLater();
-    //     m_CardGroupBox = nullptr;
-    // }
 }
 
 void CardManager::SetCardIcon(const Icon &icon) {
@@ -54,8 +49,8 @@ QWidget *CardManager::GetCard() const {
 }
 
 void CardManager::_SetupCard() {
-    m_CardGroupBox = new QGroupBox;
-    m_CardLayout = new QHBoxLayout;
+    m_CardGroupBox = new QGroupBox(this);
+    m_CardLayout = new QHBoxLayout(m_CardGroupBox);
     m_CardIconLabel = new QLabel(m_CardGroupBox);
 
     if (!m_CardIcon.GetSvgPath().isEmpty()) {

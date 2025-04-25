@@ -1,5 +1,6 @@
 #include "ContribCard.hpp"
 
+#include "ContribCardInfo.hpp"
 #include "Icon.hpp"
 #include "XFakeContribHelper.hpp"
 
@@ -14,7 +15,6 @@ ContribCard::ContribCard(const std::map<QDate, Contrib>& allContribs, QWidget* p
 }
 
 ContribCard::~ContribCard() {
-    qDebug() << "ContribCard destructor called";
 }
 
 void ContribCard::Update(const std::map<QDate, Contrib>& allContribs) {
@@ -65,7 +65,6 @@ void ContribCard::_SetupUI() {
     // Layout for the main widget, this should raw data and will be deleted by Qt parent
     QGridLayout* layout = new QGridLayout(this);
 
-    // todo: info button will show how to use contribcard with committer(left click start date, right click end date, middle both)
     m_InfoButton = QSharedPointer<QToolButton>::create(this);
     layout->addWidget(m_InfoButton.get(), 0, 0, 1, 1);
     m_InfoButton->setIcon(Icon(":/icons/info.svg"));
@@ -83,8 +82,13 @@ void ContribCard::_SetupUI() {
     m_YearContribWidget = QSharedPointer<YearContrib>::create(this);
     layout->addWidget(m_YearContribWidget.get(), 1, 0, 1, 12);
 
-    m_TotalContribWidget = QSharedPointer<YearContribTotalIndicator>::create();
+    m_TotalContribWidget = QSharedPointer<YearContribTotalIndicator>::create(0, this);
     layout->addWidget(m_TotalContribWidget.get(), 0, 3, 1, 1);
+
+    m_YearContribWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::MinimumExpanding);
+
+    layout->setSpacing(3);
+    layout->setContentsMargins(5, 5, 5, 5);
 
     setLayout(layout);
 }
@@ -98,6 +102,7 @@ void ContribCard::_CreateConnections() {
     connect(m_ReloadButton.get(), &QToolButton::clicked, this, [this]() {
         emit si_Reload();
     });
+    connect(m_InfoButton.get(), &QToolButton::clicked, this, &ContribCard::sl_InfoButtonClicked);
 
     for (auto monthContrib : m_YearContribWidget->GetMonthContribs()) {
         auto dayContribs = monthContrib.lock()->GetDayContribs();
@@ -155,4 +160,10 @@ void ContribCard::sl_RightClickedToDay(const QDate& date) {
 void ContribCard::sl_MiddleClickedToDay(const QDate& date) {
     emit this->si_SetStartDate(date);
     emit this->si_SetEndDate(date);
+}
+
+void ContribCard::sl_InfoButtonClicked() {
+    ContribCardInfo* info = new ContribCardInfo(this);
+    info->setAttribute(Qt::WA_DeleteOnClose);
+    info->show();
 }

@@ -11,7 +11,6 @@
 #include "Contrib.hpp"
 #include "MonthContrib.hpp"
 
-// todo: refactor to update
 class YearContrib : public QWidget {
     Q_OBJECT
 

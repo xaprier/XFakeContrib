@@ -5,8 +5,9 @@
 
 class YearContribTotalIndicator : public QLabel {
   public:
-    YearContribTotalIndicator(int total = 0, QLabel *parent = nullptr) : m_Total(total), QLabel(parent) {
+    YearContribTotalIndicator(int total = 0, QWidget *parent = nullptr) : m_Total(total), QLabel(parent) {
         this->SetText(total);
+        this->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     }
 
     void SetText(int total = 0) {

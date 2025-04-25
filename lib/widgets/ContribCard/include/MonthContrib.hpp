@@ -9,7 +9,6 @@
 #include <QVBoxLayout>
 #include <QWidget>
 #include <cmath>
-#include <set>
 #include <vector>
 
 #include "Contrib.hpp"

@@ -1,5 +1,7 @@
 #include "MonthContrib.hpp"
 
+#include <set>
+
 #include "DayContrib.hpp"
 
 MonthContrib::MonthContrib(const QDate& endDate, const std::map<QDate, Contrib>& allContribs, QWidget* parent)
@@ -63,14 +65,28 @@ void MonthContrib::_SetupUI() {
     m_MainLayout = new QGridLayout(this);
 
     m_Label->setAlignment(Qt::AlignCenter);  // Center align the month name
+    m_Label->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+
+    const int spacing = 1;
+    const int margin = 2;
 
     // Set spacing to reduce gaps between weeks
-    m_MainLayout->setSpacing(2);
-    m_MainLayout->setContentsMargins(5, 5, 5, 5);
+    m_MainLayout->setSpacing(spacing);
+    m_MainLayout->setContentsMargins(margin, margin, margin, margin);
 
-    setLayout(m_MainLayout);  // Set the layout for the widget
-    setMinimumSize(115, 150);
-    setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    QDate startDate(m_EndDate.year(), m_EndDate.month(), 1);
+    auto weekCount = this->_GetWeekCountInMonth(m_EndDate);
+
+    const int minHeight = 160;  // Size of each square
+    const int minWidth = 100;
+    const int daysInWeek = 7;
+    const int verticalSpacingCount = daysInWeek - 1;
+    const int horizontalSpacingCount = weekCount - 1;
+    const int height = minHeight + (verticalSpacingCount * spacing);
+    const int width = minWidth + (horizontalSpacingCount * spacing);
+
+    setLayout(m_MainLayout);      // Set the layout for the widget
+    setFixedSize(width, height);  // Set a fixed size for the widget
 }
 
 void MonthContrib::_Update() {

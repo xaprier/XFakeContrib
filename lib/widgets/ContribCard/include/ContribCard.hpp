@@ -47,6 +47,7 @@ class ContribCard : public Card {
     void sl_LeftClickedToDay(const QDate& date);
     void sl_RightClickedToDay(const QDate& date);
     void sl_MiddleClickedToDay(const QDate& date);
+    void sl_InfoButtonClicked();
 
   private:
     QSharedPointer<QToolButton> m_ReloadButton, m_InfoButton;

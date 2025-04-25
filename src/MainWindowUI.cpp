@@ -6,13 +6,9 @@ MainWindow::MainWindow(QMainWindow* parent) : QMainWindow(parent) {
 }
 
 MainWindow::~MainWindow() {
-    qDebug() << "Ui::MainWindow destructor called";
-
-    qDebug() << "Ui::MainWindow destructor end";
 }
 
 void MainWindow::_SetupUI() {
-    qDebug() << "Ui::MainWindow::_SetupUI() called";
     this->_SetupMemory();
     this->_SetupWidgets();
     this->_SetupLayouts();
@@ -68,7 +64,9 @@ void MainWindow::_SetupLayouts() {
     m_Cards[Cards::USER_MANAGER_CARD]->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
     m_Cards[Cards::REPOSITORY_MANAGER_CARD]->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Minimum);
     m_Cards[Cards::REPOSITORY_CARD]->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
-    m_Cards[Cards::CONTRIB_CARD]->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
+    m_Cards[Cards::CONTRIB_CARD]->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::MinimumExpanding);
+
+    m_Cards[Cards::CONTRIB_CARD]->setMinimumHeight(300);
 
     m_ParentLayout->setColumnStretch(0, 0);
     m_ParentLayout->setColumnStretch(1, 1);

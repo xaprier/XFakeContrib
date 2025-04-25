@@ -1,5 +1,7 @@
 #include "YearContrib.hpp"
 
+#include <set>
+
 #include "MonthContrib.hpp"
 
 YearContrib::YearContrib(QWidget* parent, const QString& title, const std::map<QDate, Contrib>& allContribs, const QDate& endDate)
@@ -34,12 +36,12 @@ void YearContrib::_SetupUI() {
     // Add the year label at the top
     m_Label = QSharedPointer<QLabel>::create(this);  // E.g., "2023 - 2024"
     m_Label->setAlignment(Qt::AlignCenter);
-    m_Label->setFixedHeight(16);
+    m_Label->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 
     m_Layout->addWidget(m_Label.get());
 
     // Create a horizontal layout for the months
-    m_MonthsLayout = new QHBoxLayout();
+    m_MonthsLayout = new QHBoxLayout(this);
 
     m_Layout->addLayout(m_MonthsLayout);
 
