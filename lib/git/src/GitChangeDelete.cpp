@@ -33,6 +33,6 @@ void GitChangeDelete::ApplyChange() {
 
     // delete file if it exists and has permissions
     if (!file.remove()) {
-        throw std::runtime_error("Failed to delete file");  // todo: translation
+        throw std::runtime_error(QObject::tr("Failed to delete file").toLatin1());
     }
 }

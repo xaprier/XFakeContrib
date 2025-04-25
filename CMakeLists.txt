@@ -4,10 +4,10 @@ project(
     XFakeContrib
     VERSION 0.1.0
     DESCRIPTION "Fake Contribution maker for Github"
-    HOMEPAGE_URL "https://github.com/SFENX/XFakeContrib"
+    HOMEPAGE_URL "https://github.com/xaprier/XFakeContrib"
     LANGUAGES CXX)
 
-set(PROJECT_ORGANIZATION "SFENX")
+set(PROJECT_ORGANIZATION "xaprier")
 
 add_subdirectory(lib) # build external/internal libs
 

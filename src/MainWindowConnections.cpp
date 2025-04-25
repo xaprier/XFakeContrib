@@ -1,6 +1,6 @@
 #include "MainWindowConnections.hpp"
 
-#include <qnamespace.h>
+#include <QDesktopServices>
 
 #include "GitHubFetchAdapterWithUser.hpp"
 #include "RepositoryCardConnections.hpp"
@@ -8,7 +8,7 @@
 #include "RequirementsController.hpp"
 #include "XFakeContribHelper.hpp"
 
-MainWindowConnections::MainWindowConnections(Ui::MainWindow *ui) : m_Ui(ui) {
+MainWindowConnections::MainWindowConnections(Ui::MainWindow *ui) : m_Ui(ui), m_UpdateChecker(new GitHubUpdateChecker(this)) {
     this->_CreateConnections();
     this->_CheckForUpdates();
     this->_CheckForRequirements();
@@ -76,13 +76,20 @@ void MainWindowConnections::_CreateConnections() {
         &MainWindowConnections::sl_SetStartDate,
         "ContribCard::si_SetStartDate -> MainWindowConnections::sl_SetStartDate");
 
+    safeConnect(
+        m_UpdateChecker.get(),
+        &GitHubUpdateChecker::si_UpdateAvailable,
+        this,
+        &MainWindowConnections::sl_UpdateAvailable,
+        "GitHubUpdateChecker::si_UpdateAvailable -> MainWindowConnections::sl_UpdateAvailable");
+
     QTimer::singleShot(0, [this]() {
         this->sl_FetchContribs();
     });
 }
 
 void MainWindowConnections::_CheckForUpdates() {
-    // todo: implement here
+    this->m_UpdateChecker->Check();
 }
 
 void MainWindowConnections::_CheckForRequirements() {
@@ -145,4 +152,15 @@ void MainWindowConnections::sl_SetEndDate(const QDate &date) {
 
 void MainWindowConnections::sl_SetStartDate(const QDate &date) {
     this->m_Ui->m_RepositoryCard->SetStartDate(date);
+}
+
+void MainWindowConnections::sl_UpdateAvailable(const QString &currentVersion, const QString &latestVersion, const QString &downloadUrl) {
+    auto msg = QString(QObject::tr("A new version is available: %1. Do you want to download it?")).arg(latestVersion);
+    QMessageBox msgBox(QMessageBox::Question, QObject::tr("Update Available"), msg, QMessageBox::Yes | QMessageBox::No);
+    msgBox.setWindowModality(Qt::WindowModal);
+    msgBox.setDefaultButton(QMessageBox::Yes);
+
+    if (msgBox.exec() == QMessageBox::Yes) {
+        QDesktopServices::openUrl(QUrl(downloadUrl));
+    }
 }

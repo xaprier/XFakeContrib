@@ -22,6 +22,7 @@ set(LIBRARIES
   Qt${QT_VERSION_MAJOR}::Widgets 
   Qt${QT_VERSION_MAJOR}::Network
   XFakeContribUtils
+  Logger
   faker-cxx
 )
 
