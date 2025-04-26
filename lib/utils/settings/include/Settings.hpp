@@ -75,6 +75,12 @@ class Settings final : public QSettings {  // NOLINT
     [[nodiscard]] quint32 GetDefaultRandomMax() const { return m_DefaultRandomMax; }
 
     /**
+     * @brief Retrieves the stored language.
+     * @return The language as a QString.
+     */
+    [[nodiscard]] QString GetLanguage() const;
+
+    /**
      * @brief Sets the API key and stores it in the settings.
      * @param key The API key to store.
      */
@@ -99,6 +105,13 @@ class Settings final : public QSettings {  // NOLINT
      * @param count The maximum count
      */
     void SetRandomMax(const quint32 &count);
+
+    /**
+     * @brief Sets the language and stores it in the settings.
+     *
+     * @param lang The language to store.
+     */
+    void SetLanguage(const QString &lang);
 
   private:
     /**
@@ -125,6 +138,7 @@ class Settings final : public QSettings {  // NOLINT
     QString m_Theme;      ///< Stores the theme.
     quint32 m_RandomMax;  ///< Stores the random maximum commit count
     QStringList m_Repos;  ///< Stores the repositories.
+    QString m_Language;   ///< Stores the language.
 };
 
 #endif  // SETTINGS_HPP

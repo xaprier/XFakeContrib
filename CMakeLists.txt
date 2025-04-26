@@ -40,7 +40,7 @@ set(LANGS tr)
 set(QM_FILES "")
 
 foreach(LANG ${LANGS})
-    qt_create_translation(QM_FILE ${CMAKE_SOURCE_DIR} ${CMAKE_SOURCE_DIR}/translations/translation_${LANG}.ts)
+    qt_create_translation(QM_FILE ${CMAKE_SOURCE_DIR} ${CMAKE_SOURCE_DIR}/lib/resources/translations/translation_${LANG}.ts)
     list(APPEND QM_FILES ${QM_FILE})
 endforeach()
 
@@ -49,7 +49,7 @@ endforeach()
 # 3 - after translate and build we should configure file to get file to correct directory
 foreach(QM_FILE ${QM_FILES})
     if(EXISTS ${QM_FILE})
-        configure_file(${QM_FILE} ${CMAKE_SOURCE_DIR}/translations COPYONLY)
+        configure_file(${QM_FILE} ${CMAKE_SOURCE_DIR}/lib/resources/translations COPYONLY)
     else()
         list(APPEND PROJECT_SOURCES ${TS_FILES} ${QM_FILES})
     endif()

@@ -28,6 +28,8 @@ class MainWindowConnections : public QObject {
     void sl_SetEndDate(const QDate &date);
     void sl_SetStartDate(const QDate &date);
     void sl_UpdateAvailable(const QString &currentVersion, const QString &latestVersion, const QString &downloadUrl);
+    void sl_AboutClicked();
+    void sl_LanguageChanged();
 
   private:
     Ui::MainWindow *m_Ui;

@@ -1,5 +1,7 @@
 #include "MainWindowUI.hpp"
 
+#include "Application.hpp"
+
 namespace Ui {
 MainWindow::MainWindow(QMainWindow* parent) : QMainWindow(parent) {
     this->_SetupUI();
@@ -16,6 +18,12 @@ void MainWindow::_SetupUI() {
     // Set the central widget in the main window
     m_CentralWidget->setLayout(m_ParentLayout.get());
     setCentralWidget(m_CentralWidget.get());
+
+    // add the toolbar to the main window
+    addToolBar(Qt::TopToolBarArea, m_ToolBar.get());
+    m_ToolBar->addAction(m_AboutAction.get());
+    m_ToolBar->addSeparator();
+    m_ToolBar->addAction(m_LanguageAction.get());
 }
 
 void MainWindow::_SetupMemory() {
@@ -39,6 +47,33 @@ void MainWindow::_SetupMemory() {
 
     // Set up ContribCard
     m_ContribCard = QSharedPointer<ContribCard>::create(m_CentralWidget.get());
+
+    // Set up toolbar
+    m_ToolBar = QSharedPointer<QToolBar>::create(this);
+    m_ToolBar->setMovable(false);
+    m_ToolBar->setFloatable(false);
+    m_ToolBar->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
+    m_ToolBar->setIconSize(QSize(16, 16));
+
+    // Set up the About action
+    m_AboutAction = QSharedPointer<QAction>::create(QObject::tr("About"), this);
+    m_AboutAction->setIcon(QIcon::fromTheme("help-about"));
+    m_AboutAction->setToolTip(QObject::tr("About"));
+
+    // Set up the Language menu
+    m_LanguageMenu = QSharedPointer<QMenu>::create(this);
+    auto languages = Application::SupportedLanguages();
+    for (const auto& lang : languages) {
+        auto action = QSharedPointer<QAction>::create(lang, this);
+        action->setCheckable(true);
+        m_LanguageMenu->addAction(action.get());
+        m_LanguageActions.append(action);
+    }
+
+    m_LanguageAction = QSharedPointer<QAction>::create(QObject::tr("Language "), this);
+    m_LanguageAction->setToolTip(QObject::tr("Language"));
+    m_LanguageAction->setMenu(m_LanguageMenu.get());
+    m_LanguageAction->setIcon(QIcon::fromTheme("preferences-desktop-locale"));
 
     // Add the cards to the list
     m_Cards[Cards::CONTRIB_CARD] = QSharedPointer<CardManager>::create(m_ContribCard->GetIcon(), m_ContribCard->GetName(), m_ContribCard.get(), m_CentralWidget.get());

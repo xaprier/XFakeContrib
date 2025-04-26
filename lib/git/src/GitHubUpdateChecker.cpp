@@ -20,7 +20,7 @@ void GitHubUpdateChecker::Check() {
 
 void GitHubUpdateChecker::sl_OnReplyFinished(QNetworkReply* reply) {
     if (reply->error()) {
-        Logger::log_static("Update check failed: " + reply->errorString().toStdString(), LoggingLevel::ERROR);
+        Logger::log_static("Update check failed: " + reply->errorString().toStdString(), LoggingLevel::ERROR, __LINE__, __PRETTY_FUNCTION__);
         reply->deleteLater();
         return;
     }
@@ -31,12 +31,12 @@ void GitHubUpdateChecker::sl_OnReplyFinished(QNetworkReply* reply) {
     QString latestVersion = jsonObj["tag_name"].toString();
 
     if (latestVersion.isEmpty()) {
-        Logger::log_static("Invalid response on update check.", LoggingLevel::WARNING);
+        Logger::log_static("Invalid response on update check.", LoggingLevel::WARNING, __LINE__, __PRETTY_FUNCTION__);
     } else if (latestVersion != m_CurrentVersion) {
         QString downloadUrl = jsonObj["html_url"].toString();
         emit si_UpdateAvailable(m_CurrentVersion, latestVersion, downloadUrl);
     } else {
-        Logger::log_static("No update available. Current version: " + m_CurrentVersion.toStdString(), LoggingLevel::INFO);
+        Logger::log_static("No update available. Current version: " + m_CurrentVersion.toStdString(), LoggingLevel::INFO, __LINE__, __PRETTY_FUNCTION__);
     }
 
     reply->deleteLater();

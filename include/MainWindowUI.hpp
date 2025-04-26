@@ -1,10 +1,15 @@
 #ifndef MAINWINDOWUI_HPP
 #define MAINWINDOWUI_HPP
 
+#include <qobject.h>
+
+#include <QAction>
 #include <QGridLayout>
 #include <QMainWindow>
 #include <QMap>
+#include <QMenu>
 #include <QSharedPointer>
+#include <QToolBar>
 
 #include "CardManager.hpp"
 #include "ContribCard.hpp"
@@ -53,6 +58,11 @@ class MainWindow : public QMainWindow {
     QSharedPointer<RepositoryManagerCard> m_RepositoryManagerCard;
     QSharedPointer<UserManagerCard> m_UserManagerCard;
     QSharedPointer<ThemeSelectionCard> m_ThemeSelectionCard;
+    QSharedPointer<QToolBar> m_ToolBar;
+    QSharedPointer<QAction> m_AboutAction;
+    QSharedPointer<QMenu> m_LanguageMenu;
+    QSharedPointer<QAction> m_LanguageAction;
+    QList<QSharedPointer<QAction>> m_LanguageActions;
 };
 }  // namespace Ui
 

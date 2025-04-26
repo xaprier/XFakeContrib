@@ -3,6 +3,7 @@
 #include <QTranslator>
 
 #include "Logger.hpp"
+#include "Settings.hpp"
 
 QTranslator Application::translator = QTranslator();
 
@@ -39,18 +40,59 @@ void Application::UpdateStyleSheet() {
     styleManager.SetTheme(theme, *this);
 }
 
+QStringList Application::SupportedLanguages() {
+    QStringList languages;
+    languages << "en";  // Default language english in application already
+
+    QDir dir(":/translations/");
+    QStringList qmFiles = dir.entryList(QStringList() << "*.qm", QDir::Files);
+    qDebug() << "qmFiles: " << qmFiles;
+    if (qmFiles.isEmpty()) {
+        Logger::log_static(QObject::tr("No translation files found").toStdString(), LoggingLevel::WARNING, __LINE__, __PRETTY_FUNCTION__);
+        return languages;
+    }
+
+    for (const QString &fileName : qmFiles) {
+        QRegularExpression re("translation_(\\w+)\\.qm");
+        QRegularExpressionMatch match = re.match(fileName);
+        if (match.hasMatch()) {
+            QString lang = match.captured(1);
+            if (!languages.contains(lang))
+                languages << lang;
+        }
+    }
+
+    return languages;
+}
+
 void Application::_SetAppLanguage() {
     /** Localization */
+    auto *settings = Settings::Instance();
+
+    QString lang = settings->GetLanguage();
     QLocale locale = QLocale::system();
+    auto langs = this->SupportedLanguages();
+
+    if (lang.isEmpty()) {
+        lang = locale.name();
+    }
+
+    if (!langs.contains(lang)) {
+        lang = langs[0];  // Default language
+    } else {
+        settings->SetLanguage(lang);
+    }
+
     switch (locale.language()) {
         case QLocale::Turkish:
-            if (translator.load(":/translations/translation_tr.qm")) {
-                Logger::log_static(QObject::tr("Loaded language Turkish").toStdString(), LoggingLevel::INFO, __LINE__, __PRETTY_FUNCTION__);
+            if (translator.load(QString(":/translations/translation_%1.qm").arg(lang))) {
+                Logger::log_static(QObject::tr("Loaded language %1").arg(lang).toStdString(), LoggingLevel::INFO, __LINE__, __PRETTY_FUNCTION__);
             }
             break;
         default:
             break;
     }
+
     installTranslator(&translator);
 }
 

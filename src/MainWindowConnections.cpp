@@ -1,11 +1,16 @@
 #include "MainWindowConnections.hpp"
 
+#include <qglobal.h>
+
 #include <QDesktopServices>
 
+#include "AboutDialog.hpp"
+#include "Application.hpp"
 #include "GitHubFetchAdapterWithUser.hpp"
 #include "RepositoryCardConnections.hpp"
 #include "RepositoryManagerCard.hpp"
 #include "RequirementsController.hpp"
+#include "Settings.hpp"
 #include "XFakeContribHelper.hpp"
 
 MainWindowConnections::MainWindowConnections(Ui::MainWindow *ui) : m_Ui(ui), m_UpdateChecker(new GitHubUpdateChecker(this)) {
@@ -82,6 +87,22 @@ void MainWindowConnections::_CreateConnections() {
         this,
         &MainWindowConnections::sl_UpdateAvailable,
         "GitHubUpdateChecker::si_UpdateAvailable -> MainWindowConnections::sl_UpdateAvailable");
+
+    safeConnect(
+        m_Ui->m_AboutAction.get(),
+        &QAction::triggered,
+        this,
+        &MainWindowConnections::sl_AboutClicked,
+        "QAction::triggered -> MainWindowConnections::sl_AboutClicked");
+
+    for (auto action : m_Ui->m_LanguageActions) {
+        safeConnect(
+            action.get(),
+            &QAction::triggered,
+            this,
+            &MainWindowConnections::sl_LanguageChanged,
+            "QAction::triggered -> MainWindowConnections::sl_LanguageChanged");
+    }
 
     QTimer::singleShot(0, [this]() {
         this->sl_FetchContribs();
@@ -162,5 +183,41 @@ void MainWindowConnections::sl_UpdateAvailable(const QString &currentVersion, co
 
     if (msgBox.exec() == QMessageBox::Yes) {
         QDesktopServices::openUrl(QUrl(downloadUrl));
+    }
+}
+
+void MainWindowConnections::sl_AboutClicked() {
+    AboutDialog *aboutDialog = new AboutDialog();
+    aboutDialog->setAttribute(Qt::WA_DeleteOnClose);
+    aboutDialog->setWindowModality(Qt::WindowModal);
+    aboutDialog->exec();
+}
+
+void MainWindowConnections::sl_LanguageChanged() {
+    // uncheck all actions
+    for (auto action : m_Ui->m_LanguageActions) {
+        action->blockSignals(true);
+        action->setChecked(false);
+        action->blockSignals(false);
+    }
+
+    auto sender = qobject_cast<QAction *>(QObject::sender());
+    if (sender) {
+        sender->blockSignals(true);
+        auto lang = sender->text();
+        sender->setChecked(true);
+        sender->blockSignals(false);
+
+        auto *settings = Settings::Instance();
+        settings->SetLanguage(lang);
+
+        auto *msgBox = new QMessageBox(QMessageBox::Information, QObject::tr("Language Changed"), QObject::tr("The application will restart to apply the new language."), QMessageBox::Ok);
+        msgBox->setWindowModality(Qt::WindowModal);
+        msgBox->setAttribute(Qt::WA_DeleteOnClose);
+        msgBox->exec();
+        QString program = qApp->arguments()[0];
+        QStringList arguments = qApp->arguments().mid(1);  // remove the 1st argument - the program name
+        qApp->quit();
+        QProcess::startDetached(program, arguments);
     }
 }

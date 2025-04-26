@@ -13,7 +13,6 @@ Settings *Settings::Instance() {
     return obj;
 }
 
-// todo: set default values if not exists in settings
 Settings::Settings()
     : QSettings(PROJECT_ORGANIZATION, PROJECT_NAME) {
     m_Key = value("API_KEY", "").toString();
@@ -21,6 +20,7 @@ Settings::Settings()
     m_Repos = value("REPOSITORIES", QStringList()).toStringList();
     m_RandomMax = value("MAX_RAND_COUNT", m_DefaultRandomMax).toUInt();
     m_Theme = value("THEME", m_DefaultTheme).toString();
+    m_Language = value("LANGUAGE", "en").toString();
 }
 
 QString Settings::GetTheme() const {
@@ -48,6 +48,10 @@ quint32 Settings::GetRandomMax() const {
     return m_RandomMax;
 }
 
+QString Settings::GetLanguage() const {
+    return m_Language;
+}
+
 void Settings::SetAPIKey(const QString &key) {
     m_Key = key;
     setValue("API_KEY", m_Key);
@@ -66,4 +70,9 @@ void Settings::SetRepositories(const QStringList &repos) {
 void Settings::SetRandomMax(const quint32 &count) {
     m_RandomMax = count;
     setValue("MAX_RAND_COUNT", count);
+}
+
+void Settings::SetLanguage(const QString &lang) {
+    m_Language = lang;
+    setValue("LANGUAGE", m_Language);
 }

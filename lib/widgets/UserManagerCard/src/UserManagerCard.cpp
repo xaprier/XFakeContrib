@@ -37,8 +37,6 @@ void UserManagerCard::_SetupUI() {
     Icon hideIcon = Icon(":/icons/hide.svg");
     Icon checkIcon = Icon(":/icons/checked.svg");
 
-    // todo: show warning if icons not loaded
-
     m_TokenLineEdit = new xaprier::Qt::Widgets::PasswordLineEdit(false, xaprier::Qt::Widgets::PasswordLineEdit::SwitchType::Toggle, hideIcon, showIcon, this);
     m_UsernameLineEdit = new QLineEdit(this);
     m_ValidateButton = new UserManagerComposedValidateButton(this);

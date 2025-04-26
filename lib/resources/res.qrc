@@ -47,4 +47,7 @@
         <file>vs15/spinner-up.png</file>
         <file>vs15/spinner-down.png</file>
     </qresource>
+    <qresource>
+        <file>translations/translation_tr.qm</file>
+    </qresource>
 </RCC>

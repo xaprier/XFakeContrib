@@ -8,6 +8,7 @@
 #include "StyleManager.hpp"
 
 class Application : public QApplication {
+    Q_OBJECT
   public:
     Application(int &argc, char **argv, const QString &appName, const QString &appVersion, const QString &orgName);
     ~Application();
@@ -18,6 +19,8 @@ class Application : public QApplication {
 
     static QTranslator translator;
     static StyleManager styleManager;
+
+    static QStringList SupportedLanguages();
 
   private:
     void _SetAppLanguage();

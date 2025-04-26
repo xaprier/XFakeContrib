@@ -5,8 +5,8 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_EXPORT_COMPILE_COMMANDS 1)
 
-find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Core Gui Svg)
-find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Core Gui Svg)
+find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Core Gui Svg Widgets)
+find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Core Gui Svg Widgets)
 
 # Specify the directory to check
 set(
@@ -42,6 +42,7 @@ foreach(DIRECTORY ${DIRECTORIES_TO_CHECK})
         ${CMAKE_CURRENT_BINARY_DIR}/include/${FILE_NAME}
       )
       include_directories(${CMAKE_CURRENT_BINARY_DIR}/include)
+      list(APPEND INCLUDE_DIRS ${CMAKE_CURRENT_BINARY_DIR}/include)
     endforeach()
 
     list(APPEND ALL_FILES ${CPP_FILES} ${HPP_FILES} ${UI_FILES})
@@ -61,6 +62,7 @@ set(EXTERNAL_LIBRARIES
   Qt${QT_VERSION_MAJOR}::Core
   Qt${QT_VERSION_MAJOR}::Gui
   Qt${QT_VERSION_MAJOR}::Svg
+  Qt${QT_VERSION_MAJOR}::Widgets
   faker-cxx
 )
 
