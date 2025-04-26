@@ -3,6 +3,7 @@
 #include "ContribTotal.hpp"
 #include "GitHubAuthChecker.hpp"
 #include "GitHubContribLevels.hpp"
+#include "Logger.hpp"
 
 GitHubContribFetcher::GitHubContribFetcher(const QString& username, const QString& token, QObject* parent)
     : QObject(parent), m_Username(username), m_Token(token), m_AuthChecker(QSharedPointer<GitHubAuthChecker>::create()), m_LastTokenValidation(false) {
@@ -14,7 +15,7 @@ GitHubContribFetcher::GitHubContribFetcher(const QString& username, const QStrin
 
 void GitHubContribFetcher::sl_NetworkReplyFinished(QNetworkReply* reply) {
     if (!reply) {
-        qDebug() << "Failed to cast sender to QNetworkReply.";
+        Logger::log_static(QObject::tr("Received null reply from network.").toStdString(), LoggingLevel::ERROR, __LINE__, __PRETTY_FUNCTION__);
         return;
     }
 
@@ -22,13 +23,13 @@ void GitHubContribFetcher::sl_NetworkReplyFinished(QNetworkReply* reply) {
         QByteArray response = reply->readAll();
         ProcessResponse(response);
     } else {
-        qDebug() << "Error fetching data:" << reply->errorString();
+        Logger::log_static(QObject::tr("Network error: %1").arg(reply->errorString()).toStdString(), LoggingLevel::ERROR, __LINE__, __PRETTY_FUNCTION__);
     }
 
     if (m_ActiveReplies.contains(reply)) {
         m_ActiveReplies.removeOne(reply);
     } else {
-        qDebug() << "Reply not found in the active list.";
+        Logger::log_static(QObject::tr("Reply not found in the active list.").toStdString(), LoggingLevel::ERROR, __LINE__, __PRETTY_FUNCTION__);
     }
 
     if (m_ActiveReplies.empty()) {
@@ -51,9 +52,9 @@ void GitHubContribFetcher::sl_NetworkReplyFinished(QNetworkReply* reply) {
 
 void GitHubContribFetcher::sl_AuthCheckResult(bool isValid, const QString& message) {
     if (isValid) {
-        qDebug() << "Token validation successful";
+        Logger::log_static(QObject::tr("Token validation successful.").toStdString(), LoggingLevel::INFO, __LINE__, __PRETTY_FUNCTION__);
     } else {
-        qDebug() << "Invalid token:" << message;
+        Logger::log_static(QObject::tr("Token validation failed: %1").arg(message).toStdString(), LoggingLevel::ERROR, __LINE__, __PRETTY_FUNCTION__);
     }
     this->m_LastTokenValidation = isValid;
 }
@@ -101,7 +102,7 @@ QDate GitHubContribFetcher::FetchFirstContributionDate() {
             QJsonObject jsonObj = jsonDoc.object();
             QJsonArray yearsArray = jsonObj["data"].toObject()["user"].toObject()["contributionsCollection"].toObject()["contributionYears"].toArray();
             if (yearsArray.isEmpty()) {
-                qDebug() << "No years found in the JSON data.";
+                Logger::log_static(QObject::tr("No years found in the JSON data.").toStdString(), LoggingLevel::ERROR, __LINE__, __PRETTY_FUNCTION__);
                 return QDate();  // Return an invalid date
             }
 
@@ -117,17 +118,17 @@ QDate GitHubContribFetcher::FetchFirstContributionDate() {
             }
 
             if (minYear == INT_MAX) {
-                qDebug() << "No valid years found.";
+                Logger::log_static(QObject::tr("No valid years found.").toStdString(), LoggingLevel::ERROR, __LINE__, __PRETTY_FUNCTION__);
                 return QDate();  // Return an invalid date
             }
 
             // Create a QDate object from the minimum year
             return QDate(minYear, 1, 1);  // Default to January 1st of the minimum year
         } else {
-            qDebug() << "JSON Parse Error:" << parseError.errorString();
+            Logger::log_static(QObject::tr("JSON Parse Error: %1").arg(parseError.errorString()).toStdString(), LoggingLevel::ERROR, __LINE__, __PRETTY_FUNCTION__);
         }
     } else {
-        qDebug() << "Error fetching data:" << reply->errorString();
+        Logger::log_static(QObject::tr("Network error: %1").arg(reply->errorString()).toStdString(), LoggingLevel::ERROR, __LINE__, __PRETTY_FUNCTION__);
     }
 
     reply->deleteLater();
@@ -145,7 +146,7 @@ void GitHubContribFetcher::sl_FetchUserContribs() {
         QEventLoop loop;
         connect(m_AuthChecker.get(), &GitHubAuthChecker::si_AuthCheckResult, &loop, [&](bool isValid, const QString& message) {
             if (!isValid) {
-                throw std::runtime_error("Invalid token. Please re-check the token is valid.");
+                throw std::runtime_error(QObject::tr("Invalid token. Please re-check the token is valid.").toLatin1());
             } else
                 loop.quit();
         });
@@ -155,7 +156,7 @@ void GitHubContribFetcher::sl_FetchUserContribs() {
     // Fetch the earliest contribution date
     QDate firstContributionDate = FetchFirstContributionDate();
     if (!firstContributionDate.isValid()) {
-        qDebug() << "Invalid first contribution date.";
+        Logger::log_static(QObject::tr("Invalid first contribution date.").toStdString(), LoggingLevel::ERROR, __LINE__, __PRETTY_FUNCTION__);
         return;
     }
 
@@ -166,7 +167,7 @@ void GitHubContribFetcher::sl_FetchUserContribs() {
         // Convert QDate to ISO 8601 string format
         QString fromDateStr = startDate.toString(Qt::ISODate) + "T00:00:00Z";
         QString toDateStr = startDate.addYears(1).toString(Qt::ISODate) + "T00:00:00Z";
-        qDebug() << "Fetching data from:" << fromDateStr << "to" << toDateStr;
+        Logger::log_static(QObject::tr("Fetching data from: %1 to %2").arg(fromDateStr).arg(toDateStr).toStdString(), LoggingLevel::INFO, __LINE__, __PRETTY_FUNCTION__);
 
         QUrl url(QString("https://api.github.com/graphql"));
         QNetworkRequest request(url);
@@ -221,7 +222,7 @@ void GitHubContribFetcher::SaveFormattedJsonToFile(const QString& filename) {
     }
 
     if (this->m_Contributions.empty() || this->m_TotalContributions.empty()) {
-        qDebug() << "No fetched data found!";
+        Logger::log_static(QObject::tr("No fetched data found!").toStdString(), LoggingLevel::ERROR, __LINE__, __PRETTY_FUNCTION__);
         return;
     }
 
@@ -252,9 +253,9 @@ void GitHubContribFetcher::SaveFormattedJsonToFile(const QString& filename) {
     if (file.open(QIODevice::WriteOnly)) {
         file.write(formattedJson);
         file.close();
-        qDebug() << "Formatted JSON data saved to" << filename;
+        Logger::log_static(QObject::tr("Formatted JSON data saved to %1").arg(filename).toStdString(), LoggingLevel::INFO, __LINE__, __PRETTY_FUNCTION__);
     } else {
-        qDebug() << "Failed to open file for writing:" << filename;
+        Logger::log_static(QObject::tr("Failed to open file for writing: %1").arg(filename).toStdString(), LoggingLevel::ERROR, __LINE__, __PRETTY_FUNCTION__);
     }
 }
 
@@ -262,7 +263,7 @@ void GitHubContribFetcher::ProcessResponse(const QByteArray& response) {
     QJsonParseError parseError;
     QJsonDocument jsonDoc = QJsonDocument::fromJson(response, &parseError);
     if (parseError.error != QJsonParseError::NoError) {
-        qDebug() << "JSON Parse Error:" << parseError.errorString();
+        Logger::log_static(QObject::tr("JSON Parse Error: %1").arg(parseError.errorString()).toStdString(), LoggingLevel::ERROR, __LINE__, __PRETTY_FUNCTION__);
         return;
     }
 

@@ -41,7 +41,7 @@ class RepositoryTableView final : public QWidget {
     QTableView *m_RepoTable;
     QStandardItemModel *m_RepoModel;
     QList<RepositoryTableItem *> m_Items;
-    QList<QString> m_ColumnNames{"Enable", "Repository", "Branch", "Remote", "File", "Log", "Push"};
+    QList<QString> m_ColumnNames{QObject::tr("Enable"), QObject::tr("Repository"), QObject::tr("Branch"), QObject::tr("Remote"), QObject::tr("File"), QObject::tr("Log"), QObject::tr("Push")};
 };
 
 #endif  // REPOTABLEVIEW_HPP

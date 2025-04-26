@@ -5,8 +5,8 @@
 #include <QDesktopServices>
 
 #include "AboutDialog.hpp"
-#include "Application.hpp"
 #include "GitHubFetchAdapterWithUser.hpp"
+#include "Logger.hpp"
 #include "RepositoryCardConnections.hpp"
 #include "RepositoryManagerCard.hpp"
 #include "RequirementsController.hpp"
@@ -27,7 +27,7 @@ void MainWindowConnections::_CreateConnections() {
 
     // check memory initialized
     if (!m_Ui->m_RepositoryManagerCard || !m_Ui->m_ContribCard || !m_Ui->m_UserManagerCard || !m_Ui->m_RepositoryCard) {
-        qDebug() << "Memory not initialized";
+        Logger::log_static(QObject::tr("Memory not initialized").toStdString(), LoggingLevel::ERROR, __LINE__, __PRETTY_FUNCTION__);
         return;
     }
 
@@ -163,7 +163,7 @@ void MainWindowConnections::sl_RequirementCheckCompleted(const QString &name, bo
         QMessageBox::critical(nullptr, QObject::tr("Requirement Not Found"), msg);
         qApp->exit(1);
     } else {
-        qDebug() << "Requirement" << name << "is installed.";
+        Logger::log_static(QObject::tr("Requirement %1 is installed").arg(name).toStdString(), LoggingLevel::ERROR, __LINE__, __PRETTY_FUNCTION__);
     }
 }
 

@@ -2,6 +2,7 @@
 
 #include <qnamespace.h>
 
+#include "Logger.hpp"
 #include "StyleManager.hpp"
 
 ThemeSelectionCard::ThemeSelectionCard(QWidget *parent)
@@ -32,6 +33,7 @@ void ThemeSelectionCard::UpdateIcons() {
 
 void ThemeSelectionCard::sl_OnApplyButtonClicked() {
     auto selected = this->m_ThemeSelectionComboBox->currentText();
+    Logger::log_static(QObject::tr("Applied theme %1").arg(selected).toStdString(), LoggingLevel::INFO, __LINE__, __PRETTY_FUNCTION__);
     StyleManager::SetTheme(selected);
 }
 

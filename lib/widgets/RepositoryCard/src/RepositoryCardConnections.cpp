@@ -4,6 +4,7 @@
 #include <qglobal.h>
 #include <qmessagebox.h>
 #include <qpushbutton.h>
+#include <qt6/QtCore/qobject.h>
 #include <unistd.h>
 
 #include <QFileDialog>
@@ -13,6 +14,7 @@
 #include <cmath>
 
 #include "../design/ui_RepositoryCardUI.h"
+#include "Logger.hpp"
 #include "RepositoryCardCreateCommits.hpp"
 #include "RepositoryCardPush.hpp"
 #include "RepositoryTableItem.hpp"
@@ -68,14 +70,14 @@ void RepositoryCardConnections::sl_RepositoriesUpdated() {
 void RepositoryCardConnections::_SetupConnections() {
     auto pushButton = qobject_cast<QPushButton *>(m_Ui->pushPB->Item(RepositoryCardPush::Status::BUTTON));
     if (!pushButton) {
-        qWarning() << "Failed to cast from RepositoryCardPush to QPushButton.";
+        Logger::log_static(QObject::tr("Failed to cast from RepositoryCardPush to QPushButton.").toStdString(), LoggingLevel::ERROR, __LINE__, __PRETTY_FUNCTION__);
     } else {
         connect(pushButton, &QPushButton::clicked, this, &RepositoryCardConnections::sl_PushButtonClicked);
     }
 
     auto createCommitsButton = qobject_cast<QPushButton *>(m_Ui->createCommitsPB->Item(RepositoryCardCreateCommits::Status::BUTTON));
     if (!createCommitsButton) {
-        qWarning() << "Failed to cast from RepositoryCardCreateCommits to QPushButton.";
+        Logger::log_static(QObject::tr("Failed to cast from RepositoryCardCreateCommits to QPushButton.").toStdString(), LoggingLevel::ERROR, __LINE__, __PRETTY_FUNCTION__);
     } else {
         connect(createCommitsButton, &QPushButton::clicked, this, &RepositoryCardConnections::sl_CreateCommitsButtonClicked);
     }
@@ -243,10 +245,12 @@ void RepositoryCardConnections::sl_CommitterFinished() {
 
     m_Ui->pushPB->setToolTip(QObject::tr("Creating commits(%1)").arg(remained));
 
+    Logger::log_static(QObject::tr("Commiter finished, remained: %1").arg(remained).toStdString(), LoggingLevel::INFO, __LINE__, __PRETTY_FUNCTION__);
+
     auto indicator = qobject_cast<xaprier::Qt::Widgets::XQCircularLoadingIndicator *>(m_Ui->createCommitsPB->Item(RepositoryCardCreateCommits::Status::LOADING));
 
     if (!indicator) {
-        qWarning() << "Failed to cast from RepositoryCardCreateCommits to XQCircularLoadingIndicator";
+        Logger::log_static(QObject::tr("Failed to cast from RepositoryCardCreateCommits to XQCircularLoadingIndicator.").toStdString(), LoggingLevel::ERROR, __LINE__, __PRETTY_FUNCTION__);
         return;
     }
 
@@ -260,11 +264,12 @@ void RepositoryCardConnections::sl_AllCommittersFinished() {
 
     m_Ui->createCommitsPB->SetButton();
     QMessageBox::information(m_Ui->createCommitsPB, QObject::tr("Success"), QObject::tr("All commits are created successfully"));
+    Logger::log_static(QObject::tr("All committers finished.").toStdString(), LoggingLevel::INFO, __LINE__, __PRETTY_FUNCTION__);
 
     auto indicator = qobject_cast<xaprier::Qt::Widgets::XQCircularLoadingIndicator *>(m_Ui->createCommitsPB->Item(RepositoryCardCreateCommits::Status::LOADING));
 
     if (!indicator) {
-        qWarning() << "Failed to cast from RepositoryCardCreateCommits to XQCircularLoadingIndicator";
+        Logger::log_static(QObject::tr("Failed to cast from RepositoryCardCreateCommits to XQCircularLoadingIndicator.").toStdString(), LoggingLevel::ERROR, __LINE__, __PRETTY_FUNCTION__);
         return;
     }
 
@@ -278,6 +283,8 @@ void RepositoryCardConnections::sl_ItemPushCompleted(QFutureWatcher<void> *watch
     auto indicator = qobject_cast<xaprier::Qt::Widgets::XQCircularLoadingIndicator *>(m_Ui->pushPB->Item(RepositoryCardPush::Status::LOADING));
     if (indicator)
         indicator->setToolTip(QObject::tr("Remained pushes: %1").arg(m_PushWatchers.size()));
+
+    Logger::log_static(QObject::tr("Push completed, remained pushes: %1").arg(m_PushWatchers.size()).toStdString(), LoggingLevel::INFO, __LINE__, __PRETTY_FUNCTION__);
 
     watcher->deleteLater();
 
@@ -293,7 +300,7 @@ quint32 RepositoryCardConnections::_GetCommitCount() const {
 
     if (random) {
         QRandomGenerator generator;
-        return generator.bounded(quint32(1), m_Settings->GetRandomMax());  // todo: highest value should come from config
+        return generator.bounded(quint32(1), m_Settings->GetRandomMax());
     }
 
     return this->m_Ui->commitCountSP->value();
@@ -335,10 +342,12 @@ void RepositoryCardConnections::_CreateCommits(QList<RepositoryTableItem *> &ena
     }
     m_Ui->pushPB->setToolTip(QObject::tr("Creating commits(%1)").arg(totalCommitCount));
 
+    Logger::log_static(QObject::tr("Creating commits(%1) between %2 and %3").arg(totalCommitCount).arg(startDate.toString()).arg(endDate.toString()).toStdString(), LoggingLevel::INFO, __LINE__, __PRETTY_FUNCTION__);
+
     auto indicator = qobject_cast<xaprier::Qt::Widgets::XQCircularLoadingIndicator *>(m_Ui->createCommitsPB->Item(RepositoryCardCreateCommits::Status::LOADING));
 
     if (!indicator) {
-        qWarning() << "Failed to cast from RepositoryCardCreateCommits to XQCircularLoadingIndicator";
+        Logger::log_static(QObject::tr("Failed to cast from RepositoryCardCreateCommits to XQCircularLoadingIndicator.").toStdString(), LoggingLevel::ERROR, __LINE__, __PRETTY_FUNCTION__);
         return;
     }
 
@@ -365,7 +374,7 @@ void RepositoryCardConnections::_UpdateButtonsStatus() {
     auto pushPB = qobject_cast<QPushButton *>(m_Ui->pushPB->Item(RepositoryCardPush::Status::BUTTON));
 
     if (!pushPB || !createCommitsPB) {
-        qWarning() << "Failed to cast from RepositoryCardPush to QPushButton or RepositoryCardCreateCommits to QPushButton";
+        Logger::log_static(QObject::tr("Failed to cast from RepositoryCardPush or RepositoryCardCreateCommits to QPushButton.").toStdString(), LoggingLevel::ERROR, __LINE__, __PRETTY_FUNCTION__);
         return;
     }
 

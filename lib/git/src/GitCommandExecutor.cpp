@@ -1,8 +1,7 @@
 #include "GitCommandExecutor.hpp"
 
-#include <qprocess.h>
-
 #include "GitCommand.hpp"
+#include "Logger.hpp"
 
 void GitCommandExecutor::SetPath(const QString& path) {
     this->m_Path = path;
@@ -11,8 +10,8 @@ void GitCommandExecutor::SetPath(const QString& path) {
 void GitCommandExecutor::Execute(const GitCommand::Command& command, const QStringList& arguments, QString& output, QString& error) {
     QString commandString = GitCommand::GitCommandToString(command);
     if (commandString.isEmpty()) {
-        error = "Invalid Git command";
-        qDebug() << error;
+        error = QObject::tr("Invalid Git command");
+        Logger::log_static(error.toStdString(), LoggingLevel::ERROR, __LINE__, __PRETTY_FUNCTION__);
         return;
     }
 
@@ -25,15 +24,15 @@ void GitCommandExecutor::Execute(const GitCommand::Command& command, const QStri
     process.setInputChannelMode(QProcess::ForwardedInputChannel);
     process.start(program, fullArguments);
     if (!process.waitForStarted()) {
-        error = "Failed to start Git process";
-        qDebug() << error;
+        error = QObject::tr("Failed to start Git process");
+        Logger::log_static(error.toStdString(), LoggingLevel::ERROR, __LINE__, __PRETTY_FUNCTION__);
         return;
     }
 
     process.waitForFinished();
     if (process.exitStatus() == QProcess::CrashExit) {
-        error = "Git Process crashed";
-        qDebug() << error;
+        error = QObject::tr("Git Process crashed");
+        Logger::log_static(error.toStdString(), LoggingLevel::ERROR, __LINE__, __PRETTY_FUNCTION__);
         return;
     }
 
@@ -41,8 +40,4 @@ void GitCommandExecutor::Execute(const GitCommand::Command& command, const QStri
     error = process.readAllStandardError();
 
     if (process.exitCode() == 0) error.clear();
-
-    if (!error.isEmpty()) {
-        qDebug() << "Git command error:" << error;
-    }
 }

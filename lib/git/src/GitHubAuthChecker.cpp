@@ -16,12 +16,12 @@ void GitHubAuthChecker::sl_AuthCheckFinished(QNetworkReply* reply) {
         QJsonObject jsonObj = jsonDoc.object();
 
         if (jsonObj.contains("data")) {
-            emit si_AuthCheckResult(true, "Authentication successful.");
+            emit si_AuthCheckResult(true, QObject::tr("Authentication successful."));
         } else {
-            emit si_AuthCheckResult(false, "Invalid authentication key.");
+            emit si_AuthCheckResult(false, QObject::tr("Invalid authentication key."));
         }
     } else {
-        emit si_AuthCheckResult(false, "Network error: " + reply->errorString());
+        emit si_AuthCheckResult(false, QObject::tr("Network error: %1").arg(reply->errorString()));
     }
     reply->deleteLater();
     m_ProcessingValidation = false;

@@ -11,6 +11,7 @@
 #include <QSpacerItem>
 
 #include "../design/ui_RepositoryManagerCardUI.h"
+#include "Logger.hpp"
 
 RepositoryManagerCard::RepositoryManagerCard(QWidget *parent) : Card(parent), m_Ui(new Ui::RepositoryManagerCardUI), m_Settings(Settings::Instance()) {
     m_Ui->setupUi(this);
@@ -73,6 +74,7 @@ void RepositoryManagerCard::_SetupButtons() {
         m_RepositoryAdd->SetButtonText(QObject::tr("Add"));
         m_BranchCreate->SetButtonText(QObject::tr("Create"));
     } catch (const std::exception &e) {
+        Logger::log_static(QObject::tr("An error occured: %1").arg(e.what()).toStdString(), LoggingLevel::ERROR, __LINE__, __PRETTY_FUNCTION__);
         QMessageBox::critical(this, QObject::tr("Error"), QObject::tr("An error occured: %1").arg(e.what()));
     }
 }
@@ -140,6 +142,7 @@ void RepositoryManagerCard::_LoadRepositories() {
             m_GitRepository = new GitRepository(path);  // NOLINT
         this->_LoadBranches();                          // load branches for active
     } catch (const std::exception &e) {
+        Logger::log_static(QObject::tr("An error occured: %1").arg(e.what()).toStdString(), LoggingLevel::ERROR, __LINE__, __PRETTY_FUNCTION__);
         QMessageBox::critical(this, QObject::tr("Error"), QObject::tr("An error occured: %1").arg(e.what()));
     }
 }
@@ -157,6 +160,7 @@ void RepositoryManagerCard::_LoadBranches() {
         if (repoPath.isEmpty()) return;
 
         if (!m_GitRepository->IsValidRepository()) {
+            Logger::log_static(QObject::tr("Selected repository is not valid: %1").arg(repoPath).toStdString(), LoggingLevel::ERROR, __LINE__, __PRETTY_FUNCTION__);
             QMessageBox::critical(this, QObject::tr("Error"), QObject::tr("Selected repository is not valid."));
             return;
         }
@@ -181,6 +185,7 @@ void RepositoryManagerCard::_LoadBranches() {
         }
         this->m_Ui->branchListWidget->blockSignals(false);
     } catch (const std::exception &e) {
+        Logger::log_static(QObject::tr("An error occured: %1").arg(e.what()).toStdString(), LoggingLevel::ERROR, __LINE__, __PRETTY_FUNCTION__);
         QMessageBox::critical(this, QObject::tr("Error"), QObject::tr("An error occured: %1").arg(e.what()));
     }
 }
@@ -205,6 +210,7 @@ void RepositoryManagerCard::_NoRepositoriesFound(bool yes) {
         this->m_Ui->branchListWidget->setDisabled(yes);
         this->m_Ui->branchListWidget->setToolTip(yes ? QObject::tr("No Repositories Found. Please Add Repository.") : "");
     } catch (const std::exception &e) {
+        Logger::log_static(QObject::tr("An error occured: %1").arg(e.what()).toStdString(), LoggingLevel::ERROR, __LINE__, __PRETTY_FUNCTION__);
         QMessageBox::critical(this, QObject::tr("Error"), QObject::tr("An error occured: %1").arg(e.what()));
     }
 }
@@ -232,6 +238,7 @@ void RepositoryManagerCard::sl_RepositoryAddClicked(bool checked) {
 
         // validate path is not empty
         if (selectedPath.isEmpty()) {
+            Logger::log_static(QObject::tr("No path was selected.").toStdString(), LoggingLevel::ERROR, __LINE__, __PRETTY_FUNCTION__);
             QMessageBox::critical(this, QObject::tr("Error"), QObject::tr("No path was selected."));
             return;
         }
@@ -239,12 +246,14 @@ void RepositoryManagerCard::sl_RepositoryAddClicked(bool checked) {
         QDir dir(selectedPath);
         // Check if the directory exists
         if (!dir.exists()) {
+            Logger::log_static(QObject::tr("Directory not exists: %1").arg(selectedPath).toStdString(), LoggingLevel::ERROR, __LINE__, __PRETTY_FUNCTION__);
             QMessageBox::critical(this, QObject::tr("Error"), QObject::tr("Directory not exists: %1").arg(selectedPath));
             return;
         }
 
         // validate permissions of the selected path
         if (!QFile::permissions(selectedPath).testFlag(QFileDevice::WriteUser)) {
+            Logger::log_static(QObject::tr("Cannot write to the selected path: %1").arg(selectedPath).toStdString(), LoggingLevel::ERROR, __LINE__, __PRETTY_FUNCTION__);
             QMessageBox::critical(this, QObject::tr("Error"), QObject::tr("Cannot write to the selected path: %1").arg(selectedPath));
             return;
         }
@@ -256,12 +265,14 @@ void RepositoryManagerCard::sl_RepositoryAddClicked(bool checked) {
         }
 
         if (repositoryPaths.contains(selectedPath)) {
+            Logger::log_static(QObject::tr("The selected repository is already added.").toStdString(), LoggingLevel::ERROR, __LINE__, __PRETTY_FUNCTION__);
             QMessageBox::information(this, QObject::tr("Info"), QObject::tr("The selected repository is already added."));
             return;
         }
 
         // check for a specific marker file or directory, e.g., `.git`
         if (!dir.exists(".git")) {
+            Logger::log_static(QObject::tr("No repository found in directory: %1\nPlease make sure the directory contains .git directory").arg(selectedPath).toStdString(), LoggingLevel::ERROR, __LINE__, __PRETTY_FUNCTION__);
             QMessageBox::critical(this, QObject::tr("Error"), QObject::tr("No repository found in directory: %1\nPlease make sure the directory contains .git directory").arg(selectedPath));
             return;
         }
@@ -269,9 +280,13 @@ void RepositoryManagerCard::sl_RepositoryAddClicked(bool checked) {
         // update repositories
         m_Repositories.append(selectedPath);
         m_Settings->SetRepositories(m_Repositories);
+
+        Logger::log_static(QObject::tr("Repository added: %1").arg(selectedPath).toStdString(), LoggingLevel::INFO, __LINE__, __PRETTY_FUNCTION__);
+
         emit this->si_RepositoriesUpdated();
         this->_LoadRepositories();
     } catch (const std::exception &e) {
+        Logger::log_static(QObject::tr("An error occured: %1").arg(e.what()).toStdString(), LoggingLevel::ERROR, __LINE__, __PRETTY_FUNCTION__);
         QMessageBox::critical(this, QObject::tr("Error"), QObject::tr("An error occured: %1").arg(e.what()));
     }
 }
@@ -282,6 +297,7 @@ void RepositoryManagerCard::sl_RepositoryDeleteClicked(bool checked) {
 
         // control there is at least 1 selected item
         if (widget->selectedItems().isEmpty()) {
+            Logger::log_static(QObject::tr("There is no selected repository to delete").toStdString(), LoggingLevel::ERROR, __LINE__, __PRETTY_FUNCTION__);
             QMessageBox::critical(this, QObject::tr("Error"), QObject::tr("There is no selected repository to delete"));
             return;
         }
@@ -291,10 +307,14 @@ void RepositoryManagerCard::sl_RepositoryDeleteClicked(bool checked) {
 
         // update repositories
         m_Repositories.removeOne(path);
+
+        Logger::log_static(QObject::tr("Repository deleted: %1").arg(path).toStdString(), LoggingLevel::INFO, __LINE__, __PRETTY_FUNCTION__);
+
         m_Settings->SetRepositories(m_Repositories);
         emit this->si_RepositoriesUpdated();
         this->_LoadRepositories();
     } catch (const std::exception &e) {
+        Logger::log_static(QObject::tr("An error occured: %1").arg(e.what()).toStdString(), LoggingLevel::ERROR, __LINE__, __PRETTY_FUNCTION__);
         QMessageBox::critical(this, QObject::tr("Error"), QObject::tr("An error occured: %1").arg(e.what()));
     }
 }
@@ -303,6 +323,7 @@ void RepositoryManagerCard::sl_RepositoryUpdateClicked(bool checked) {
     try {
         // check if there is a selected item
         if (this->m_Ui->repositoryListWidget->selectedItems().isEmpty()) {
+            Logger::log_static(QObject::tr("There is no selected repository to update").toStdString(), LoggingLevel::ERROR, __LINE__, __PRETTY_FUNCTION__);
             QMessageBox::critical(this, QObject::tr("Error"), QObject::tr("There is no selected repository to update"));
             return;
         }
@@ -318,6 +339,7 @@ void RepositoryManagerCard::sl_RepositoryUpdateClicked(bool checked) {
 
         // validate path is not empty
         if (selectedPath.isEmpty()) {
+            Logger::log_static(QObject::tr("No path was selected.").toStdString(), LoggingLevel::ERROR, __LINE__, __PRETTY_FUNCTION__);
             QMessageBox::critical(this, QObject::tr("Error"), QObject::tr("No path was selected."));
             return;
         }
@@ -325,12 +347,14 @@ void RepositoryManagerCard::sl_RepositoryUpdateClicked(bool checked) {
         QDir dir(selectedPath);
         // Check if the directory exists
         if (!dir.exists()) {
+            Logger::log_static(QObject::tr("Directory not exists: %1").arg(selectedPath).toStdString(), LoggingLevel::ERROR, __LINE__, __PRETTY_FUNCTION__);
             QMessageBox::critical(this, QObject::tr("Error"), QObject::tr("Directory not exists: %1").arg(selectedPath));
             return;
         }
 
         // validate permissions of the selected path
         if (!QFile::permissions(selectedPath).testFlag(QFileDevice::WriteUser)) {
+            Logger::log_static(QObject::tr("Cannot write to the selected path: %1").arg(selectedPath).toStdString(), LoggingLevel::ERROR, __LINE__, __PRETTY_FUNCTION__);
             QMessageBox::critical(this, QObject::tr("Error"), QObject::tr("Cannot write to the selected path: %1").arg(selectedPath));
             return;
         }
@@ -342,6 +366,7 @@ void RepositoryManagerCard::sl_RepositoryUpdateClicked(bool checked) {
         }
 
         if (repositoryPaths.contains(selectedPath)) {
+            Logger::log_static(QObject::tr("The selected repository is already added.").toStdString(), LoggingLevel::ERROR, __LINE__, __PRETTY_FUNCTION__);
             QMessageBox::information(this, QObject::tr("Info"), QObject::tr("The selected repository is already added."));
             return;
         }
@@ -359,9 +384,13 @@ void RepositoryManagerCard::sl_RepositoryUpdateClicked(bool checked) {
         auto indexOld = m_Repositories.indexOf(oldPath);
         m_Repositories.replace(indexOld, selectedPath);
         m_Settings->SetRepositories(m_Repositories);
+
+        Logger::log_static(QObject::tr("Repository updated: %1 -> %2").arg(oldPath).arg(selectedPath).toStdString(), LoggingLevel::INFO, __LINE__, __PRETTY_FUNCTION__);
+
         emit this->si_RepositoriesUpdated();
         this->_LoadRepositories();
     } catch (const std::exception &e) {
+        Logger::log_static(QObject::tr("An error occured: %1").arg(e.what()).toStdString(), LoggingLevel::ERROR, __LINE__, __PRETTY_FUNCTION__);
         QMessageBox::critical(this, QObject::tr("Error"), QObject::tr("An error occured: %1").arg(e.what()));
     }
 }
@@ -380,6 +409,7 @@ void RepositoryManagerCard::sl_BranchCreateClicked(bool checked) {
         }
 
         if (branchName.isEmpty()) {
+            Logger::log_static(QObject::tr("No branch name entered.").toStdString(), LoggingLevel::ERROR, __LINE__, __PRETTY_FUNCTION__);
             QMessageBox::critical(this, QObject::tr("Error"), QObject::tr("No branch name entered. Please enter valid branch name."));
             return;
         }
@@ -395,15 +425,20 @@ void RepositoryManagerCard::sl_BranchCreateClicked(bool checked) {
         branches.erase(std::remove_if(branches.begin(), branches.end(), [](const QString &branch) { return branch.isEmpty() || branch.startsWith("remote"); }), branches.end());
 
         if (branches.contains(branchName)) {
+            Logger::log_static(QObject::tr("Branch name %1 is already exists.").arg(branchName).toStdString(), LoggingLevel::ERROR, __LINE__, __PRETTY_FUNCTION__);
             QMessageBox::critical(this, QObject::tr("Error"), QObject::tr("Entered branch name is exists. Please enter valid branch name."));
             return;
         }
 
         // create branch and load again in ui
         m_GitRepository->Branch({branchName});
+
+        Logger::log_static(QObject::tr("%1 branch created for %2").arg(branchName).arg(m_GitRepository->GetRepositoryPath().split('/').last()).toStdString(), LoggingLevel::INFO, __LINE__, __PRETTY_FUNCTION__);
+
         emit this->si_RepositoriesUpdated();
         this->_LoadBranches();
     } catch (const std::exception &e) {
+        Logger::log_static(QObject::tr("An error occured: %1").arg(e.what()).toStdString(), LoggingLevel::ERROR, __LINE__, __PRETTY_FUNCTION__);
         QMessageBox::critical(this, QObject::tr("Error"), QObject::tr("An error occured: %1").arg(e.what()));
     }
 }
@@ -414,6 +449,7 @@ void RepositoryManagerCard::sl_BranchDeleteClicked(bool checked) {
 
         // control there is at least 1 selected item
         if (widget->selectedItems().isEmpty()) {
+            Logger::log_static(QObject::tr("There is no selected branch to delete").toStdString(), LoggingLevel::ERROR, __LINE__, __PRETTY_FUNCTION__);
             QMessageBox::critical(this, QObject::tr("Error"), QObject::tr("There is no selected branch to delete"));
             return;
         }
@@ -428,9 +464,13 @@ void RepositoryManagerCard::sl_BranchDeleteClicked(bool checked) {
 
         // delete branch and load branches in ui again
         m_GitRepository->Branch({"-d", branchName});
+
+        Logger::log_static(QObject::tr("Branch %1 deleted for %2").arg(branchName).arg(m_GitRepository->GetRepositoryPath().split('/').last()).toStdString(), LoggingLevel::INFO, __LINE__, __PRETTY_FUNCTION__);
+
         emit this->si_RepositoriesUpdated();
         this->_LoadBranches();
     } catch (const std::exception &e) {
+        Logger::log_static(QObject::tr("An error occured: %1").arg(e.what()).toStdString(), LoggingLevel::ERROR, __LINE__, __PRETTY_FUNCTION__);
         QMessageBox::critical(this, QObject::tr("Error"), QObject::tr("An error occured: %1").arg(e.what()));
     }
 }
@@ -443,6 +483,7 @@ void RepositoryManagerCard::sl_CurrentRowChangedForRepository(int row) {
 
         this->_LoadBranches();
     } catch (const std::exception &e) {
+        Logger::log_static(QObject::tr("An error occured: %1").arg(e.what()).toStdString(), LoggingLevel::ERROR, __LINE__, __PRETTY_FUNCTION__);
         QMessageBox::critical(this, QObject::tr("Error"), QObject::tr("An error occured: %1").arg(e.what()));
     }
 }
@@ -462,6 +503,7 @@ void RepositoryManagerCard::sl_ItemChangedForBranch(QListWidgetItem *item) {
 
         // validate path is not empty
         if (newBranch.isEmpty()) {
+            Logger::log_static(QObject::tr("No branch name entered.").toStdString(), LoggingLevel::ERROR, __LINE__, __PRETTY_FUNCTION__);
             QMessageBox::critical(this, QObject::tr("Error"), QObject::tr("No branch name entered."));
             item->setText(oldBranch);
             widget->blockSignals(false);
@@ -470,6 +512,7 @@ void RepositoryManagerCard::sl_ItemChangedForBranch(QListWidgetItem *item) {
 
         auto items = widget->findItems(newBranch, Qt::MatchExactly);
         if (items.size() > 1) {  // newBranch is in widget, so we should look for other matches
+            Logger::log_static(QObject::tr("Branch name %1 is already exists.").arg(newBranch).toStdString(), LoggingLevel::ERROR, __LINE__, __PRETTY_FUNCTION__);
             QMessageBox::critical(this, QObject::tr("Error"), QObject::tr("Branch name %1 is already exists. Please enter unique branch name.").arg(newBranch));
             item->setText(oldBranch);
             widget->blockSignals(false);
@@ -481,9 +524,12 @@ void RepositoryManagerCard::sl_ItemChangedForBranch(QListWidgetItem *item) {
         m_GitRepository->Branch({"-m", oldBranch, newBranch});
         emit this->si_RepositoriesUpdated();
 
+        Logger::log_static(QObject::tr("Branch %1 renamed to %2 for %3").arg(oldBranch).arg(newBranch).arg(m_GitRepository->GetRepositoryPath().split('/').last()).toStdString(), LoggingLevel::INFO, __LINE__, __PRETTY_FUNCTION__);
+
         // update branches
         this->_LoadBranches();
     } catch (const std::exception &e) {
+        Logger::log_static(QObject::tr("An error occured: %1").arg(e.what()).toStdString(), LoggingLevel::ERROR, __LINE__, __PRETTY_FUNCTION__);
         QMessageBox::critical(this, QObject::tr("Error"), QObject::tr("An error occured: %1").arg(e.what()));
     }
 }

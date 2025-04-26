@@ -63,6 +63,7 @@ set(EXTERNAL_LIBRARIES
   Qt${QT_VERSION_MAJOR}::Gui
   Qt${QT_VERSION_MAJOR}::Svg
   Qt${QT_VERSION_MAJOR}::Widgets
+  Logger
   faker-cxx
 )
 

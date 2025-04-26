@@ -2,13 +2,17 @@
 
 #include <stdexcept>
 
+#include "Logger.hpp"
+
 void GitPusher::run() {
     if (m_Repository.isNull()) {
-        throw std::runtime_error("Repository not initialized");
+        Logger::log_static(QObject::tr("Repository not initialized").toStdString(), LoggingLevel::ERROR, __LINE__, __PRETTY_FUNCTION__);
+        throw std::runtime_error(QObject::tr("Repository not initialized").toStdString());
     }
 
     if (m_RepoPath.isEmpty()) {
-        throw std::runtime_error("Repository path is empty");
+        Logger::log_static(QObject::tr("Repository path is empty").toStdString(), LoggingLevel::ERROR, __LINE__, __PRETTY_FUNCTION__);
+        throw std::runtime_error(QObject::tr("Repository path is empty").toStdString());
     }
 
     auto origin = m_Repository->Remote().split('\n').first().trimmed();

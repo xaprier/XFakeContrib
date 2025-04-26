@@ -9,6 +9,7 @@
 
 #include <QVBoxLayout>
 
+#include "Logger.hpp"
 #include "RepositoryTableItem.hpp"
 #include "RepositoryTableItemPush.hpp"
 #include "RepositoryTableItemStatus.hpp"
@@ -35,7 +36,7 @@ void RepositoryTableView::_ReloadRepositories() {
 void RepositoryTableView::_LoadRepositories() {
     m_Repositories = this->m_Settings->GetRepositories();
 
-    qDebug() << QObject::tr("Repositories:") << m_Repositories << "size: " << m_Repositories.size();
+    Logger::log_static(QObject::tr("Repositories: %1").arg(m_Repositories.join(", ")).toStdString(), LoggingLevel::INFO, __LINE__, __PRETTY_FUNCTION__);
 
     // if no repositories found, disable all buttons and comboBoxes with giving information to user
     if (m_Repositories.isEmpty()) {
@@ -64,7 +65,7 @@ void RepositoryTableView::_LoadRepositories() {
             if (widget) {
                 m_RepoTable->setIndexWidget(m_RepoModel->index(i, column), widget);
             } else {
-                qWarning() << QObject::tr("Failed to cast widget for column") << column;
+                Logger::log_static(QObject::tr("Failed to cast widget for column %1").arg(column).toStdString(), LoggingLevel::ERROR, __LINE__, __PRETTY_FUNCTION__);
             }
         };
 

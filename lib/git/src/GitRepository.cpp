@@ -1,7 +1,9 @@
 #include "GitRepository.hpp"
 
-#include <QDebug>
 #include <QDir>
+#include <QString>
+
+#include "Logger.hpp"
 
 GitRepository::GitRepository(const QString &localRepositoryPath, QObject *parent)
     : QObject(parent), m_Executor(localRepositoryPath), m_CommitManager(m_Executor), m_BranchManager(m_Executor), m_PushManager(m_Executor), m_AddManager(m_Executor), m_DiffManager(m_Executor), m_CheckoutManager(m_Executor), m_LogManager(m_Executor), m_RemoteManager(m_Executor), m_CheckIgnoreManager(m_Executor) {
@@ -10,9 +12,10 @@ GitRepository::GitRepository(const QString &localRepositoryPath, QObject *parent
 
 QString GitRepository::Push(const QStringList &arguments) {
     if (!m_IsValidRepository) {
-        throw std::invalid_argument("Invalid Git repository path: " + m_RepositoryPath.toStdString());
+        throw std::invalid_argument(QObject::tr("Invalid Git repository path: %1").arg(m_RepositoryPath).toLatin1());
     }
-    qDebug() << "Executing push command...";
+    Logger::log_static(QObject::tr("Executing push command...").toStdString(), LoggingLevel::DEBUG, __LINE__, __PRETTY_FUNCTION__);
+
     QString output, error;
     m_PushManager.Execute(arguments, output, error);
     _HandleCommandResult(output, error, m_PushManager.GetCommandType());
@@ -22,9 +25,10 @@ QString GitRepository::Push(const QStringList &arguments) {
 
 QString GitRepository::Commit(const QStringList &arguments) {
     if (!m_IsValidRepository) {
-        throw std::invalid_argument("Invalid Git repository path: " + m_RepositoryPath.toStdString());
+        throw std::invalid_argument(QObject::tr("Invalid Git repository path: %1").arg(m_RepositoryPath).toLatin1());
     }
-    qDebug() << "Executing commit command...";
+    Logger::log_static(QObject::tr("Executing commit command...").toStdString(), LoggingLevel::DEBUG, __LINE__, __PRETTY_FUNCTION__);
+
     QString output, error;
     m_CommitManager.Execute(arguments, output, error);
     _HandleCommandResult(output, error, m_CommitManager.GetCommandType());
@@ -34,9 +38,10 @@ QString GitRepository::Commit(const QStringList &arguments) {
 
 QString GitRepository::Branch(const QStringList &arguments) {
     if (!m_IsValidRepository) {
-        throw std::invalid_argument("Invalid Git repository path: " + m_RepositoryPath.toStdString());
+        throw std::invalid_argument(QObject::tr("Invalid Git repository path: %1").arg(m_RepositoryPath).toLatin1());
     }
-    qDebug() << "Executing branch command...";
+    Logger::log_static(QObject::tr("Executing branch command...").toStdString(), LoggingLevel::DEBUG, __LINE__, __PRETTY_FUNCTION__);
+
     QString output, error;
     m_BranchManager.Execute(arguments, output, error);
     _HandleCommandResult(output, error, m_BranchManager.GetCommandType());
@@ -46,9 +51,10 @@ QString GitRepository::Branch(const QStringList &arguments) {
 
 QString GitRepository::Add(const QStringList &arguments) {
     if (!m_IsValidRepository) {
-        throw std::invalid_argument("Invalid Git repository path: " + m_RepositoryPath.toStdString());
+        throw std::invalid_argument(QObject::tr("Invalid Git repository path: %1").arg(m_RepositoryPath).toLatin1());
     }
-    qDebug() << "Executing add command...";
+    Logger::log_static(QObject::tr("Executing add command...").toStdString(), LoggingLevel::DEBUG, __LINE__, __PRETTY_FUNCTION__);
+
     QString output, error;
     m_AddManager.Execute(arguments, output, error);
     _HandleCommandResult(output, error, m_AddManager.GetCommandType());
@@ -58,9 +64,10 @@ QString GitRepository::Add(const QStringList &arguments) {
 
 QString GitRepository::Diff(const QStringList &arguments) {
     if (!m_IsValidRepository) {
-        throw std::invalid_argument("Invalid Git repository path: " + m_RepositoryPath.toStdString());
+        throw std::invalid_argument(QObject::tr("Invalid Git repository path: %1").arg(m_RepositoryPath).toLatin1());
     }
-    qDebug() << "Executing diff command...";
+    Logger::log_static(QObject::tr("Executing diff command...").toStdString(), LoggingLevel::DEBUG, __LINE__, __PRETTY_FUNCTION__);
+
     QString output, error;
     m_DiffManager.Execute(arguments, output, error);
     _HandleCommandResult(output, error, m_DiffManager.GetCommandType());
@@ -70,9 +77,10 @@ QString GitRepository::Diff(const QStringList &arguments) {
 
 QString GitRepository::Checkout(const QStringList &arguments) {
     if (!m_IsValidRepository) {
-        throw std::invalid_argument("Invalid Git repository path: " + m_RepositoryPath.toStdString());
+        throw std::invalid_argument(QObject::tr("Invalid Git repository path: %1").arg(m_RepositoryPath).toLatin1());
     }
-    qDebug() << "Executing checkout command...";
+    Logger::log_static(QObject::tr("Executing checkout command...").toStdString(), LoggingLevel::DEBUG, __LINE__, __PRETTY_FUNCTION__);
+
     QString output, error;
     m_CheckoutManager.Execute(arguments, output, error);
     _HandleCommandResult(output, error, m_CheckoutManager.GetCommandType());
@@ -82,9 +90,10 @@ QString GitRepository::Checkout(const QStringList &arguments) {
 
 QString GitRepository::Log(const QStringList &arguments) {
     if (!m_IsValidRepository) {
-        throw std::invalid_argument("Invalid Git repository path: " + m_RepositoryPath.toStdString());
+        throw std::invalid_argument(QObject::tr("Invalid Git repository path: %1").arg(m_RepositoryPath).toLatin1());
     }
-    qDebug() << "Executing log command...";
+    Logger::log_static(QObject::tr("Executing log command...").toStdString(), LoggingLevel::DEBUG, __LINE__, __PRETTY_FUNCTION__);
+
     QString output, error;
     m_LogManager.Execute(arguments, output, error);
     _HandleCommandResult(output, error, m_LogManager.GetCommandType());
@@ -94,9 +103,10 @@ QString GitRepository::Log(const QStringList &arguments) {
 
 QString GitRepository::Remote(const QStringList &arguments) {
     if (!m_IsValidRepository) {
-        throw std::invalid_argument("Invalid Git repository path: " + m_RepositoryPath.toStdString());
+        throw std::invalid_argument(QObject::tr("Invalid Git repository path: %1").arg(m_RepositoryPath).toLatin1());
     }
-    qDebug() << "Executing remote command...";
+    Logger::log_static(QObject::tr("Executing remote command...").toStdString(), LoggingLevel::DEBUG, __LINE__, __PRETTY_FUNCTION__);
+
     QString output, error;
     m_RemoteManager.Execute(arguments, output, error);
     _HandleCommandResult(output, error, m_RemoteManager.GetCommandType());
@@ -106,10 +116,10 @@ QString GitRepository::Remote(const QStringList &arguments) {
 
 QString GitRepository::CheckIgnore(const QStringList &arguments) {
     if (!m_IsValidRepository) {
-        throw std::invalid_argument("Invalid Git repository path: " + m_RepositoryPath.toStdString());
+        throw std::invalid_argument(QObject::tr("Invalid Git repository path: %1").arg(m_RepositoryPath).toLatin1());
     }
+    Logger::log_static(QObject::tr("Executing check-ignore command...").toStdString(), LoggingLevel::DEBUG, __LINE__, __PRETTY_FUNCTION__);
 
-    qDebug() << "Executing check-ignore command...";
     QString output, error;
     m_CheckIgnoreManager.Execute(arguments, output, error);
     _HandleCommandResult(output, error, m_RemoteManager.GetCommandType());
@@ -121,7 +131,7 @@ void GitRepository::SetRepositoryPath(const QString &localRepositoryPath) {
     this->m_RepositoryPath = localRepositoryPath;
     this->m_IsValidRepository = _IsValidGitRepository(localRepositoryPath);
     if (!m_IsValidRepository) {
-        throw std::invalid_argument("Invalid Git repository path: " + localRepositoryPath.toStdString());
+        throw std::invalid_argument(QObject::tr("Invalid Git repository path: %1").arg(localRepositoryPath).toLatin1());
     }
     this->m_Executor.SetPath(localRepositoryPath);
 }
@@ -132,13 +142,15 @@ bool GitRepository::_IsValidGitRepository(const QString &path) {
 }
 
 void GitRepository::_HandleCommandResult(const QString &output, const QString &error, const QString &commandType) {
+    QString message;
     if (!output.isEmpty() && error.isEmpty()) {
-        qDebug() << commandType << "result:" << output;
+        message = QObject::tr("%1 executed successfully: %2").arg(commandType, output);
     } else {
         if (!error.isEmpty()) {
-            qDebug() << commandType << "error:" << error;
+            message = QObject::tr("%1 executed with error: %2").arg(commandType, output);
         } else {
-            qDebug() << commandType << "no output and no error.";
+            message = QObject::tr("%1 executed with no output.").arg(commandType);
         }
     }
+    Logger::log_static(message.toStdString(), LoggingLevel::DEBUG, __LINE__, __PRETTY_FUNCTION__);
 }

@@ -39,7 +39,7 @@ void ContribCardInfo::_SetupLayout() {
 
 void ContribCardInfo::_SetupTextBrowser() {
     m_TextBrowser->setOpenExternalLinks(true);
-    m_TextBrowser->setHtml(
+    QString html = QObject::tr(
         "<p align=\"center\">"
         "<h2>How To Use Contribution Card</h2><br />"
         "In Contribution Card, you can see the list of all the contributions made by the user you defined in the <b>User Manager Card</b>.<br />"
@@ -51,4 +51,5 @@ void ContribCardInfo::_SetupTextBrowser() {
         "<li>Mouse Middle Click » Set Start Date and End Date</li>"
         "</ul></b>"
         "<br />");
+    m_TextBrowser->setHtml(html);
 }

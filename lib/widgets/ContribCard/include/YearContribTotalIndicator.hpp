@@ -12,7 +12,7 @@ class YearContribTotalIndicator : public QLabel {
 
     void SetText(int total = 0) {
         this->m_Total = total;
-        QLabel::setText("Total " + QString::number(total) + " contributions");
+        QLabel::setText(QObject::tr("Total %1 contributions").arg(total));
     }
 
   private:

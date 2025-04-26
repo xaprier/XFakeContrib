@@ -41,7 +41,7 @@ void YearContrib::_SetupUI() {
     m_Layout->addWidget(m_Label.get());
 
     // Create a horizontal layout for the months
-    m_MonthsLayout = new QHBoxLayout(this);
+    m_MonthsLayout = new QHBoxLayout();
 
     m_Layout->addLayout(m_MonthsLayout);
 

@@ -5,6 +5,7 @@
 
 #include "GitHubAuthChecker.hpp"
 #include "Icon.hpp"
+#include "Logger.hpp"
 #include "PasswordLineEdit.hpp"
 #include "UserManager.hpp"
 #include "UserManagerComposedValidateButton.hpp"
@@ -75,6 +76,8 @@ void UserManagerCard::sl_ValidateUser(bool checked) {
 
 void UserManagerCard::sl_AuthCheckCompleted(bool isValid, const QString& message) {
     if (isValid) {
+        Logger::log_static(QObject::tr("Token validation successful.").toStdString(), LoggingLevel::INFO, __LINE__, __PRETTY_FUNCTION__);
+
         QString validMsg = QObject::tr("Credentials are valid. Do you want to save them?");
         auto msg = QMessageBox(QMessageBox::Icon::Information, QObject::tr("Validation"), validMsg, QMessageBox::StandardButton::Yes | QMessageBox::StandardButton::No);
         auto result = msg.exec();
@@ -85,6 +88,8 @@ void UserManagerCard::sl_AuthCheckCompleted(bool isValid, const QString& message
 
         emit si_UserUpdated();
     } else {
+        Logger::log_static(QObject::tr("Token validation failed: %1").arg(message).toStdString(), LoggingLevel::ERROR, __LINE__, __PRETTY_FUNCTION__);
+
         QString invalidMsg = QObject::tr("Credentials are invalid. Please check your username and token\n\n%1").arg(message);
         auto msg = QMessageBox(QMessageBox::Icon::Critical, QObject::tr("Validation"), invalidMsg, QMessageBox::StandardButton::Ok);
         msg.exec();

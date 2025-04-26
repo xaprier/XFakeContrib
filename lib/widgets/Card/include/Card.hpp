@@ -1,9 +1,6 @@
 #ifndef CARD_HPP
 #define CARD_HPP
 
-#include <qwidget.h>
-
-#include <QDebug>
 #include <QString>
 #include <QWidget>
 

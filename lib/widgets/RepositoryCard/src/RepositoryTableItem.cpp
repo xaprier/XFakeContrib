@@ -2,6 +2,7 @@
 
 #include <qobject.h>
 
+#include "Logger.hpp"
 #include "RepositoryTableItemCommitFile.hpp"
 #include "RepositoryTableItemConnections.hpp"
 #include "RepositoryTableItemPush.hpp"
@@ -29,7 +30,7 @@ RepositoryTableItem::RepositoryTableItem(const QString& absolutePath, QObject* p
 
         // if guard protection for invalid cast
         if (!label) {
-            qWarning() << "Failed to cast from RepositoryTableItemName to QLabel.";
+            Logger::log_static(QObject::tr("Failed to cast from RepositoryTableItemName to QLabel.").toStdString(), LoggingLevel::ERROR, __LINE__, __PRETTY_FUNCTION__);
             return;
         }
 
@@ -44,7 +45,7 @@ RepositoryTableItem::RepositoryTableItem(const QString& absolutePath, QObject* p
 
         // if guard protection for invalid cast
         if (!label) {
-            qWarning() << "Failed to cast from RepositoryTableItemRemote to QLabel.";
+            Logger::log_static(QObject::tr("Failed to cast from RepositoryTableItemRemote to QLabel.").toStdString(), LoggingLevel::ERROR, __LINE__, __PRETTY_FUNCTION__);
             return;
         }
 
@@ -57,7 +58,7 @@ RepositoryTableItem::RepositoryTableItem(const QString& absolutePath, QObject* p
 
         // if guard protection for invalid cast
         if (!toolButton) {
-            qWarning() << "Failed to cast from RepositoryTableItemCommitFile to QToolButton.";
+            Logger::log_static(QObject::tr("Failed to cast from RepositoryTableItemCommitFile to QToolButton.").toStdString(), LoggingLevel::ERROR, __LINE__, __PRETTY_FUNCTION__);
             return;
         }
 
@@ -70,7 +71,7 @@ RepositoryTableItem::RepositoryTableItem(const QString& absolutePath, QObject* p
 
         // if guard protection for invalid cast
         if (!toolButton) {
-            qWarning() << "Failed to cast from RepositoryTableItemLog to QToolButton.";
+            Logger::log_static(QObject::tr("Failed to cast from RepositoryTableItemLog to QToolButton.").toStdString(), LoggingLevel::ERROR, __LINE__, __PRETTY_FUNCTION__);
             return;
         }
 
@@ -143,7 +144,7 @@ void RepositoryTableItem::Push() {
     auto button = qobject_cast<QToolButton*>(this->m_PushItem->Item(RepositoryTableItemPush::Status::BUTTON));
 
     if (!button) {
-        qWarning() << "Failed to cast from RepositoryTableItemPush to QToolButton.";
+        Logger::log_static(QObject::tr("Failed to cast from RepositoryTableItemPush to QToolButton.").toStdString(), LoggingLevel::ERROR, __LINE__, __PRETTY_FUNCTION__);
         return;
     }
 

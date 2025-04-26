@@ -8,6 +8,8 @@
 #include <QObject>
 #include <map>
 
+#include "Logger.hpp"
+
 namespace XFakeContribHelper {
 void GetTotalContribs(std::map<int, ContribTotal>& getItem, const std::map<QDate, Contrib> allContribs = {});
 void GetFirstContrib(Contrib& getItem, const std::map<QDate, Contrib>& allContribs = {});
@@ -19,7 +21,7 @@ bool safeConnect(Sender* sender, Signal signal, Receiver* receiver, Slot slot, c
     static_assert(std::is_base_of<QObject, Receiver>::value, "Receiver must be a QObject-derived class.");
 
     if (!QObject::connect(sender, signal, receiver, slot, type)) {
-        qWarning() << "Failed to connect signal-slot:" << name;
+        Logger::log_static(QObject::tr("Failed to connect signal to slot: %1").arg(name).toStdString(), LoggingLevel::ERROR, __LINE__, __PRETTY_FUNCTION__);
         return false;
     }
     return true;

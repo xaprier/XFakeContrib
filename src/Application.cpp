@@ -46,7 +46,6 @@ QStringList Application::SupportedLanguages() {
 
     QDir dir(":/translations/");
     QStringList qmFiles = dir.entryList(QStringList() << "*.qm", QDir::Files);
-    qDebug() << "qmFiles: " << qmFiles;
     if (qmFiles.isEmpty()) {
         Logger::log_static(QObject::tr("No translation files found").toStdString(), LoggingLevel::WARNING, __LINE__, __PRETTY_FUNCTION__);
         return languages;

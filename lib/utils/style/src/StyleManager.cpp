@@ -1,5 +1,6 @@
 #include "StyleManager.hpp"
 
+#include "Logger.hpp"
 #include "Settings.hpp"
 
 void StyleManager::SetTheme(const QString &theme) {
@@ -23,7 +24,7 @@ void StyleManager::SetTheme(const QString &theme, QApplication &app) {
 
     QFile qssFile(qssPath);
     if (!qssFile.open(QFile::ReadOnly | QFile::Text)) {
-        qWarning() << "Cannot open qss file: " << qssPath;
+        Logger::log_static(QObject::tr("Cannot open qss file: %1").arg(qssPath).toStdString(), LoggingLevel::ERROR, __LINE__, __PRETTY_FUNCTION__);
         return;
     }
 
@@ -85,7 +86,7 @@ QMap<QString, QString> StyleManager::LoadJSONColors(const QString &jsonPath) {
 
     QFile file(jsonPath);
     if (!file.open(QIODevice::ReadOnly)) {
-        qWarning() << "JSON file cannot be opened:" << jsonPath << "\nSetting to default theme";
+        Logger::log_static(QObject::tr("Cannot open JSON file: %1").arg(jsonPath).toStdString(), LoggingLevel::ERROR, __LINE__, __PRETTY_FUNCTION__);
         return colorMap;
     }
 
@@ -101,7 +102,7 @@ QMap<QString, QString> StyleManager::LoadJSONColors(const QString &jsonPath) {
             colorMap[key] = value;
         }
     } else {
-        qWarning() << "Invalid JSON format in file:" << jsonPath;
+        Logger::log_static(QObject::tr("Invalid JSON format in file: %1").arg(jsonPath).toStdString(), LoggingLevel::ERROR, __LINE__, __PRETTY_FUNCTION__);
     }
 
     return colorMap;
