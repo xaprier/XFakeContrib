@@ -7,14 +7,20 @@ set(
   "${CMAKE_CURRENT_SOURCE_DIR}/logger" # get external logger
 )
 
+# off tests
+set(BUILD_TESTING OFF CACHE BOOL "" FORCE)
+# Faker-cxx ayarları
+set(SKIP_INSTALL_ALL TRUE CACHE INTERNAL "")
+# dummy bir config dosyası oluştur
+file(WRITE "${CMAKE_BINARY_DIR}/faker-cxxConfigVersion.cmake" "# Dummy faker-cxxConfigVersion.cmake")
 
 foreach(DIRECTORY ${DIRECTORIES_TO_CHECK})
-# Check if the directory exists
-if(NOT EXISTS ${DIRECTORY} OR NOT EXISTS ${DIRECTORY}/CMakeLists.txt)
-message(FATAL_ERROR "Directory ${DIRECTORY} does not exist.\nYou should get submodules while cloning(git clone --recurse-submodules ...).\nOr you can just get modules(git submodule update --init --recursive)")
-else()
-add_subdirectory(${DIRECTORY})
-endif()
+    # Check if the directory exists
+    if(NOT EXISTS ${DIRECTORY} OR NOT EXISTS ${DIRECTORY}/CMakeLists.txt)
+        message(FATAL_ERROR "Directory ${DIRECTORY} does not exist.\nYou should get submodules while cloning(git clone --recurse-submodules ...).\nOr you can just get modules(git submodule update --init --recursive)")
+    else()
+        add_subdirectory(${DIRECTORY})
+    endif()
 endforeach()
 
 # to link a static library to a shared library, we should compile it with -fPIC as below

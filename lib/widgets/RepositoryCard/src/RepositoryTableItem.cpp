@@ -2,6 +2,8 @@
 
 #include <qobject.h>
 
+#include <QMessageBox>
+
 #include "Logger.hpp"
 #include "RepositoryTableItemCommitFile.hpp"
 #include "RepositoryTableItemConnections.hpp"
@@ -21,64 +23,101 @@ RepositoryTableItem::RepositoryTableItem(const QString& absolutePath, QObject* p
     // GitRepository and GitChangeHandler objects
     m_GitRepository = new GitRepository(absolutePath, this);        // NOLINT
     m_GitChangeHandler = new GitChangeHandler(absolutePath, this);  // NOLINT
+    try {
+        // Repo name
+        {
+            int index = absolutePath.lastIndexOf('/');
+            QString repoName = absolutePath.mid(index + 1);
+            auto label = qobject_cast<QLabel*>(m_RepoNameItem->Item(RepositoryTableItemName::Status::LABEL));
 
-    // Repo name
-    {
-        int index = absolutePath.lastIndexOf('/');
-        QString repoName = absolutePath.mid(index + 1);
-        auto label = qobject_cast<QLabel*>(m_RepoNameItem->Item(RepositoryTableItemName::Status::LABEL));
+            // if guard protection for invalid cast
+            if (!label) {
+                Logger::log_static(QObject::tr("Failed to cast from RepositoryTableItemName to QLabel.").toStdString(), LoggingLevel::ERROR, __LINE__, __PRETTY_FUNCTION__);
+                return;
+            }
 
-        // if guard protection for invalid cast
-        if (!label) {
-            Logger::log_static(QObject::tr("Failed to cast from RepositoryTableItemName to QLabel.").toStdString(), LoggingLevel::ERROR, __LINE__, __PRETTY_FUNCTION__);
-            return;
+            label->setText(repoName);
+            label->setToolTip(absolutePath);
         }
 
-        label->setText(repoName);
-        label->setToolTip(absolutePath);
-    }
+        // Remote item
+        {
+            QString output;
+            bool success;
 
-    // Remote item
-    {
-        QString remote = m_GitRepository->Remote({"get-url", m_GitRepository->Remote({}).split('\n').first()}).trimmed();
-        auto label = qobject_cast<QLabel*>(m_RemoteItem->Item(RepositoryTableItemRemote::Status::LABEL));
+            success = m_GitRepository->Remote(output, {});
+            if (!success) {
+                Logger::log_static(QObject::tr("Failed to get remote URL: %1").arg(output).toStdString(), LoggingLevel::ERROR, __LINE__, __PRETTY_FUNCTION__);
+                return;
+            }
+            QString remote = output.split('\n').first();
 
-        // if guard protection for invalid cast
-        if (!label) {
-            Logger::log_static(QObject::tr("Failed to cast from RepositoryTableItemRemote to QLabel.").toStdString(), LoggingLevel::ERROR, __LINE__, __PRETTY_FUNCTION__);
-            return;
+            success = m_GitRepository->Remote(output, {"get-url", remote});
+            if (!success) {
+                Logger::log_static(QObject::tr("Failed to get remote URL: %1").arg(output).toStdString(), LoggingLevel::ERROR, __LINE__, __PRETTY_FUNCTION__);
+                return;
+            }
+            QString remoteURL = output.trimmed();
+            auto label = qobject_cast<QLabel*>(m_RemoteItem->Item(RepositoryTableItemRemote::Status::LABEL));
+
+            // if guard protection for invalid cast
+            if (!label) {
+                Logger::log_static(QObject::tr("Failed to cast from RepositoryTableItemRemote to QLabel.").toStdString(), LoggingLevel::ERROR, __LINE__, __PRETTY_FUNCTION__);
+                return;
+            }
+
+            label->setText(remoteURL);
         }
 
-        label->setText(remote);
-    }
+        // Commit File Button
+        {
+            auto toolButton = qobject_cast<QToolButton*>(m_CommitFileButton->Item(RepositoryTableItemCommitFile::Status::BUTTON));
 
-    // Commit File Button
-    {
-        auto toolButton = qobject_cast<QToolButton*>(m_CommitFileButton->Item(RepositoryTableItemCommitFile::Status::BUTTON));
+            // if guard protection for invalid cast
+            if (!toolButton) {
+                Logger::log_static(QObject::tr("Failed to cast from RepositoryTableItemCommitFile to QToolButton.").toStdString(), LoggingLevel::ERROR, __LINE__, __PRETTY_FUNCTION__);
+                return;
+            }
 
-        // if guard protection for invalid cast
-        if (!toolButton) {
-            Logger::log_static(QObject::tr("Failed to cast from RepositoryTableItemCommitFile to QToolButton.").toStdString(), LoggingLevel::ERROR, __LINE__, __PRETTY_FUNCTION__);
-            return;
+            toolButton->setToolTip(QObject::tr("Select Commit File(No File Selected)"));
         }
 
-        toolButton->setToolTip(QObject::tr("Select Commit File(No File Selected)"));
-    }
+        // Log Button
+        {
+            auto toolButton = qobject_cast<QToolButton*>(m_LogItem->Item(RepositoryTableItemLog::Status::BUTTON));
 
-    // Log Button
-    {
-        auto toolButton = qobject_cast<QToolButton*>(m_LogItem->Item(RepositoryTableItemLog::Status::BUTTON));
+            // if guard protection for invalid cast
+            if (!toolButton) {
+                Logger::log_static(QObject::tr("Failed to cast from RepositoryTableItemLog to QToolButton.").toStdString(), LoggingLevel::ERROR, __LINE__, __PRETTY_FUNCTION__);
+                return;
+            }
 
-        // if guard protection for invalid cast
-        if (!toolButton) {
-            Logger::log_static(QObject::tr("Failed to cast from RepositoryTableItemLog to QToolButton.").toStdString(), LoggingLevel::ERROR, __LINE__, __PRETTY_FUNCTION__);
-            return;
+            QString output;
+            bool success;
+
+            success = m_GitRepository->Remote(output, {});
+            if (!success) {
+                Logger::log_static(QObject::tr("Failed to get remote URL: %1").arg(output).toStdString(), LoggingLevel::ERROR, __LINE__, __PRETTY_FUNCTION__);
+                return;
+            }
+            QString remote = output.split('\n').first();
+
+            success = m_GitRepository->Remote(output, {"get-url", remote});
+            if (!success) {
+                Logger::log_static(QObject::tr("Failed to get remote URL: %1").arg(output).toStdString(), LoggingLevel::ERROR, __LINE__, __PRETTY_FUNCTION__);
+                return;
+            }
+            QString remoteURL = output.trimmed();
+
+            toolButton->setToolTip(QObject::tr("Get latest logs for: %1").arg(remoteURL));
         }
-
-        QString remote = m_GitRepository->Remote({"get-url", m_GitRepository->Remote({}).split('\n').first()}).trimmed();
-        toolButton->setToolTip(QObject::tr("Get latest logs for: %1").arg(remote));
+    } catch (const std::exception& e) {
+        Logger::log_static(QObject::tr("An error occurred: %1").arg(e.what()).toStdString(), LoggingLevel::ERROR, __LINE__, __PRETTY_FUNCTION__);
+        QMessageBox::critical(m_PushItem, QObject::tr("Error"), QObject::tr("An error occurred: %1").arg(e.what()));
+    } catch (...) {
+        Logger::log_static(QObject::tr("An unknown error occurred.").toStdString(), LoggingLevel::ERROR, __LINE__, __PRETTY_FUNCTION__);
+        QMessageBox::critical(m_PushItem, QObject::tr("Error"), QObject::tr("An unknown error occurred."));
     }
-
     // Setup Connections
     m_Connections = new RepositoryTableItemConnections(this);  // NOLINT
 }

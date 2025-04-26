@@ -42,7 +42,8 @@ class RepositoryTableItemConnections : public QObject {
 
   private:
     bool m_Pushing = false;
-    QPointer<QFutureWatcher<QString>> m_Watcher;
+    QPointer<QFutureWatcher<bool>> m_Watcher;
+    QString m_Output;
     RepositoryTableItem *m_Item;
     QString m_CommitFile;
     QList<GitCommitter *> m_Committers;

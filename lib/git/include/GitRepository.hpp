@@ -20,15 +20,15 @@ class GitRepository : public QObject {
     Q_OBJECT
   public:
     GitRepository(const QString &localRepositoryPath = "", QObject *parent = nullptr);
-    QString Push(const QStringList &arguments);
-    QString Commit(const QStringList &arguments = {"-m", "Default Commit Message"});
-    QString Branch(const QStringList &arguments = {});
-    QString Add(const QStringList &arguments = {});
-    QString Diff(const QStringList &arguments = {"--name-only"});
-    QString Checkout(const QStringList &arguments = {});
-    QString Log(const QStringList &arguments = {});
-    QString Remote(const QStringList &arguments = {});
-    QString CheckIgnore(const QStringList &arguments = {});
+    bool Push(QString &output, const QStringList &arguments);
+    bool Commit(QString &output, const QStringList &arguments = {"-m", "Default Commit Message"});
+    bool Branch(QString &output, const QStringList &arguments = {});
+    bool Add(QString &output, const QStringList &arguments = {});
+    bool Diff(QString &output, const QStringList &arguments = {"--name-only"});
+    bool Checkout(QString &output, const QStringList &arguments = {});
+    bool Log(QString &output, const QStringList &arguments = {});
+    bool Remote(QString &output, const QStringList &arguments = {});
+    bool CheckIgnore(QString &output, const QStringList &arguments = {});
 
     void SetRepositoryPath(const QString &localRepositoryPath = "");
     QString GetRepositoryPath() const { return m_RepositoryPath; }

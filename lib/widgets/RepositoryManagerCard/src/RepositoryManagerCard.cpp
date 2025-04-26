@@ -144,6 +144,9 @@ void RepositoryManagerCard::_LoadRepositories() {
     } catch (const std::exception &e) {
         Logger::log_static(QObject::tr("An error occured: %1").arg(e.what()).toStdString(), LoggingLevel::ERROR, __LINE__, __PRETTY_FUNCTION__);
         QMessageBox::critical(this, QObject::tr("Error"), QObject::tr("An error occured: %1").arg(e.what()));
+    } catch (...) {
+        Logger::log_static(QObject::tr("An unknown error occured.").toStdString(), LoggingLevel::ERROR, __LINE__, __PRETTY_FUNCTION__);
+        QMessageBox::critical(this, QObject::tr("Error"), QObject::tr("An unknown error occured."));
     }
 }
 
@@ -165,7 +168,17 @@ void RepositoryManagerCard::_LoadBranches() {
             return;
         }
 
-        auto branches = m_GitRepository->Branch({"-a"}).split('\n');
+        QString output;
+        bool success;
+        success = m_GitRepository->Branch(output, {"-a"});
+
+        if (!success) {
+            Logger::log_static(QObject::tr("Failed to get branches: \n%1").arg(output).toStdString(), LoggingLevel::ERROR, __LINE__, __PRETTY_FUNCTION__);
+            QMessageBox::critical(this, QObject::tr("Error"), QObject::tr("Failed to get branches: \n%1").arg(output));
+            return;
+        }
+
+        auto branches = output.split('\n');
 
         // we should delete first two characters if they are whitespaces because of indentation
         for (auto &branch : branches)
@@ -187,6 +200,9 @@ void RepositoryManagerCard::_LoadBranches() {
     } catch (const std::exception &e) {
         Logger::log_static(QObject::tr("An error occured: %1").arg(e.what()).toStdString(), LoggingLevel::ERROR, __LINE__, __PRETTY_FUNCTION__);
         QMessageBox::critical(this, QObject::tr("Error"), QObject::tr("An error occured: %1").arg(e.what()));
+    } catch (...) {
+        Logger::log_static(QObject::tr("An unknown error occured.").toStdString(), LoggingLevel::ERROR, __LINE__, __PRETTY_FUNCTION__);
+        QMessageBox::critical(this, QObject::tr("Error"), QObject::tr("An unknown error occured."));
     }
 }
 
@@ -414,7 +430,17 @@ void RepositoryManagerCard::sl_BranchCreateClicked(bool checked) {
             return;
         }
 
-        auto branches = m_GitRepository->Branch({"-a"}).split('\n');
+        QString output;
+        bool success;
+        success = m_GitRepository->Add(output, {"-a"});
+
+        if (!success) {
+            Logger::log_static(QObject::tr("Failed to get branches: \n%1").arg(output).toStdString(), LoggingLevel::ERROR, __LINE__, __PRETTY_FUNCTION__);
+            QMessageBox::critical(this, QObject::tr("Error"), QObject::tr("Failed to get branches: \n%1").arg(output));
+            return;
+        }
+
+        auto branches = output.split('\n');
 
         // we should delete first two characters if they are whitespaces because of indentation
         for (auto &branch : branches)
@@ -440,6 +466,9 @@ void RepositoryManagerCard::sl_BranchCreateClicked(bool checked) {
     } catch (const std::exception &e) {
         Logger::log_static(QObject::tr("An error occured: %1").arg(e.what()).toStdString(), LoggingLevel::ERROR, __LINE__, __PRETTY_FUNCTION__);
         QMessageBox::critical(this, QObject::tr("Error"), QObject::tr("An error occured: %1").arg(e.what()));
+    } catch (...) {
+        Logger::log_static(QObject::tr("An unknown error occured.").toStdString(), LoggingLevel::ERROR, __LINE__, __PRETTY_FUNCTION__);
+        QMessageBox::critical(this, QObject::tr("Error"), QObject::tr("An unknown error occured."));
     }
 }
 
@@ -463,7 +492,15 @@ void RepositoryManagerCard::sl_BranchDeleteClicked(bool checked) {
         auto branchName = selectedItem->text();
 
         // delete branch and load branches in ui again
-        m_GitRepository->Branch({"-d", branchName});
+        QString output;
+        bool success;
+        success = m_GitRepository->Branch(output, {"-d", branchName});
+
+        if (!success) {
+            Logger::log_static(QObject::tr("Failed to delete branch: %1").arg(output).toStdString(), LoggingLevel::ERROR, __LINE__, __PRETTY_FUNCTION__);
+            QMessageBox::critical(this, QObject::tr("Error"), QObject::tr("Failed to delete branch: \n%1").arg(output));
+            return;
+        }
 
         Logger::log_static(QObject::tr("Branch %1 deleted for %2").arg(branchName).arg(m_GitRepository->GetRepositoryPath().split('/').last()).toStdString(), LoggingLevel::INFO, __LINE__, __PRETTY_FUNCTION__);
 
@@ -472,6 +509,9 @@ void RepositoryManagerCard::sl_BranchDeleteClicked(bool checked) {
     } catch (const std::exception &e) {
         Logger::log_static(QObject::tr("An error occured: %1").arg(e.what()).toStdString(), LoggingLevel::ERROR, __LINE__, __PRETTY_FUNCTION__);
         QMessageBox::critical(this, QObject::tr("Error"), QObject::tr("An error occured: %1").arg(e.what()));
+    } catch (...) {
+        Logger::log_static(QObject::tr("An unknown error occured.").toStdString(), LoggingLevel::ERROR, __LINE__, __PRETTY_FUNCTION__);
+        QMessageBox::critical(this, QObject::tr("Error"), QObject::tr("An unknown error occured."));
     }
 }
 
@@ -485,6 +525,9 @@ void RepositoryManagerCard::sl_CurrentRowChangedForRepository(int row) {
     } catch (const std::exception &e) {
         Logger::log_static(QObject::tr("An error occured: %1").arg(e.what()).toStdString(), LoggingLevel::ERROR, __LINE__, __PRETTY_FUNCTION__);
         QMessageBox::critical(this, QObject::tr("Error"), QObject::tr("An error occured: %1").arg(e.what()));
+    } catch (...) {
+        Logger::log_static(QObject::tr("An unknown error occured.").toStdString(), LoggingLevel::ERROR, __LINE__, __PRETTY_FUNCTION__);
+        QMessageBox::critical(this, QObject::tr("Error"), QObject::tr("An unknown error occured."));
     }
 }
 
@@ -519,9 +562,19 @@ void RepositoryManagerCard::sl_ItemChangedForBranch(QListWidgetItem *item) {
             return;
         }
 
+        QString output;
+        bool success;
+
+        success = m_GitRepository->Branch(output, {"-m", oldBranch, newBranch});
+        if (!success) {
+            Logger::log_static(QObject::tr("Failed to rename branch: %1").arg(output).toStdString(), LoggingLevel::ERROR, __LINE__, __PRETTY_FUNCTION__);
+            QMessageBox::critical(this, QObject::tr("Error"), QObject::tr("Failed to rename branch: \n%1").arg(output));
+            item->setText(oldBranch);
+            return;
+        }
+
         widget->blockSignals(false);
 
-        m_GitRepository->Branch({"-m", oldBranch, newBranch});
         emit this->si_RepositoriesUpdated();
 
         Logger::log_static(QObject::tr("Branch %1 renamed to %2 for %3").arg(oldBranch).arg(newBranch).arg(m_GitRepository->GetRepositoryPath().split('/').last()).toStdString(), LoggingLevel::INFO, __LINE__, __PRETTY_FUNCTION__);
@@ -531,5 +584,8 @@ void RepositoryManagerCard::sl_ItemChangedForBranch(QListWidgetItem *item) {
     } catch (const std::exception &e) {
         Logger::log_static(QObject::tr("An error occured: %1").arg(e.what()).toStdString(), LoggingLevel::ERROR, __LINE__, __PRETTY_FUNCTION__);
         QMessageBox::critical(this, QObject::tr("Error"), QObject::tr("An error occured: %1").arg(e.what()));
+    } catch (...) {
+        Logger::log_static(QObject::tr("An unknown error occured.").toStdString(), LoggingLevel::ERROR, __LINE__, __PRETTY_FUNCTION__);
+        QMessageBox::critical(this, QObject::tr("Error"), QObject::tr("An unknown error occured."));
     }
 }

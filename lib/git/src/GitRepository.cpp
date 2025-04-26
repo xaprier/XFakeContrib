@@ -10,7 +10,7 @@ GitRepository::GitRepository(const QString &localRepositoryPath, QObject *parent
     this->SetRepositoryPath(localRepositoryPath);
 }
 
-QString GitRepository::Push(const QStringList &arguments) {
+bool GitRepository::Push(QString &message, const QStringList &arguments) {
     if (!m_IsValidRepository) {
         throw std::invalid_argument(QObject::tr("Invalid Git repository path: %1").arg(m_RepositoryPath).toLatin1());
     }
@@ -19,11 +19,15 @@ QString GitRepository::Push(const QStringList &arguments) {
     QString output, error;
     m_PushManager.Execute(arguments, output, error);
     _HandleCommandResult(output, error, m_PushManager.GetCommandType());
-    if (!error.isEmpty()) return error;
-    return output;
+    if (!error.isEmpty()) {
+        message = error;
+        return 0;
+    }
+    message = output;
+    return 1;
 }
 
-QString GitRepository::Commit(const QStringList &arguments) {
+bool GitRepository::Commit(QString &message, const QStringList &arguments) {
     if (!m_IsValidRepository) {
         throw std::invalid_argument(QObject::tr("Invalid Git repository path: %1").arg(m_RepositoryPath).toLatin1());
     }
@@ -32,11 +36,15 @@ QString GitRepository::Commit(const QStringList &arguments) {
     QString output, error;
     m_CommitManager.Execute(arguments, output, error);
     _HandleCommandResult(output, error, m_CommitManager.GetCommandType());
-    if (!error.isEmpty()) return error;
-    return output;
+    if (!error.isEmpty()) {
+        message = error;
+        return 0;
+    }
+    message = output;
+    return 1;
 }
 
-QString GitRepository::Branch(const QStringList &arguments) {
+bool GitRepository::Branch(QString &message, const QStringList &arguments) {
     if (!m_IsValidRepository) {
         throw std::invalid_argument(QObject::tr("Invalid Git repository path: %1").arg(m_RepositoryPath).toLatin1());
     }
@@ -45,11 +53,15 @@ QString GitRepository::Branch(const QStringList &arguments) {
     QString output, error;
     m_BranchManager.Execute(arguments, output, error);
     _HandleCommandResult(output, error, m_BranchManager.GetCommandType());
-    if (!error.isEmpty()) return error;
-    return output;
+    if (!error.isEmpty()) {
+        message = error;
+        return 0;
+    }
+    message = output;
+    return 1;
 }
 
-QString GitRepository::Add(const QStringList &arguments) {
+bool GitRepository::Add(QString &message, const QStringList &arguments) {
     if (!m_IsValidRepository) {
         throw std::invalid_argument(QObject::tr("Invalid Git repository path: %1").arg(m_RepositoryPath).toLatin1());
     }
@@ -58,11 +70,15 @@ QString GitRepository::Add(const QStringList &arguments) {
     QString output, error;
     m_AddManager.Execute(arguments, output, error);
     _HandleCommandResult(output, error, m_AddManager.GetCommandType());
-    if (!error.isEmpty()) return error;
-    return output;
+    if (!error.isEmpty()) {
+        message = error;
+        return 0;
+    }
+    message = output;
+    return 1;
 }
 
-QString GitRepository::Diff(const QStringList &arguments) {
+bool GitRepository::Diff(QString &message, const QStringList &arguments) {
     if (!m_IsValidRepository) {
         throw std::invalid_argument(QObject::tr("Invalid Git repository path: %1").arg(m_RepositoryPath).toLatin1());
     }
@@ -71,11 +87,15 @@ QString GitRepository::Diff(const QStringList &arguments) {
     QString output, error;
     m_DiffManager.Execute(arguments, output, error);
     _HandleCommandResult(output, error, m_DiffManager.GetCommandType());
-    if (!error.isEmpty()) return error;
-    return output;
+    if (!error.isEmpty()) {
+        message = error;
+        return 0;
+    }
+    message = output;
+    return 1;
 }
 
-QString GitRepository::Checkout(const QStringList &arguments) {
+bool GitRepository::Checkout(QString &message, const QStringList &arguments) {
     if (!m_IsValidRepository) {
         throw std::invalid_argument(QObject::tr("Invalid Git repository path: %1").arg(m_RepositoryPath).toLatin1());
     }
@@ -84,11 +104,15 @@ QString GitRepository::Checkout(const QStringList &arguments) {
     QString output, error;
     m_CheckoutManager.Execute(arguments, output, error);
     _HandleCommandResult(output, error, m_CheckoutManager.GetCommandType());
-    if (!error.isEmpty()) return error;
-    return output;
+    if (!error.isEmpty()) {
+        message = error;
+        return 0;
+    }
+    message = output;
+    return 1;
 }
 
-QString GitRepository::Log(const QStringList &arguments) {
+bool GitRepository::Log(QString &message, const QStringList &arguments) {
     if (!m_IsValidRepository) {
         throw std::invalid_argument(QObject::tr("Invalid Git repository path: %1").arg(m_RepositoryPath).toLatin1());
     }
@@ -97,11 +121,15 @@ QString GitRepository::Log(const QStringList &arguments) {
     QString output, error;
     m_LogManager.Execute(arguments, output, error);
     _HandleCommandResult(output, error, m_LogManager.GetCommandType());
-    if (!error.isEmpty()) return error;
-    return output;
+    if (!error.isEmpty()) {
+        message = error;
+        return 0;
+    }
+    message = output;
+    return 1;
 }
 
-QString GitRepository::Remote(const QStringList &arguments) {
+bool GitRepository::Remote(QString &message, const QStringList &arguments) {
     if (!m_IsValidRepository) {
         throw std::invalid_argument(QObject::tr("Invalid Git repository path: %1").arg(m_RepositoryPath).toLatin1());
     }
@@ -110,11 +138,15 @@ QString GitRepository::Remote(const QStringList &arguments) {
     QString output, error;
     m_RemoteManager.Execute(arguments, output, error);
     _HandleCommandResult(output, error, m_RemoteManager.GetCommandType());
-    if (!error.isEmpty()) return error;
-    return output;
+    if (!error.isEmpty()) {
+        message = error;
+        return 0;
+    }
+    message = output;
+    return 1;
 }
 
-QString GitRepository::CheckIgnore(const QStringList &arguments) {
+bool GitRepository::CheckIgnore(QString &message, const QStringList &arguments) {
     if (!m_IsValidRepository) {
         throw std::invalid_argument(QObject::tr("Invalid Git repository path: %1").arg(m_RepositoryPath).toLatin1());
     }
@@ -123,8 +155,12 @@ QString GitRepository::CheckIgnore(const QStringList &arguments) {
     QString output, error;
     m_CheckIgnoreManager.Execute(arguments, output, error);
     _HandleCommandResult(output, error, m_RemoteManager.GetCommandType());
-    if (!error.isEmpty()) return error;
-    return output;
+    if (!error.isEmpty()) {
+        message = error;
+        return 0;
+    }
+    message = output;
+    return 1;
 }
 
 void GitRepository::SetRepositoryPath(const QString &localRepositoryPath) {
@@ -147,7 +183,7 @@ void GitRepository::_HandleCommandResult(const QString &output, const QString &e
         message = QObject::tr("%1 executed successfully: %2").arg(commandType, output);
     } else {
         if (!error.isEmpty()) {
-            message = QObject::tr("%1 executed with error: %2").arg(commandType, output);
+            message = QObject::tr("%1 executed with error: %2").arg(commandType, error);
         } else {
             message = QObject::tr("%1 executed with no output.").arg(commandType);
         }

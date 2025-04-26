@@ -123,11 +123,20 @@ void MainWindowConnections::_CheckForRequirements() {
 
 void MainWindowConnections::sl_FetchContribs() {
     m_Ui->m_ContribCard->Update();  // clear the list
-
-    GitHubFetchAdapterWithUser fetcherFromUser(*m_Ui->m_UserManagerCard);
-    m_Fetcher = fetcherFromUser.adapt();
-    connect(m_Fetcher.get(), &GitHubContribFetcher::si_AllRepliesFinished, this, &MainWindowConnections::sl_FetchCompleted);
-    m_Fetcher->FetchUserContributions();
+    try {
+        GitHubFetchAdapterWithUser fetcherFromUser(*m_Ui->m_UserManagerCard);
+        m_Fetcher = fetcherFromUser.adapt();
+        connect(m_Fetcher.get(), &GitHubContribFetcher::si_AllRepliesFinished, this, &MainWindowConnections::sl_FetchCompleted);
+        m_Fetcher->FetchUserContributions();
+    } catch (const std::exception &e) {
+        Logger::log_static(QObject::tr("Error fetching contributions: %1").arg(e.what()).toStdString(), LoggingLevel::ERROR, __LINE__, __PRETTY_FUNCTION__);
+        auto msg = QString(QObject::tr("Error fetching contributions: %1").arg(e.what()));
+        QMessageBox::critical(nullptr, QObject::tr("Fetch Error"), msg);
+    } catch (...) {
+        Logger::log_static(QObject::tr("Unknown error fetching contributions").toStdString(), LoggingLevel::ERROR, __LINE__, __PRETTY_FUNCTION__);
+        auto msg = QString(QObject::tr("Unknown error fetching contributions"));
+        QMessageBox::critical(nullptr, QObject::tr("Fetch Error"), msg);
+    }
 }
 
 void MainWindowConnections::sl_FetchCompleted() {
@@ -136,7 +145,7 @@ void MainWindowConnections::sl_FetchCompleted() {
 
 void MainWindowConnections::sl_PushCompleted() {
     if (QThread::currentThread() != qApp->thread()) {
-        // Ana thread'de çalıştırılmasını sağla
+        // if not in main thread, invoke the method in main thread
         QMetaObject::invokeMethod(this, "sl_PushCompleted", Qt::QueuedConnection);
         return;
     }
@@ -145,6 +154,13 @@ void MainWindowConnections::sl_PushCompleted() {
     QMessageBox msgBox(QMessageBox::Question, QObject::tr("Reload Contributions"), msg, QMessageBox::Yes | QMessageBox::No);
     msgBox.setWindowModality(Qt::WindowModal);
     msgBox.setDefaultButton(QMessageBox::Yes);
+
+    static bool asked = false;
+
+    if (asked) {
+        return;
+    }
+    asked = true;
 
     if (msgBox.exec() == QMessageBox::Yes) {
         this->sl_FetchContribs();

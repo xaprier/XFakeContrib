@@ -13,6 +13,7 @@ GitCommitter::GitCommitter(QString repoPath, QString commitFile, QString commitM
 
 void GitCommitter::run() {
     QString oldContent = "";
+    qDebug() << "Starting commit process with" << m_CommitCount << "commits to" << m_CommitFile;
     for (int i = 0; i < m_CommitCount; i++) {
         Faker faker;
         auto commitMessage = m_RandomMessage ? QString::fromStdString(faker.GetHacker()) : m_CommitMessage;
@@ -22,6 +23,8 @@ void GitCommitter::run() {
             commitContent = QString::fromStdString(faker.GetLorem());
         }
 
+        qDebug() << "Commit #" << i << "with message:" << commitContent << "and content:" << oldContent;
+
         oldContent = commitContent;
 
         if (m_RandomContent)
@@ -29,13 +32,26 @@ void GitCommitter::run() {
         else
             m_Handler->CreateChange(m_CommitFile, commitContent);
 
-        m_Handler->ApplyChanges();
         QMutexLocker locker(&m_GitCommandMutex);
-        m_Repository->Add({m_CommitFile});
-        m_Repository->Commit({"-m",
-                              commitMessage,
-                              "--date",
-                              m_Date.toString("yyyy-MM-dd hh:mm:ss")});
+        m_Handler->ApplyChanges();
+        QString output;
+        bool success;
+        success = m_Repository->Add(output, {m_CommitFile});
+
+        if (!success) {
+            emit si_CommitterError(output);
+            return;
+        }
+
+        success = m_Repository->Commit(output, {"-m",
+                                                commitMessage,
+                                                "--date",
+                                                m_Date.toString("yyyy-MM-dd hh:mm:ss")});
+
+        if (!success) {
+            emit si_CommitterError(output);
+            return;
+        }
     }
     emit si_CommitterFinished(m_Date);
 }

@@ -1,10 +1,7 @@
 #ifndef STYLEMANAGER_HPP
 #define STYLEMANAGER_HPP
 
-#include <yaml-cpp/yaml.h>
-
 #include <QApplication>
-#include <QDebug>
 #include <QDir>
 #include <QFile>
 #include <QJsonDocument>

@@ -4,7 +4,6 @@
 #include <qglobal.h>
 #include <qmessagebox.h>
 #include <qpushbutton.h>
-#include <qt6/QtCore/qobject.h>
 #include <unistd.h>
 
 #include <QFileDialog>
@@ -291,7 +290,6 @@ void RepositoryCardConnections::sl_ItemPushCompleted(QFutureWatcher<void> *watch
     if (m_PushWatchers.isEmpty()) {
         // turn loading indicator to button
         this->m_Ui->pushPB->SetButton();
-        emit this->si_PushesCompleted();
     }
 }
 
@@ -299,8 +297,7 @@ quint32 RepositoryCardConnections::_GetCommitCount() const {
     auto random = this->m_Ui->commitCountCB->isChecked();
 
     if (random) {
-        QRandomGenerator generator;
-        return generator.bounded(quint32(1), m_Settings->GetRandomMax());
+        return QRandomGenerator::global()->bounded(quint32(1), m_Settings->GetRandomMax());
     }
 
     return this->m_Ui->commitCountSP->value();

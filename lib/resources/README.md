@@ -50,3 +50,6 @@
 
 ## <a href="https://www.flaticon.com/authors/freepik" target="_blank">Thanks to freepik</a>
 - icons/user_manager.png
+
+## <a href="https://github.com/nikolay-borzov/modorganizer-themes" target="_blank">Thanks to nikolay-borzov</a>
+- style.qss
