@@ -1,7 +1,5 @@
 #include "XFakeContribHelper.hpp"
 
-#include <QDebug>
-
 #include "ContribTotal.hpp"
 
 namespace XFakeContribHelper {

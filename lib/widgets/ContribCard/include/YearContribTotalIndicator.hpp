@@ -4,6 +4,7 @@
 #include <QLabel>
 
 class YearContribTotalIndicator : public QLabel {
+    Q_OBJECT
   public:
     YearContribTotalIndicator(int total = 0, QWidget *parent = nullptr) : m_Total(total), QLabel(parent) {
         this->SetText(total);

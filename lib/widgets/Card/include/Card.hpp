@@ -5,8 +5,9 @@
 #include <QWidget>
 
 #include "Icon.hpp"
+#include "Widgets_Global.hpp"
 
-class Card : public QWidget {
+class WIDGETS_EXPORT Card : public QWidget {
     Q_OBJECT
   public:
     using QWidget::QWidget;

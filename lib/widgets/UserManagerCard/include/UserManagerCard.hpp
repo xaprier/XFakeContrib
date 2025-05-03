@@ -11,16 +11,20 @@
 #include "Card.hpp"
 #include "Icon.hpp"
 
+#include "Widgets_Global.hpp"
+
 class UserManager;
 class UserManagerComposedSaveButton;
 class UserManagerComposedValidateButton;
 class GitHubAuthChecker;
 
+QT_BEGIN_NAMESPACE
 namespace xaprier::Qt::Widgets {
 class PasswordLineEdit;
 }
+QT_END_NAMESPACE
 
-class UserManagerCard : public Card {
+class WIDGETS_EXPORT UserManagerCard : public Card {
     Q_OBJECT
   public:
     explicit UserManagerCard(QWidget* parent = nullptr);
@@ -39,7 +43,7 @@ class UserManagerCard : public Card {
 
   protected slots:
     void sl_ValidateUser(bool checked);
-    void sl_AuthCheckCompleted(bool isValid, const QString& message);
+    void sl_AuthCheckCompleted(bool isValid, QString message);
 
   protected:
     void _SetupUI();

@@ -13,7 +13,6 @@ GitCommitter::GitCommitter(QString repoPath, QString commitFile, QString commitM
 
 void GitCommitter::run() {
     QString oldContent = "";
-    qDebug() << "Starting commit process with" << m_CommitCount << "commits to" << m_CommitFile;
     for (int i = 0; i < m_CommitCount; i++) {
         Faker faker;
         auto commitMessage = m_RandomMessage ? QString::fromStdString(faker.GetHacker()) : m_CommitMessage;
@@ -22,8 +21,6 @@ void GitCommitter::run() {
         while (commitContent == oldContent && !m_RandomContent) {
             commitContent = QString::fromStdString(faker.GetLorem());
         }
-
-        qDebug() << "Commit #" << i << "with message:" << commitContent << "and content:" << oldContent;
 
         oldContent = commitContent;
 

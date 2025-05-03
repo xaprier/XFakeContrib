@@ -3,7 +3,9 @@
 
 #include "GitChange.hpp"
 
-class GitChangeDelete : public GitChange {
+#include "Git_Global.hpp"
+
+class GIT_EXPORT GitChangeDelete : public GitChange {
     Q_OBJECT
   public:
     explicit GitChangeDelete(QString repoPath, QString fileName, QString change = "", QObject *parent = nullptr) : GitChange(repoPath, fileName, change, parent) {}

@@ -50,7 +50,7 @@ void GitHubContribFetcher::sl_NetworkReplyFinished(QNetworkReply* reply) {
     reply->deleteLater();
 }
 
-void GitHubContribFetcher::sl_AuthCheckResult(bool isValid, const QString& message) {
+void GitHubContribFetcher::sl_AuthCheckResult(bool isValid, QString message) {
     if (isValid) {
         Logger::log_static(QObject::tr("Token validation successful.").toStdString(), LoggingLevel::INFO, __LINE__, __PRETTY_FUNCTION__);
     } else {

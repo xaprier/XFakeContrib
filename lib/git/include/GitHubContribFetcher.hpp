@@ -19,7 +19,9 @@
 #include "ContribTotal.hpp"
 #include "GitHubAuthChecker.hpp"
 
-class GitHubContribFetcher : public QObject {
+#include "Git_Global.hpp"
+
+class GIT_EXPORT GitHubContribFetcher : public QObject {
     Q_OBJECT
 
   public:
@@ -38,7 +40,7 @@ class GitHubContribFetcher : public QObject {
 
   private slots:
     void sl_NetworkReplyFinished(QNetworkReply* reply);
-    void sl_AuthCheckResult(bool isValid, const QString& message);
+    void sl_AuthCheckResult(bool isValid, QString message);
     void sl_FetchUserContribs();
 
   signals:

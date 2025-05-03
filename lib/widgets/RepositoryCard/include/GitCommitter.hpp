@@ -34,8 +34,8 @@ class GitCommitter final : public QThread {
     void SetCommitDate(QDate commitDate) { m_Date = commitDate; }
 
   signals:
-    void si_CommitterFinished(QDate &date);
-    void si_CommitterError(QString &error);
+    void si_CommitterFinished(QDate date);
+    void si_CommitterError(QString error);
 
   protected:
     void run() override;

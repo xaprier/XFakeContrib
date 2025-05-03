@@ -13,7 +13,7 @@
 #include "Settings.hpp"
 #include "XFakeContribHelper.hpp"
 
-MainWindowConnections::MainWindowConnections(Ui::MainWindow *ui) : m_Ui(ui), m_UpdateChecker(new GitHubUpdateChecker(this)) {
+MainWindowConnections::MainWindowConnections(Ui::MainWindow *ui) : m_Ui(ui), m_UpdateChecker(new GitHubUpdateChecker(this)), m_RequirementsController(new RequirementsController(this)) {
     this->_CreateConnections();
     this->_CheckForUpdates();
     this->_CheckForRequirements();
@@ -26,7 +26,7 @@ void MainWindowConnections::_CreateConnections() {
     using namespace XFakeContribHelper;
 
     // check memory initialized
-    if (!m_Ui->m_RepositoryManagerCard || !m_Ui->m_ContribCard || !m_Ui->m_UserManagerCard || !m_Ui->m_RepositoryCard) {
+    if (!m_Ui->m_RepositoryManagerCard || !m_Ui->m_ContribCard || !m_Ui->m_UserManagerCard || !m_Ui->m_RepositoryCard || !m_Ui->m_ThemeSelectionCard) {
         Logger::log_static(QObject::tr("Memory not initialized").toStdString(), LoggingLevel::ERROR, __LINE__, __PRETTY_FUNCTION__);
         return;
     }
@@ -95,6 +95,13 @@ void MainWindowConnections::_CreateConnections() {
         &MainWindowConnections::sl_AboutClicked,
         "QAction::triggered -> MainWindowConnections::sl_AboutClicked");
 
+    safeConnect(
+        m_RequirementsController.get(),
+        &RequirementsController::si_RequirementChecked,
+        this,
+        &MainWindowConnections::sl_RequirementCheckCompleted,
+        "RequirementsController::si_RequirementChecked -> MainWindowConnections::sl_RequirementCheckCompleted");
+
     for (auto action : m_Ui->m_LanguageActions) {
         safeConnect(
             action.get(),
@@ -114,11 +121,9 @@ void MainWindowConnections::_CheckForUpdates() {
 }
 
 void MainWindowConnections::_CheckForRequirements() {
-    RequirementsController reqController;
     QStringList requirements;
-    requirements << "git" << "openssl";
-    reqController.CheckRequirements(requirements);
-    connect(&reqController, &RequirementsController::si_RequirementChecked, this, &MainWindowConnections::sl_RequirementCheckCompleted);
+    requirements << "git";
+    m_RequirementsController->CheckRequirements(requirements);
 }
 
 void MainWindowConnections::sl_FetchContribs() {
@@ -143,12 +148,14 @@ void MainWindowConnections::sl_FetchCompleted() {
     m_Ui->m_ContribCard->Update(m_Fetcher->GetContribs());
 }
 
-void MainWindowConnections::sl_PushCompleted() {
+void MainWindowConnections::sl_PushCompleted(bool success) {
     if (QThread::currentThread() != qApp->thread()) {
         // if not in main thread, invoke the method in main thread
-        QMetaObject::invokeMethod(this, "sl_PushCompleted", Qt::QueuedConnection);
+        QMetaObject::invokeMethod(this, "sl_PushCompleted", Qt::QueuedConnection, Q_ARG(bool, success));
         return;
     }
+
+    if (!success) return;
 
     auto msg = QString(QObject::tr("All pushes completed. Do you want to reload the contributions?"));
     QMessageBox msgBox(QMessageBox::Question, QObject::tr("Reload Contributions"), msg, QMessageBox::Yes | QMessageBox::No);
@@ -165,6 +172,7 @@ void MainWindowConnections::sl_PushCompleted() {
     if (msgBox.exec() == QMessageBox::Yes) {
         this->sl_FetchContribs();
     }
+    asked = false;
 }
 
 void MainWindowConnections::sl_ThemeUpdated() {
@@ -173,25 +181,25 @@ void MainWindowConnections::sl_ThemeUpdated() {
     }
 }
 
-void MainWindowConnections::sl_RequirementCheckCompleted(const QString &name, bool isInstalled) {
+void MainWindowConnections::sl_RequirementCheckCompleted(QString name, bool isInstalled) {
     if (!isInstalled) {
         auto msg = QString(QObject::tr("The requirement %1 is not installed. Please install it to use the application.")).arg(name);
         QMessageBox::critical(nullptr, QObject::tr("Requirement Not Found"), msg);
-        qApp->exit(1);
+        exit(1);
     } else {
         Logger::log_static(QObject::tr("Requirement %1 is installed").arg(name).toStdString(), LoggingLevel::ERROR, __LINE__, __PRETTY_FUNCTION__);
     }
 }
 
-void MainWindowConnections::sl_SetEndDate(const QDate &date) {
+void MainWindowConnections::sl_SetEndDate(QDate date) {
     this->m_Ui->m_RepositoryCard->SetEndDate(date);
 }
 
-void MainWindowConnections::sl_SetStartDate(const QDate &date) {
+void MainWindowConnections::sl_SetStartDate(QDate date) {
     this->m_Ui->m_RepositoryCard->SetStartDate(date);
 }
 
-void MainWindowConnections::sl_UpdateAvailable(const QString &currentVersion, const QString &latestVersion, const QString &downloadUrl) {
+void MainWindowConnections::sl_UpdateAvailable(QString currentVersion, QString latestVersion, QString downloadUrl) {
     auto msg = QString(QObject::tr("A new version is available: %1. Do you want to download it?")).arg(latestVersion);
     QMessageBox msgBox(QMessageBox::Question, QObject::tr("Update Available"), msg, QMessageBox::Yes | QMessageBox::No);
     msgBox.setWindowModality(Qt::WindowModal);

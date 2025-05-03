@@ -1,7 +1,7 @@
 #include "MonthContrib.hpp"
 
 #include <set>
-
+#include <QLocale>
 #include "DayContrib.hpp"
 
 MonthContrib::MonthContrib(const QDate& endDate, const std::map<QDate, Contrib>& allContribs, QWidget* parent)
@@ -77,7 +77,7 @@ void MonthContrib::_SetupUI() {
     QDate startDate(m_EndDate.year(), m_EndDate.month(), 1);
     auto weekCount = this->_GetWeekCountInMonth(m_EndDate);
 
-    const int minHeight = 160;  // Size of each square
+    const int minHeight = 145;  // Size of each square
     const int minWidth = 100;
     const int daysInWeek = 7;
     const int verticalSpacingCount = daysInWeek - 1;
@@ -86,12 +86,13 @@ void MonthContrib::_SetupUI() {
     const int width = minWidth + (horizontalSpacingCount * spacing);
 
     setLayout(m_MainLayout);      // Set the layout for the widget
-    setFixedSize(width, height);  // Set a fixed size for the widget
+    setMinimumSize(width, height);  // Minimum bir alan sağla, esnek büyüsün
+    setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);  // Layout içinde yer kaplasın
 }
 
 void MonthContrib::_Update() {
     // Add the month label at the top
-    m_Label->setText(m_EndDate.toString("MMMM"));  // E.g., "August"
+    m_Label->setText(QLocale().toString(m_EndDate, "MMMM"));  // E.g., "August"
     QDate startDate(m_EndDate.year(), m_EndDate.month(), 1);
     auto weekCount = this->_GetWeekCountInMonth(m_EndDate);
     m_MainLayout->removeWidget(m_Label.get());
@@ -129,6 +130,7 @@ void MonthContrib::_Update() {
             m_DayContribs.push_back(dayContrib);
             int dayInWeek = day.dayOfWeek();
             m_MainLayout->addWidget(m_DayContribs.back().get(), dayInWeek, week, 1, 1);
+            dayContrib->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
         }
 
         if (day.dayOfWeek() == Qt::Sunday) week++;
@@ -146,11 +148,12 @@ void MonthContrib::_Update() {
                         }),
                         m_DayContribs.end());
 
+    // Stretching for columns and rows based on the count
     for (int col = 0; col < week + 1; ++col) {
-        m_MainLayout->setColumnStretch(col, 1);
+        m_MainLayout->setColumnStretch(col, 1);  // Adjust if necessary to fit space better
     }
 
-    for (int row = 0; row < 8; ++row) {
-        m_MainLayout->setRowStretch(row, 1);
+    for (int row = 1; row < 8; ++row) {
+        m_MainLayout->setRowStretch(row, 1);  // Adjust the stretch for each row if needed
     }
 }

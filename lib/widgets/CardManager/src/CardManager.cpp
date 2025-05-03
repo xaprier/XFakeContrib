@@ -2,8 +2,6 @@
 
 #include <qnamespace.h>
 
-#include <QDebug>
-
 #include "Card.hpp"
 #include "Icon.hpp"
 

@@ -33,7 +33,7 @@ class ContributionPeriod : public QComboBox {
         int currentYear = QDate::currentDate().year();
 
         // Add "Last 12 Months" as the first item
-        addItem("Last 12 Months");
+        addItem(QObject::tr("Last 12 Months"));
 
         // Add items for each year from startYear to currentYear
         for (int year = currentYear; year >= startYear; --year) {

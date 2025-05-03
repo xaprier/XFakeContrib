@@ -1,7 +1,6 @@
 #ifndef GITHUBAUTHCHECKER_HPP
 #define GITHUBAUTHCHECKER_HPP
 
-#include <QDebug>
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QNetworkAccessManager>
@@ -9,7 +8,9 @@
 #include <QNetworkRequest>
 #include <QObject>
 
-class GitHubAuthChecker : public QObject {
+#include "Git_Global.hpp"
+
+class GIT_EXPORT GitHubAuthChecker : public QObject {
     Q_OBJECT
 
   public:
@@ -20,11 +21,11 @@ class GitHubAuthChecker : public QObject {
     bool IsChecking() const { return m_ProcessingValidation; }
 
   signals:
-    void si_AuthCheckResult(bool isValid, const QString& message);
+    void si_AuthCheckResult(bool isValid, QString message);
 
   private slots:
     void sl_AuthCheckFinished(QNetworkReply* reply);
-    void sl_Check(const QString& authToken);
+    void sl_Check(QString authToken);
 
   private:
     std::atomic<bool> m_ProcessingValidation;

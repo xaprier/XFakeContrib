@@ -3,9 +3,11 @@
 
 #include <QObject>
 
+#include "Widgets_Global.hpp"
+
 class Settings;
 
-class UserManager : public QObject {
+class WIDGETS_EXPORT UserManager : public QObject {
     Q_OBJECT
     Q_DISABLE_COPY_MOVE(UserManager)
   public:

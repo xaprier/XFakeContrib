@@ -9,11 +9,15 @@
 #include "RepositoryTableView.hpp"
 #include "Settings.hpp"
 
+#include "Widgets_Global.hpp"
+
+QT_BEGIN_NAMESPACE
 namespace Ui {
 class RepositoryCardUI;
 }
+QT_END_NAMESPACE
 
-class RepositoryCard final : public Card {
+class WIDGETS_EXPORT RepositoryCard final : public Card {
     Q_OBJECT
     Q_DISABLE_COPY_MOVE(RepositoryCard)
   public:

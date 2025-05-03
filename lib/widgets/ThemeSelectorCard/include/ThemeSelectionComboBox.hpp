@@ -2,7 +2,6 @@
 #define THEMESELECTIONCOMBOBOX_HPP
 
 #include <QComboBox>
-#include <QDebug>
 #include <QString>
 #include <QStringList>
 

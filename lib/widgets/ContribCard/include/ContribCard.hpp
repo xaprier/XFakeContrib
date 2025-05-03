@@ -16,8 +16,11 @@
 #include "LevelColorIndicator.hpp"
 #include "YearContrib.hpp"
 #include "YearContribTotalIndicator.hpp"
+#include "XFakeContribHelper.hpp"
 
-class ContribCard : public Card {
+#include "Widgets_Global.hpp"
+
+class WIDGETS_EXPORT ContribCard : public Card {
     Q_OBJECT
   public:
     ContribCard(QWidget* parent = nullptr);
@@ -39,14 +42,14 @@ class ContribCard : public Card {
 
   signals:
     void si_Reload();
-    void si_SetStartDate(const QDate& date);
-    void si_SetEndDate(const QDate& date);
+    void si_SetStartDate(QDate date);
+    void si_SetEndDate(QDate date);
 
   private slots:
     void sl_OnContributionPeriodChanged(int index);
-    void sl_LeftClickedToDay(const QDate& date);
-    void sl_RightClickedToDay(const QDate& date);
-    void sl_MiddleClickedToDay(const QDate& date);
+    void sl_LeftClickedToDay(QDate date);
+    void sl_RightClickedToDay(QDate date);
+    void sl_MiddleClickedToDay(QDate date);
     void sl_InfoButtonClicked();
 
   private:

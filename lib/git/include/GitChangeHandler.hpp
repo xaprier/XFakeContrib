@@ -9,8 +9,9 @@
 #include "GitChangeEdit.hpp"
 #include "GitChangeQueue.hpp"
 
-// todo: make tests
-class GitChangeHandler : public QObject {
+#include "Git_Global.hpp"
+
+class GIT_EXPORT GitChangeHandler : public QObject {
     Q_OBJECT
   public:
     GitChangeHandler(QString repoPath = "", QObject *parent = nullptr) : QObject(parent), m_RepositoryPath(std::move(repoPath)) {}

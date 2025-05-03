@@ -42,8 +42,12 @@ void GitPusher::run() {
     } catch (const std::exception &e) {
         Logger::log_static(QObject::tr("Exception: %1").arg(e.what()).toStdString(), LoggingLevel::ERROR, __LINE__, __PRETTY_FUNCTION__);
         emit si_ErrorOccurred(QString::fromStdString(e.what()));
+        return;
     } catch (...) {
         Logger::log_static(QObject::tr("Unknown error occurred in GitPusher").toStdString(), LoggingLevel::ERROR, __LINE__, __PRETTY_FUNCTION__);
         emit si_ErrorOccurred("Unknown error occurred in GitPusher");
+        return;
     }
+
+    emit this->si_PusherFinished();
 }

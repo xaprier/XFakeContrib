@@ -9,15 +9,19 @@
 #include "RepositoryTableView.hpp"
 #include "Settings.hpp"
 
+#include "Widgets_Global.hpp"
+
+QT_BEGIN_NAMESPACE
 namespace Ui {
 class RepositoryCardUI;
 }
+QT_END_NAMESPACE
 
 // Forward declaration for item
 class RepositoryTableItem;
 class RepositoryCard;
 
-class RepositoryCardConnections final : public QObject {
+class WIDGETS_EXPORT RepositoryCardConnections final : public QObject {
     Q_OBJECT
     Q_DISABLE_COPY_MOVE(RepositoryCardConnections)
   public:
@@ -25,7 +29,7 @@ class RepositoryCardConnections final : public QObject {
     ~RepositoryCardConnections() final;
 
   signals:
-    void si_PushesCompleted();
+    void si_PushesCompleted(bool success);
 
   public slots:
     void sl_RepositoriesUpdated();
@@ -38,11 +42,11 @@ class RepositoryCardConnections final : public QObject {
     void sl_CommitMessageCBStateChanged(int state);
     void sl_CommitContentCBStateChanged(int state);
 
-    void sl_StartDateChanged(const QDate &date);
-    void sl_EndDateChanged(const QDate &date);
+    void sl_StartDateChanged(QDate date);
+    void sl_EndDateChanged(QDate date);
 
-    void sl_CommitterFinished();
-    void sl_AllCommittersFinished();
+    void sl_CommitterFinished(bool success);
+    void sl_AllCommittersFinished(bool success);
 
     void sl_ItemPushCompleted(QFutureWatcher<void> *watcher);
 

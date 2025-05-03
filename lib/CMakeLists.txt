@@ -2,7 +2,6 @@
 set(
   DIRECTORIES_TO_CHECK
   "${CMAKE_CURRENT_SOURCE_DIR}/external" # get external
-  "${CMAKE_CURRENT_SOURCE_DIR}/resources" # get resources
   "${CMAKE_CURRENT_SOURCE_DIR}/utils" # get utils
   "${CMAKE_CURRENT_SOURCE_DIR}/git" # get git
   "${CMAKE_CURRENT_SOURCE_DIR}/widgets" # get widgets

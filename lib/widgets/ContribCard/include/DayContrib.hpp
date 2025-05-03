@@ -35,9 +35,9 @@ class DayContrib : public QWidget {
     void UpdateColor();
 
   signals:
-    void si_LeftClicked(const QDate& date);
-    void si_RightClicked(const QDate& date);
-    void si_MiddleClicked(const QDate& date);
+    void si_LeftClicked(QDate date);
+    void si_RightClicked(QDate date);
+    void si_MiddleClicked(QDate date);
 
   protected:
     // Override the paintEvent to draw the widget with the corresponding color

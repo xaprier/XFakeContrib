@@ -4,7 +4,9 @@
 #include <QMutex>
 #include <QObject>
 
-class GitChange : public QObject {
+#include "Git_Global.hpp"
+
+class GIT_EXPORT GitChange : public QObject {
     Q_OBJECT
   public:
     explicit GitChange(QString repoPath, QString fileName, QString change = "", QObject *parent = nullptr) : QObject(parent), m_ReposPath(repoPath), m_FileName(fileName), m_Change(change) {}

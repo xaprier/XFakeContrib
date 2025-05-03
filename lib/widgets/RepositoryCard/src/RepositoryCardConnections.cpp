@@ -51,15 +51,15 @@ void RepositoryCardConnections::sl_RepositoriesUpdated() {
             }
         });
 
-        connect(item->GetConnections(), &RepositoryTableItemConnections::si_PushFinished, [this]() {
+        connect(item->GetConnections(), &RepositoryTableItemConnections::si_PushFinished, [this](bool success) {
             // check how many items are pushing rn
             auto pushing = std::count_if(m_Items.begin(), m_Items.end(), [](RepositoryTableItem *item) {
                 return item->GetConnections()->IsPushing();
             });
 
             if (pushing == 0) {
-                QMetaObject::invokeMethod(this, [this]() {
-                    emit this->si_PushesCompleted();
+                QMetaObject::invokeMethod(this, [this, success]() {
+                    emit this->si_PushesCompleted(success);
                     this->m_Ui->pushPB->SetButton(); }, Qt::QueuedConnection);
             }
         });
@@ -205,7 +205,7 @@ void RepositoryCardConnections::sl_CommitContentCBStateChanged(int state) {
     m_Ui->commitContentLE->setDisabled(disable);
 }
 
-void RepositoryCardConnections::sl_StartDateChanged(const QDate &date) {
+void RepositoryCardConnections::sl_StartDateChanged(QDate date) {
     // if start date bigger than end date, cancel
     QDateEdit *start = m_Ui->startDateDE;
     QDateEdit *end = m_Ui->endDateDE;
@@ -219,7 +219,7 @@ void RepositoryCardConnections::sl_StartDateChanged(const QDate &date) {
     start->blockSignals(false);
 }
 
-void RepositoryCardConnections::sl_EndDateChanged(const QDate &date) {
+void RepositoryCardConnections::sl_EndDateChanged(QDate date) {
     // if end date lesser than start date, cancel
     QDateEdit *start = m_Ui->startDateDE;
     QDateEdit *end = m_Ui->endDateDE;
@@ -233,7 +233,7 @@ void RepositoryCardConnections::sl_EndDateChanged(const QDate &date) {
     end->blockSignals(false);
 }
 
-void RepositoryCardConnections::sl_CommitterFinished() {
+void RepositoryCardConnections::sl_CommitterFinished(bool success) {
     // update tooltip to "all" remained status
     int remained = 0;
     for (auto item : m_Items) {
@@ -244,7 +244,7 @@ void RepositoryCardConnections::sl_CommitterFinished() {
 
     m_Ui->pushPB->setToolTip(QObject::tr("Creating commits(%1)").arg(remained));
 
-    Logger::log_static(QObject::tr("Commiter finished, remained: %1").arg(remained).toStdString(), LoggingLevel::INFO, __LINE__, __PRETTY_FUNCTION__);
+    Logger::log_static(QObject::tr("Commiter failed, remained: %1").arg(remained).toStdString(), LoggingLevel::INFO, __LINE__, __PRETTY_FUNCTION__);
 
     auto indicator = qobject_cast<xaprier::Qt::Widgets::XQCircularLoadingIndicator *>(m_Ui->createCommitsPB->Item(RepositoryCardCreateCommits::Status::LOADING));
 
@@ -256,14 +256,14 @@ void RepositoryCardConnections::sl_CommitterFinished() {
     indicator->setToolTip(QObject::tr("Creating commits(%1)").arg(remained));
 }
 
-void RepositoryCardConnections::sl_AllCommittersFinished() {
+void RepositoryCardConnections::sl_AllCommittersFinished(bool success) {
     // enable button
     m_Ui->pushPB->setEnabled(true);
     m_Ui->pushPB->setToolTip(QObject::tr("Push all latest changes to remote"));
 
     m_Ui->createCommitsPB->SetButton();
-    QMessageBox::information(m_Ui->createCommitsPB, QObject::tr("Success"), QObject::tr("All commits are created successfully"));
-    Logger::log_static(QObject::tr("All committers finished.").toStdString(), LoggingLevel::INFO, __LINE__, __PRETTY_FUNCTION__);
+    QMessageBox::information(m_Ui->createCommitsPB, success ? QObject::tr("Success") : QObject::tr("Failed"), success ? QObject::tr("All commits are created successfully") : QObject::tr("Commit creation finished with fail"));
+    Logger::log_static(success ? QObject::tr("All committers finished").toStdString() : QObject::tr("All committers finished with fail").toStdString(), LoggingLevel::INFO, __LINE__, __PRETTY_FUNCTION__);
 
     auto indicator = qobject_cast<xaprier::Qt::Widgets::XQCircularLoadingIndicator *>(m_Ui->createCommitsPB->Item(RepositoryCardCreateCommits::Status::LOADING));
 

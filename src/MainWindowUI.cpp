@@ -99,9 +99,7 @@ void MainWindow::_SetupLayouts() {
     m_Cards[Cards::USER_MANAGER_CARD]->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
     m_Cards[Cards::REPOSITORY_MANAGER_CARD]->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Minimum);
     m_Cards[Cards::REPOSITORY_CARD]->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
-    m_Cards[Cards::CONTRIB_CARD]->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::MinimumExpanding);
-
-    m_Cards[Cards::CONTRIB_CARD]->setMinimumHeight(300);
+    m_Cards[Cards::CONTRIB_CARD]->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
     m_ParentLayout->setColumnStretch(0, 0);
     m_ParentLayout->setColumnStretch(1, 1);
@@ -109,6 +107,9 @@ void MainWindow::_SetupLayouts() {
     m_ParentLayout->setRowStretch(1, 2);
     m_ParentLayout->setColumnStretch(2, 2);  // more space for RepositoryCard
     m_ParentLayout->setColumnStretch(2, 2);
+
+    m_ParentLayout->setRowStretch(2, 5);  // more space for ContribCard
+
 }
 
 }  // namespace Ui

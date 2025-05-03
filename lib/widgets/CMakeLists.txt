@@ -13,6 +13,7 @@ find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Core Widgets Svg Concurre
 # Specify the directory to check
 set(
   DIRECTORIES_TO_CHECK
+  "${CMAKE_CURRENT_SOURCE_DIR}/export" # get export
   "${CMAKE_CURRENT_SOURCE_DIR}/Card" # get Card
   "${CMAKE_CURRENT_SOURCE_DIR}/ContribCard" # get ContribCard
   "${CMAKE_CURRENT_SOURCE_DIR}/RepositoryCard" # get RepositoryCard
@@ -44,7 +45,6 @@ endforeach()
 add_library(${PROJECT_NAME} SHARED ${ALL_FILES})
 
 set(INTERNAL_LIBRARIES
-    XFakeContribResources
     XFakeContribGit
     XFakeContribUtils
 )
@@ -57,6 +57,8 @@ set(EXTERNAL_LIBRARIES
     XQPwdLineEdit
     XQWidgetComposer
     XQCircularLoadingIndicator
+    Logger
+    faker-cxx
 )
 
 set(LIBRARIES
@@ -65,6 +67,7 @@ set(LIBRARIES
 )
 
 target_link_libraries(${PROJECT_NAME} PRIVATE ${LIBRARIES})
+target_compile_definitions(${PROJECT_NAME} PRIVATE WIDGETS_LIBRARY)
 
 foreach(dir IN LISTS INCLUDE_DIRS)
   target_include_directories(${PROJECT_NAME} PUBLIC

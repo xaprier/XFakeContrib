@@ -1,6 +1,7 @@
 #include "ThemeSelectionComboBox.hpp"
 
 #include "StyleManager.hpp"
+#include "Logger.hpp"
 
 ThemeSelectionComboBox::ThemeSelectionComboBox(QWidget *parent) : QComboBox(parent) {
     _LoadThemes();
@@ -20,6 +21,7 @@ void ThemeSelectionComboBox::_LoadThemes() noexcept {
 }
 
 void ThemeSelectionComboBox::sl_OnApplyButtonClicked() {
-    auto selected = currentText();
+    auto selected = this->currentText();
+    Logger::log_static(QObject::tr("Applied theme %1").arg(selected).toStdString(), LoggingLevel::INFO, __LINE__, __PRETTY_FUNCTION__);
     StyleManager::SetTheme(selected);
 }

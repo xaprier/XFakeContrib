@@ -2,7 +2,9 @@
 
 #include "ContribCardInfo.hpp"
 #include "Icon.hpp"
-#include "XFakeContribHelper.hpp"
+
+// template <typename Sender, typename Signal, typename Receiver, typename Slot>
+// bool Q_DECL_IMPORT safeConnect(Sender* sender, Signal signal, Receiver* receiver, Slot slot, const QString& name, Qt::ConnectionType type);
 
 ContribCard::ContribCard(QWidget* parent) : Card(parent) {
     this->_SetupUI();
@@ -85,7 +87,7 @@ void ContribCard::_SetupUI() {
     m_TotalContribWidget = QSharedPointer<YearContribTotalIndicator>::create(0, this);
     layout->addWidget(m_TotalContribWidget.get(), 0, 3, 1, 1);
 
-    m_YearContribWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::MinimumExpanding);
+    m_YearContribWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
     layout->setSpacing(3);
     layout->setContentsMargins(5, 5, 5, 5);
@@ -119,7 +121,7 @@ void ContribCard::sl_OnContributionPeriodChanged(int index) {
 
     // Create a new YearContrib based on the selected item
     QDate endDate;
-    if (selectedItem == "Last 12 Months") {
+    if (selectedItem == QObject::tr("Last 12 Months")) {
         endDate = QDate::currentDate();
     } else {
         int selectedYear = selectedItem.toInt();
@@ -149,15 +151,15 @@ void ContribCard::sl_OnContributionPeriodChanged(int index) {
     }
 }
 
-void ContribCard::sl_LeftClickedToDay(const QDate& date) {
+void ContribCard::sl_LeftClickedToDay(QDate date) {
     emit this->si_SetStartDate(date);
 }
 
-void ContribCard::sl_RightClickedToDay(const QDate& date) {
+void ContribCard::sl_RightClickedToDay(QDate date) {
     emit this->si_SetEndDate(date);
 }
 
-void ContribCard::sl_MiddleClickedToDay(const QDate& date) {
+void ContribCard::sl_MiddleClickedToDay(QDate date) {
     emit this->si_SetStartDate(date);
     emit this->si_SetEndDate(date);
 }

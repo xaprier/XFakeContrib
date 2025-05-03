@@ -1,6 +1,6 @@
 #include "RequirementsController.hpp"
-
-#include <QDebug>
+#include "Logger.hpp"
+#include <QStandardPaths>
 
 RequirementsController::RequirementsController(QObject *parent)
     : QObject(parent) {
@@ -21,13 +21,7 @@ void RequirementsController::CheckRequirements(const QStringList &programs) {
 }
 
 bool RequirementsController::_IsProgramInstalled(const QString &program) {
-    QProcess process;
-#ifdef Q_OS_WIN
-    process.start("where", QStringList() << program);
-#else
-    process.start("which", QStringList() << program);
-#endif
-    process.waitForFinished();
-
-    return !process.readAllStandardOutput().trimmed().isEmpty();
+    QString found = QStandardPaths::findExecutable(program);
+    Logger::log_static(QObject::tr("Requirement %1 found at %2").arg(program).arg(found).toStdString(), LoggingLevel::INFO, __LINE__, __PRETTY_FUNCTION__);
+    return !found.isEmpty();
 }

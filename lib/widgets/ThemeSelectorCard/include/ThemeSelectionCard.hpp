@@ -13,7 +13,9 @@
 #include "Icon.hpp"
 #include "ThemeSelectionComboBox.hpp"
 
-class ThemeSelectionCard : public Card {
+#include "Widgets_Global.hpp"
+
+class WIDGETS_EXPORT ThemeSelectionCard : public Card {
     Q_OBJECT
   public:
     explicit ThemeSelectionCard(QWidget* parent = nullptr);
@@ -25,20 +27,15 @@ class ThemeSelectionCard : public Card {
     virtual void UpdateIcons() override;
     virtual void Update() override {}
 
-  private slots:
-    void sl_OnApplyButtonClicked();
-
   signals:
     void si_ThemeUpdated();
 
   private:
     void _LoadThemes() noexcept;
 
-    QPushButton* m_ApplyButton;
-    // QSharedPointer<ThemeSelectionComboBox> m_ThemeSelectionComboBox;
-    QStringList m_Themes;
-    QComboBox* m_ThemeSelectionComboBox;
-    QHBoxLayout* m_Layout;
+    QSharedPointer<QPushButton> m_ApplyButton;
+    QSharedPointer<ThemeSelectionComboBox> m_ThemeSelectionComboBox;
+    QSharedPointer<QHBoxLayout> m_Layout;
 };
 
 #endif  // THEMESELECTIONCARD_HPP

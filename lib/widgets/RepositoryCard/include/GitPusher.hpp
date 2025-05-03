@@ -13,8 +13,11 @@ class GitPusher final : public QThread {
     GitPusher(QString repositoryPath, QThread *parent = nullptr) : QThread(parent), m_Repository(new GitRepository(repositoryPath)), m_RepoPath(std::move(repositoryPath)) {}
     ~GitPusher() final = default;
 
+    QString GetRepositoryPath() const { return m_RepoPath; }
+
   signals:
-    void si_ErrorOccurred(const QString &errorMessage);
+    void si_ErrorOccurred(QString errorMessage);
+    void si_PusherFinished();
 
   protected:
     void run() override;

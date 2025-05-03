@@ -7,6 +7,7 @@
 #include "GitHubContribFetcher.hpp"
 #include "GitHubUpdateChecker.hpp"
 #include "MainWindowUI.hpp"
+#include "RequirementsController.hpp"
 
 class MainWindowConnections : public QObject {
     Q_OBJECT
@@ -22,12 +23,12 @@ class MainWindowConnections : public QObject {
   protected slots:
     void sl_FetchContribs();
     void sl_FetchCompleted();
-    void sl_PushCompleted();
+    void sl_PushCompleted(bool success);
     void sl_ThemeUpdated();
-    void sl_RequirementCheckCompleted(const QString &name, bool isInstalled);
-    void sl_SetEndDate(const QDate &date);
-    void sl_SetStartDate(const QDate &date);
-    void sl_UpdateAvailable(const QString &currentVersion, const QString &latestVersion, const QString &downloadUrl);
+    void sl_RequirementCheckCompleted(QString name, bool isInstalled);
+    void sl_SetEndDate(QDate date);
+    void sl_SetStartDate(QDate date);
+    void sl_UpdateAvailable(QString currentVersion, QString latestVersion, QString downloadUrl);
     void sl_AboutClicked();
     void sl_LanguageChanged();
 
@@ -35,6 +36,7 @@ class MainWindowConnections : public QObject {
     Ui::MainWindow *m_Ui;
     QSharedPointer<GitHubContribFetcher> m_Fetcher;
     QSharedPointer<GitHubUpdateChecker> m_UpdateChecker;
+    QSharedPointer<RequirementsController> m_RequirementsController;
 };
 
 #endif  // MAINWINDOWCONNECTIONS_HPP

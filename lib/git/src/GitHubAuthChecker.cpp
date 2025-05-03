@@ -6,7 +6,7 @@ GitHubAuthChecker::GitHubAuthChecker(QObject* parent) : QObject(parent), m_Proce
 }
 
 void GitHubAuthChecker::CheckAuthKey(const QString& authToken) {
-    QMetaObject::invokeMethod(this, "sl_Check", Qt::QueuedConnection, Q_ARG(const QString&, authToken));
+    QMetaObject::invokeMethod(this, "sl_Check", Qt::QueuedConnection, Q_ARG(QString, authToken));
 }
 
 void GitHubAuthChecker::sl_AuthCheckFinished(QNetworkReply* reply) {
@@ -27,7 +27,7 @@ void GitHubAuthChecker::sl_AuthCheckFinished(QNetworkReply* reply) {
     m_ProcessingValidation = false;
 }
 
-void GitHubAuthChecker::sl_Check(const QString& authToken) {
+void GitHubAuthChecker::sl_Check(QString authToken) {
     QUrl url("https://api.github.com/graphql");
     QNetworkRequest request(url);
     request.setRawHeader("Authorization", "Bearer " + authToken.toUtf8());

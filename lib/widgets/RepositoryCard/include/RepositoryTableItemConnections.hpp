@@ -23,17 +23,17 @@ class RepositoryTableItemConnections : public QObject {
     void sl_PushButtonClicked(bool checked);
     void sl_SelectCommitFileClicked(bool checked);
     void sl_BranchIndexChanged(int index);
-    void sl_CreateCommitter(const quint32 &commitCount, const QDate &date, const QString &commitMessage, const QString &commitContent);
-    void sl_CommitterFinished();
+    void sl_CreateCommitter(quint32 commitCount, QDate date, QString commitMessage, QString commitContent);
+    void sl_CommitterFinished(QDate date);
     void sl_FetchLogFinished();
 
   signals:
-    void si_PushFinished();
+    void si_PushFinished(bool success = true);
     void si_PushStarted();
-    void si_CreateCommitter(const quint32 &commitCount, const QDate &date, const QString &commitMessage, const QString &commitContent);
+    void si_CreateCommitter(quint32 commitCount, QDate date, QString commitMessage, QString commitContent);
     void si_StatusChanged(bool checked);
-    void si_CommitterFinished();
-    void si_AllCommittersFinished();
+    void si_CommitterFinished(bool success = true);
+    void si_AllCommittersFinished(bool success = true);
     void si_FileSelected();
 
   private:

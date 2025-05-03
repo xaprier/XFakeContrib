@@ -6,7 +6,9 @@
 #include <QPainterPath>
 #include <QSvgRenderer>
 
-class Icon : public QIcon {
+#include "Utils_Global.hpp"
+
+class UTILS_EXPORT Icon : public QIcon {
   public:
     Icon(const QString& svgPath, const QSize& size = QSize(128, 128));
     ~Icon() = default;

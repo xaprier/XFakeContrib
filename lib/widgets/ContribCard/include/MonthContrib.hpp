@@ -2,7 +2,6 @@
 #define MONTHCONTRIB_HPP
 
 #include <QDate>
-#include <QDebug>
 #include <QGridLayout>
 #include <QHBoxLayout>
 #include <QLabel>

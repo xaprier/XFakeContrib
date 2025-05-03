@@ -1,7 +1,7 @@
 [Desktop Entry]
 Version=1.0
 Type=Application
-Name=Fake Contrib
+Name=XFakeContrib
 Comment=Fake Contribution maker for GitHub
 Exec=XFakeContrib
 Icon=XFakeContrib

@@ -91,6 +91,7 @@ void YearContrib::_UpdateContrib(const std::map<QDate, Contrib>& allContribs) {
     std::sort(monthsInOrder.begin(), monthsInOrder.end());
 
     // Now process the months in sorted order
+    int index = 0;
     for (const QDate& monthEndDate : monthsInOrder) {
         int days = monthEndDate.day();
 
@@ -107,8 +108,10 @@ void YearContrib::_UpdateContrib(const std::map<QDate, Contrib>& allContribs) {
         } else {
             // Create a new MonthContrib widget if it doesn't exist
             auto monthContrib = QSharedPointer<MonthContrib>::create(monthEndDate, allContribs, this);
+            monthContrib->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
             m_MonthContribs.push_back(monthContrib);
             m_MonthsLayout->addWidget(monthContrib.get());
+            m_MonthsLayout->setStretch(index++, 1);  // Set stretch factor for the month
         }
     }
 

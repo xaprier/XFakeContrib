@@ -30,7 +30,7 @@ class RepositoryManagerComposedUpdateButton final : public RepositoryManagerComp
     void SetButtonText(const QString &text);
 
   signals:
-    void si_ButtonClicked(bool checked = false);
+    void si_ButtonClicked(bool checked);
 
   public slots:
     void SetLoading();

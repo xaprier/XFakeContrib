@@ -2,13 +2,14 @@ cmake_minimum_required(VERSION 3.10...3.20)
 
 project(
     XFakeContrib
-    VERSION 0.1.0
+    VERSION 1.0.0
     DESCRIPTION "Fake Contribution maker for Github"
     HOMEPAGE_URL "https://github.com/xaprier/XFakeContrib"
     LANGUAGES CXX)
 
 set(PROJECT_ORGANIZATION "xaprier")
 
+add_subdirectory(resources)
 add_subdirectory(lib) # build external/internal libs
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
@@ -27,36 +28,37 @@ find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets Core Svg Concurre
 file(GLOB_RECURSE CPP_FILES src/*.cpp)
 file(GLOB_RECURSE HPP_FILES include/*.hpp)
 file(GLOB_RECURSE UI_FILES  design/*.ui)
+file(GLOB_RECURSE QRC_FILES resources/*.qrc)
 
 set(PROJECT_SOURCES
     ${CPP_FILES}
     ${HPP_FILES}
     ${UI_FILES}
+    ${QRC_FILES}
 )
 
-set(LANGS tr)
+set(LANGS tr_TR)
 
 # 1 - first create an translation file to translate texts.
 set(QM_FILES "")
 
 foreach(LANG ${LANGS})
-    qt_create_translation(QM_FILE ${CMAKE_SOURCE_DIR} ${CMAKE_SOURCE_DIR}/lib/resources/translations/translation_${LANG}.ts)
+    qt_create_translation(QM_FILE ${CMAKE_SOURCE_DIR} ${CMAKE_SOURCE_DIR}/resources/translations/translation_${LANG}.ts)
     list(APPEND QM_FILES ${QM_FILE})
 endforeach()
 
 # 2 - translate files using linguist
-
 # 3 - after translate and build we should configure file to get file to correct directory
 foreach(QM_FILE ${QM_FILES})
     if(EXISTS ${QM_FILE})
-        configure_file(${QM_FILE} ${CMAKE_SOURCE_DIR}/lib/resources/translations COPYONLY)
+        configure_file(${QM_FILE} ${CMAKE_SOURCE_DIR}/resources/translations COPYONLY)
     else()
         list(APPEND PROJECT_SOURCES ${TS_FILES} ${QM_FILES})
     endif()
 endforeach()
 
 if(WIN32)
-    set(app_icon_resource_windows "${CMAKE_CURRENT_SOURCE_DIR}/lib/resources/icon.rc")
+    set(app_icon_resource_windows "${CMAKE_CURRENT_SOURCE_DIR}/resources/icon.rc")
     list(APPEND PROJECT_SOURCES ${app_icon_resource_windows})
 endif()
 
@@ -79,7 +81,6 @@ endif()
 
 set(INTERNAL_LIBRARIES
     XFakeContribGit
-    XFakeContribResources
     XFakeContribWidgets
     XFakeContribUtils
 )
@@ -112,10 +113,33 @@ set_target_properties(${PROJECT_NAME} PROPERTIES
     WIN32_EXECUTABLE TRUE
 )
 
-install(TARGETS ${PROJECT_NAME}
-    BUNDLE DESTINATION .
-    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})
+if(WIN32)
+    install(TARGETS ${PROJECT_NAME}
+        BUNDLE DESTINATION .
+        RUNTIME DESTINATION .
+        LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    )
+else()
+    install(TARGETS ${PROJECT_NAME}
+        BUNDLE DESTINATION .
+        RUNTIME DESTINATION bin
+        LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    )
+endif()
 
 if(QT_VERSION_MAJOR EQUAL 6)
     qt_finalize_executable(${PROJECT_NAME})
+endif()
+
+if(WIN32)
+    add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different
+        $<TARGET_FILE:${PROJECT_NAME}Widgets>
+        $<TARGET_FILE:${PROJECT_NAME}Utils>
+        $<TARGET_FILE:${PROJECT_NAME}Git>
+        $<TARGET_FILE:XQPwdLineEdit>
+        $<TARGET_FILE:XQWidgetComposer>
+        $<TARGET_FILE:XQCircularLoadingIndicator>
+        $<TARGET_FILE_DIR:${PROJECT_NAME}>
+    )
 endif()

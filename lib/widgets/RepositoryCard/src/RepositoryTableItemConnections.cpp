@@ -167,7 +167,8 @@ void RepositoryTableItemConnections::sl_PushButtonClicked(bool checked) {
     pusher->start();
 
     // finish loading animation
-    connect(pusher, &GitPusher::finished, [pusher, this]() {
+    connect(pusher, &GitPusher::si_PusherFinished, [pusher, this]() {
+        Logger::log_static(QObject::tr("Push success for: %1").arg(pusher->GetRepositoryPath()).toStdString(), LoggingLevel::ERROR, __LINE__, __PRETTY_FUNCTION__);
         this->m_Item->m_PushItem->Set(RepositoryTableItemPush::Status::BUTTON);
         this->m_Item->m_PushItem->setToolTip("");  // clear tooltip
         m_Pushing = false;
@@ -175,9 +176,14 @@ void RepositoryTableItemConnections::sl_PushButtonClicked(bool checked) {
         pusher->deleteLater();
     });
 
-    connect(pusher, &GitPusher::si_ErrorOccurred, this, [pusher, this](const QString &errorMessage) {
+    connect(pusher, &GitPusher::si_ErrorOccurred, this, [pusher, this](QString errorMessage) {
         Logger::log_static(QObject::tr("Push failed: %1").arg(errorMessage).toStdString(), LoggingLevel::ERROR, __LINE__, __PRETTY_FUNCTION__);
+        this->m_Item->m_PushItem->Set(RepositoryTableItemPush::Status::BUTTON);
+        this->m_Item->m_PushItem->setToolTip("");  // clear tooltip
+        m_Pushing = false;
         QMessageBox::critical(m_Item->m_PushItem, QObject::tr("Push Failed"), errorMessage);
+        emit this->si_PushFinished(false);
+        pusher->deleteLater();
     });
 
     // start loading animation
@@ -298,13 +304,13 @@ void RepositoryTableItemConnections::sl_BranchIndexChanged(int index) {
     }
 }
 
-void RepositoryTableItemConnections::sl_CreateCommitter(const quint32 &commitCount, const QDate &date, const QString &commitMessage, const QString &commitContent) {
+void RepositoryTableItemConnections::sl_CreateCommitter(quint32 commitCount, QDate date, QString commitMessage, QString commitContent) {
     auto repoPath = m_Item->GetAbsolutePath();
     auto file = m_Item->m_SelectedFile;
     auto *committer = new GitCommitter(repoPath, file, commitMessage, commitContent, commitCount, date);
     m_Committers.append(committer);
-    connect(committer, &GitCommitter::finished, this, &RepositoryTableItemConnections::sl_CommitterFinished);
-    connect(committer, &GitCommitter::si_CommitterError, this, [committer, this](const QString &errorMessage) {
+    connect(committer, &GitCommitter::si_CommitterFinished, this, &RepositoryTableItemConnections::sl_CommitterFinished);
+    connect(committer, &GitCommitter::si_CommitterError, this, [committer, this](QString errorMessage) {
         Logger::log_static(QObject::tr("Committer error: %1").arg(errorMessage).toStdString(), LoggingLevel::ERROR, __LINE__, __PRETTY_FUNCTION__);
         QMessageBox::critical(m_Item->m_CommitFileButton, QObject::tr("Error"), errorMessage);
         m_Item->m_StatusItem->Set(RepositoryTableItemStatus::Status::CHECKBOX);
@@ -315,12 +321,10 @@ void RepositoryTableItemConnections::sl_CreateCommitter(const quint32 &commitCou
         if (m_Committers.isEmpty()) {
             m_Item->m_StatusItem->Set(RepositoryTableItemStatus::Status::CHECKBOX);
             m_Item->m_StatusItem->setToolTip("");                             // Clear tool tip
-            emit this->m_Item->GetConnections()->si_AllCommittersFinished();  // send signal for giving info to repositorycard
-            Logger::log_static(QObject::tr("All Committers are finished with file: %1").arg(committer->CommitFile()).toStdString(), LoggingLevel::INFO, __LINE__, __PRETTY_FUNCTION__);
+            emit this->m_Item->GetConnections()->si_AllCommittersFinished(false);  // send signal for giving info to repositorycard
         } else {
             m_Item->m_StatusItem->setToolTip(QObject::tr("Creating commits for %1 days").arg(m_Committers.size()));
-            emit this->m_Item->GetConnections()->si_CommitterFinished();  // send signal for giving info to repositorycard
-            Logger::log_static(QObject::tr("Committer finished with file: %1, remained %2").arg(committer->CommitFile()).arg(m_Committers.size()).toStdString(), LoggingLevel::INFO, __LINE__, __PRETTY_FUNCTION__);
+            emit this->m_Item->GetConnections()->si_CommitterFinished(false);  // send signal for giving info to repositorycard
         }
 
         committer->deleteLater();
@@ -336,7 +340,7 @@ void RepositoryTableItemConnections::sl_CreateCommitter(const quint32 &commitCou
     committer->start();
 }
 
-void RepositoryTableItemConnections::sl_CommitterFinished() {
+void RepositoryTableItemConnections::sl_CommitterFinished(QDate date) {
     auto committer = qobject_cast<GitCommitter *>(sender());
 
     // if guard protection for invalid cast
@@ -349,14 +353,14 @@ void RepositoryTableItemConnections::sl_CommitterFinished() {
 
     // Update status
     if (m_Committers.isEmpty()) {
+        Logger::log_static(QObject::tr("All Committers are finished with file: %1").arg(committer->CommitFile()).toStdString(), LoggingLevel::INFO, __LINE__, __PRETTY_FUNCTION__);
         m_Item->m_StatusItem->Set(RepositoryTableItemStatus::Status::CHECKBOX);
         m_Item->m_StatusItem->setToolTip("");                             // Clear tool tip
         emit this->m_Item->GetConnections()->si_AllCommittersFinished();  // send signal for giving info to repositorycard
-        Logger::log_static(QObject::tr("All Committers are finished with file: %1").arg(committer->CommitFile()).toStdString(), LoggingLevel::INFO, __LINE__, __PRETTY_FUNCTION__);
     } else {
+        Logger::log_static(QObject::tr("Finished Committer for %1 to %2").arg(date.toString()).arg(committer->CommitFile()).toStdString(), LoggingLevel::INFO, __LINE__, __PRETTY_FUNCTION__);
         m_Item->m_StatusItem->setToolTip(QObject::tr("Creating commits for %1 days").arg(m_Committers.size()));
         emit this->m_Item->GetConnections()->si_CommitterFinished();  // send signal for giving info to repositorycard
-        Logger::log_static(QObject::tr("Committer finished with file: %1, remained %2").arg(committer->CommitFile()).arg(m_Committers.size()).toStdString(), LoggingLevel::INFO, __LINE__, __PRETTY_FUNCTION__);
     }
 
     committer->deleteLater();

@@ -10,7 +10,9 @@
 #include <QStringList>
 #include <QTextStream>
 
-class StyleManager {
+#include "Utils_Global.hpp"
+
+class UTILS_EXPORT StyleManager {
   public:
     static void SetTheme(const QString &theme);
     static void SetTheme(const QString &theme, QApplication &app);

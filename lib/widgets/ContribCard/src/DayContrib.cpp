@@ -1,11 +1,14 @@
 #include "DayContrib.hpp"
 
+#include <QLocale>
+
 DayContrib::DayContrib(int contribCount, int contribLevel, const QDate& date, QWidget* parent)
     : QWidget(parent), m_ContribCount(contribCount), m_Date(date), m_ContribLevel(contribLevel) {
     this->SetContribCount(contribCount, contribLevel);
     setMinimumSize(16, 16);  // Set a minimum size for the widget
+    setMaximumSize(24, 24);  // Set a maximum size for the widget
     setContentsMargins(2, 2, 2, 2);
-    setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
 }
 
 void DayContrib::SetContribCount(int contribCount, int contribLevel) {
@@ -32,7 +35,7 @@ void DayContrib::enterEvent(QEnterEvent* event) {
 void DayContrib::enterEvent(QEvent* event) {
 #endif
     QWidget::enterEvent(event);  // Call base class implementation
-    QString text = "Count " + QString::number(m_ContribCount) + "\nDate " + m_Date.toString("ddd, dd MMM yyyy");
+    QString text = QObject::tr("Count %1\nDate %2").arg(m_ContribCount).arg(QLocale().toString(m_Date, "ddd, dd MMM yyyy"));
     QToolTip::showText(mapToGlobal(QPoint(width() / 2, height() / 2)), text);
 }
 

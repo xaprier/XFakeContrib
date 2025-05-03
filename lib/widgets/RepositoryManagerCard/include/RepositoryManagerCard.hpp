@@ -15,11 +15,13 @@
 #include "RepositoryManagerComposedUpdateButton.hpp"
 #include "Settings.hpp"
 
+#include "Widgets_Global.hpp"
+
 namespace Ui {
 class RepositoryManagerCardUI;
 }
 
-class RepositoryManagerCard final : public Card {
+class WIDGETS_EXPORT RepositoryManagerCard final : public Card {
     Q_OBJECT
     Q_DISABLE_COPY_MOVE(RepositoryManagerCard)
   public:

@@ -9,7 +9,9 @@
 #include <QNetworkReply>
 #include <QNetworkRequest>
 
-class GitHubUpdateChecker : public QObject {
+#include "Git_Global.hpp"
+
+class GIT_EXPORT GitHubUpdateChecker : public QObject {
     Q_OBJECT
 
   public:
@@ -18,7 +20,7 @@ class GitHubUpdateChecker : public QObject {
     void Check();
 
   signals:
-    void si_UpdateAvailable(const QString& currentVersion, const QString& latestVersion, const QString& downloadUrl);
+    void si_UpdateAvailable(QString currentVersion, QString latestVersion, QString downloadUrl);
 
   private slots:
     void sl_OnReplyFinished(QNetworkReply* reply);

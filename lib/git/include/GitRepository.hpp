@@ -16,7 +16,9 @@
 #include "GitPushManager.hpp"
 #include "GitRemoteManager.hpp"
 
-class GitRepository : public QObject {
+#include "Git_Global.hpp"
+
+class GIT_EXPORT GitRepository : public QObject {
     Q_OBJECT
   public:
     GitRepository(const QString &localRepositoryPath = "", QObject *parent = nullptr);

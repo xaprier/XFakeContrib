@@ -1,5 +1,4 @@
 #include "Application.hpp"
-
 #include <QTranslator>
 
 #include "Logger.hpp"
@@ -42,7 +41,7 @@ void Application::UpdateStyleSheet() {
 
 QStringList Application::SupportedLanguages() {
     QStringList languages;
-    languages << "en";  // Default language english in application already
+    languages << "en_US";  // Default language english in application already
 
     QDir dir(":/translations/");
     QStringList qmFiles = dir.entryList(QStringList() << "*.qm", QDir::Files);
@@ -65,7 +64,6 @@ QStringList Application::SupportedLanguages() {
 }
 
 void Application::_SetAppLanguage() {
-    /** Localization */
     auto *settings = Settings::Instance();
 
     QString lang = settings->GetLanguage();
@@ -82,14 +80,13 @@ void Application::_SetAppLanguage() {
         settings->SetLanguage(lang);
     }
 
-    switch (locale.language()) {
-        case QLocale::Turkish:
-            if (translator.load(QString(":/translations/translation_%1.qm").arg(lang))) {
-                Logger::log_static(QObject::tr("Loaded language %1").arg(lang).toStdString(), LoggingLevel::INFO, __LINE__, __PRETTY_FUNCTION__);
-            }
-            break;
-        default:
-            break;
+    // Set default locale so QDate and similar use it
+    QLocale::setDefault(QLocale(lang));
+
+    QString string = QString(":/translations/translation_%1.qm").arg(lang);
+
+    if (translator.load(string)) {
+        Logger::log_static(QObject::tr("Loaded language %1").arg(lang).toStdString(), LoggingLevel::INFO, __LINE__, __PRETTY_FUNCTION__);
     }
 
     installTranslator(&translator);

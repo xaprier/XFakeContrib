@@ -4,7 +4,9 @@
 #include <QObject>
 #include <QProcess>
 
-class RequirementsController : public QObject {
+#include "Utils_Global.hpp"
+
+class UTILS_EXPORT RequirementsController : public QObject {
     Q_OBJECT
 
   public:
@@ -15,7 +17,7 @@ class RequirementsController : public QObject {
     void CheckRequirements(const QStringList &programs);  // Example: QStringList() << "git" << "openssl"
 
   signals:
-    void si_RequirementChecked(const QString &program, bool installed);
+    void si_RequirementChecked(QString program, bool installed);
 
   private:
     bool _IsProgramInstalled(const QString &program);

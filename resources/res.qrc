@@ -27,6 +27,7 @@
     <qresource prefix="/">
         <file>themes/orange.json</file>
         <file>themes/pink.json</file>
+        <file>themes/blue.json</file>
     </qresource>
     <qresource prefix="/qssicons">
         <file>vs15/checkbox-check-disabled.png</file>
@@ -48,6 +49,6 @@
         <file>vs15/spinner-down.png</file>
     </qresource>
     <qresource>
-        <file>translations/translation_tr.qm</file>
+        <file>translations/translation_tr_TR.qm</file>
     </qresource>
 </RCC>

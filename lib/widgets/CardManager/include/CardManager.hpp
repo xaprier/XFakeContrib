@@ -9,8 +9,9 @@
 #include <QWidget>
 
 #include "Icon.hpp"
+#include "Widgets_Global.hpp"
 
-class CardManager : public QWidget {
+class WIDGETS_EXPORT CardManager : public QWidget {
     Q_OBJECT
   public:
     explicit CardManager(QWidget *parent = nullptr);

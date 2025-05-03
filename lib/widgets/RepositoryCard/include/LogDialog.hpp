@@ -5,9 +5,11 @@
 
 #include "../design/ui_LogDialog.h"
 
+QT_BEGIN_NAMESPACE
 namespace Ui {
 class LogDialog;
 }
+QT_END_NAMESPACE
 
 class LogDialog final : public QDialog {
     Q_OBJECT

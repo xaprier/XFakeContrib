@@ -11,6 +11,7 @@ find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Core Gui Svg Widgets)
 # Specify the directory to check
 set(
   DIRECTORIES_TO_CHECK
+  "${CMAKE_CURRENT_SOURCE_DIR}/export" # get export
   "${CMAKE_CURRENT_SOURCE_DIR}/adapters" # get adapters
   "${CMAKE_CURRENT_SOURCE_DIR}/settings" # get settings
   "${CMAKE_CURRENT_SOURCE_DIR}/data" # get data
@@ -73,6 +74,7 @@ set(LIBRARIES
 )
 
 target_link_libraries(${PROJECT_NAME} PRIVATE ${LIBRARIES})
+target_compile_definitions(${PROJECT_NAME} PRIVATE UTILS_LIBRARY)
 
 foreach(dir IN LISTS INCLUDE_DIRS)
   target_include_directories(${PROJECT_NAME} PUBLIC

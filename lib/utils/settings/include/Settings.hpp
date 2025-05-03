@@ -2,6 +2,7 @@
 #define SETTINGS_HPP
 
 #include <QSettings>
+#include "Utils_Global.hpp"
 
 /**
  * @class Settings
@@ -11,7 +12,7 @@
  * such as API keys and usernames using QSettings. It ensures that only
  * one instance of the Config class exists throughout the application's lifetime.
  */
-class Settings final : public QSettings {  // NOLINT
+class UTILS_EXPORT Settings final : public QSettings {  // NOLINT
     Q_OBJECT
     Q_DISABLE_COPY_MOVE(Settings)
   public:

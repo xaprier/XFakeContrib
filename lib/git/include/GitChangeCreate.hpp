@@ -3,7 +3,9 @@
 
 #include "GitChange.hpp"
 
-class GitChangeCreate : public GitChange {
+#include "Git_Global.hpp"
+
+class GIT_EXPORT GitChangeCreate : public GitChange {
     Q_OBJECT
   public:
     explicit GitChangeCreate(QString repoPath, QString fileName, QString change = "", QObject *parent = nullptr) : GitChange(repoPath, fileName, change, parent) {}

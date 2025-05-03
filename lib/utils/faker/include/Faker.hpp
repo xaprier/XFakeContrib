@@ -7,6 +7,8 @@
 #include <mutex>
 #include <string>
 
+#include "Utils_Global.hpp"
+
 class Faker {
   public:
     Faker() {
@@ -33,7 +35,7 @@ class Faker {
 
   private:
     inline static unsigned int m_Seed = 0;
-    static std::mutex m_Mutex;
+    static UTILS_EXPORT std::mutex m_Mutex;
 };
 
 #endif  // FAKER_HPP
