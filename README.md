@@ -31,7 +31,7 @@
 
 ### 📸 Screenshot 
 
-![MainWindow UI](https://raw.githubusercontent.com/xaprier/XFakeContrib/blob/main/screenshot/UI.png)
+![MainWindow UI](https://raw.githubusercontent.com/xaprier/XFakeContrib/refs/heads/main/screenshot/UI.png)
 
 ### ✨ Contributors
 
