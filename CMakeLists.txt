@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.10...3.20)
 
 project(
     XFakeContrib
-    VERSION 1.0.0
+    VERSION 1.0.1
     DESCRIPTION "Fake Contribution maker for Github"
     HOMEPAGE_URL "https://github.com/xaprier/XFakeContrib"
     LANGUAGES CXX)
