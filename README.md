@@ -34,7 +34,13 @@
 ![MainWindow UI](https://raw.githubusercontent.com/xaprier/XFakeContrib/refs/heads/main/screenshot/UI.png)
 
 ### ✨ Contributors
-
-<a href="https://github.com/xaprier/XFakeContrib/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=xaprier/XFakeContrib" />
-</a>
+<p align="center">
+  <p align="center">
+    <a href="https://github.com/xaprier/XFakeContrib/graphs/contributors">
+      <img src="https://contrib.rocks/image?repo=xaprier/XFakeContrib" />
+    </a>
+  </p>
+  <p align="center">
+    Made with <a href="https://contrib.rocks">contributors-img</a>
+  </p>
+</p>
